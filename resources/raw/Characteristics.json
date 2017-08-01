@@ -1,0 +1,452 @@
+{
+  "Montage": {
+    "mProjectPP": {
+      "memory": {
+        "mean": 11.81,
+        "std": 0.32
+      },
+      "cores": {
+        "mean": 86.96,
+        "std": 0.03
+      }
+    },
+    "mDiffFit": {
+      "memory": {
+        "mean": 5.76,
+        "std": 0.67
+      },
+      "cores": {
+        "mean": 28.39,
+        "std": 0.16
+      }
+    },
+    "mConcatFit": {
+      "memory": {
+        "mean": 8.13,
+        "std": 0.00
+      },
+      "cores": {
+        "mean": 53.17,
+        "std": 0.00
+      }
+    },
+    "mBgModel": {
+      "memory": {
+        "mean": 13.64,
+        "std": 0.00
+      },
+      "cores": {
+        "mean": 99.89,
+        "std": 0.00
+      }
+    },
+    "mBackground": {
+      "memory": {
+        "mean": 16.19,
+        "std": 0.32
+      },
+      "cores": {
+        "mean": 8.46,
+        "std": 0.10
+      }
+    },
+    "mImgTbl": {
+      "memory": {
+        "mean": 8.06,
+        "std": 0.34
+      },
+      "cores": {
+        "mean": 3.84,
+        "std": 0.03
+      }
+    },
+    "mAdd": {
+      "memory": {
+        "mean": 16.04,
+        "std": 1.75
+      },
+      "cores": {
+        "mean": 8.48,
+        "std": 0.11
+      }
+    },
+    "mShrink": {
+      "memory": {
+        "mean": 4.62,
+        "std": 0.03
+      },
+      "cores": {
+        "mean": 2.30,
+        "std": 0.03
+      }
+    },
+    "mJPEG": {
+      "memory": {
+        "mean": 3.96,
+        "std": 0.00
+      },
+      "cores": {
+        "mean": 77.14,
+        "std": 0.00
+      }
+    }
+  },
+  "CyberShake": {
+    "ExtractSGT": {
+      "memory": {
+        "mean": 20.64,
+        "std": 0.64
+      },
+      "cores": {
+        "mean": 65.82,
+        "std": 0.28
+      }
+    },
+    "SeismogramSynthesis": {
+      "memory": {
+        "mean": 817.59,
+        "std": 483.51
+      },
+      "cores": {
+        "mean": 92.01,
+        "std": 0.08
+      }
+    },
+    "ZipSeis": {
+      "memory": {
+        "mean": 6.25,
+        "std": 0.16
+      },
+      "cores": {
+        "mean": 6.83,
+        "std": 0.01
+      }
+    },
+    "PeakValCalcOkaya": {
+      "memory": {
+        "mean": 3.11,
+        "std": 0.01
+      },
+      "cores": {
+        "mean": 16.89,
+        "std": 0.04
+      }
+    },
+    "ZipPSA": {
+      "memory": {
+        "mean": 6.16,
+        "std": 0.16
+      },
+      "cores": {
+        "mean": 2.89,
+        "std": 0.01
+      }
+    }
+  },
+  "Epigenomics": {
+    "fastq2bfq_chr21": {
+      "memory": {
+        "mean": 4.05,
+        "std": 0.01
+      },
+      "cores": {
+        "mean": 88.42,
+        "std": 0.10
+      }
+    },
+    "pileup_chr21": {
+      "memory": {
+        "mean": 148.26,
+        "std": 0.00
+      },
+      "cores": {
+        "mean": 153.43,
+        "std": 0.00
+      }
+    },
+    "mapMerge_chr21": {
+      "memory": {
+        "mean": 5.00,
+        "std": 0.39
+      },
+      "cores": {
+        "mean": 95.08,
+        "std": 0.06
+      }
+    },
+    "map_chr21": {
+      "memory": {
+        "mean": 196.04,
+        "std": 5.50
+      },
+      "cores": {
+        "mean": 96.69,
+        "std": 0.01
+      }
+    },
+    "sol2sanger_chr21": {
+      "memory": {
+        "mean": 3.79,
+        "std": 0.00
+      },
+      "cores": {
+        "mean": 65.17,
+        "std": 0.12
+      }
+    },
+    "filterContams_chr21": {
+      "memory": {
+        "mean": 2.97,
+        "std": 0.06
+      },
+      "cores": {
+        "mean": 88.54,
+        "std": 0.09
+      }
+    },
+    "maqindex_chr21": {
+      "memory": {
+        "mean": 6.17,
+        "std": 0.00
+      },
+      "cores": {
+        "mean": 99.50,
+        "std": 0.00
+      }
+    },
+    "fastqSplit_chr21": {
+      "memory": {
+        "mean": 2.80,
+        "std": 0.00
+      },
+      "cores": {
+        "mean": 22.41,
+        "std": 0.03
+      }
+    }
+  },
+  "Inspiral": {
+    "TmpltBank": {
+      "memory": {
+        "mean": 404.53,
+        "std": 0.02
+      },
+      "cores": {
+        "mean": 98.94,
+        "std": 0.00
+      }
+    },
+    "Inspiral": {
+      "memory": {
+        "mean": 533.17,
+        "std": 116.28
+      },
+      "cores": {
+        "mean": 89.96,
+        "std": 0.11
+      }
+    },
+    "Thinca": {
+      "memory": {
+        "mean": 2.63,
+        "std": 0.83
+      },
+      "cores": {
+        "mean": 43.90,
+        "std": 0.28
+      }
+    },
+    "Inca": {
+      "memory": {
+        "mean": 2.30,
+        "std": 0.35
+      },
+      "cores": {
+        "mean": 37.93,
+        "std": 0.20
+      }
+    },
+    "Data_Find": {
+      "memory": {
+        "mean": 10.06,
+        "std": 0.01
+      },
+      "cores": {
+        "mean": 55.55,
+        "std": 0.05
+      }
+    },
+    "Inspinj": {
+      "memory": {
+        "mean": 1.99,
+        "std": 0.01
+      },
+      "cores": {
+        "mean": 8.32,
+        "std": 0.08
+      }
+    },
+    "TrigBank": {
+      "memory": {
+        "mean": 2.04,
+        "std": 0.14
+      },
+      "cores": {
+        "mean": 17.44,
+        "std": 0.14
+      }
+    },
+    "Sire": {
+      "memory": {
+        "mean": 1.93,
+        "std": 0.15
+      },
+      "cores": {
+        "mean": 14.15,
+        "std": 0.18
+      }
+    },
+    "Coire": {
+      "memory": {
+        "mean": 1.91,
+        "std": 0.06
+      },
+      "cores": {
+        "mean": 8.00,
+        "std": 0.07
+      }
+    }
+  },
+  "Sipht": {
+    "Patser": {
+      "memory": {
+        "mean": 4.48,
+        "std": 0.00
+      },
+      "cores": {
+        "mean": 83.48,
+        "std": 0.04
+      }
+    },
+    "Patser_concate": {
+      "memory": {
+        "mean": 2.29,
+        "std": 0.00
+      },
+      "cores": {
+        "mean": 18.89,
+        "std": 0.00
+      }
+    },
+    "Transterm": {
+      "memory": {
+        "mean": 16.03,
+        "std": 0.00
+      },
+      "cores": {
+        "mean": 94.79,
+        "std": 0.00
+      }
+    },
+    "Findterm": {
+      "memory": {
+        "mean": 58.21,
+        "std": 0.00
+      },
+      "cores": {
+        "mean": 95.20,
+        "std": 0.00
+      }
+    },
+    "RNAMotif": {
+      "memory": {
+        "mean": 4.38,
+        "std": 0.00
+      },
+      "cores": {
+        "mean": 95.05,
+        "std": 0.00
+      }
+    },
+    "Blast": {
+      "memory": {
+        "mean": 116.38,
+        "std": 0.00
+      },
+      "cores": {
+        "mean": 93.87,
+        "std": 0.00
+      }
+    },
+    "SRNA": {
+      "memory": {
+        "mean": 5.65,
+        "std": 0.00
+      },
+      "cores": {
+        "mean": 93.48,
+        "std": 0.00
+      }
+    },
+    "FFN_Parse": {
+      "memory": {
+        "mean": 5.00,
+        "std": 0.00
+      },
+      "cores": {
+        "mean": 81.09,
+        "std": 0.00
+      }
+    },
+    "Blast_synteny": {
+      "memory": {
+        "mean": 14.18,
+        "std": 0.00
+      },
+      "cores": {
+        "mean": 61.01,
+        "std": 0.00
+      }
+    },
+    "Blast_candidate": {
+      "memory": {
+        "mean": 13.28,
+        "std": 0.00
+      },
+      "cores": {
+        "mean": 43.61,
+        "std": 0.00
+      }
+    },
+    "Blast_QRNA": {
+      "memory": {
+        "mean": 115.21,
+        "std": 0.00
+      },
+      "cores": {
+        "mean": 87.80,
+        "std": 0.00
+      }
+    },
+    "Blast_paralogues": {
+      "memory": {
+        "mean": 13.34,
+        "std": 0.00
+      },
+      "cores": {
+        "mean": 44.30,
+        "std": 0.00
+      }
+    },
+    "SRNA_annotate": {
+      "memory": {
+        "mean": 6.95,
+        "std": 0.00
+      },
+      "cores": {
+        "mean": 55.96,
+        "std": 0.00
+      }
+    }
+  }
+}
