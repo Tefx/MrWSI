@@ -82,11 +82,11 @@ void _delete_item(bin_t* bin, item_t* item) {
     mp_free(bin->_item_pool, item);
 }
 
-mempool_t* bin_prepare_node_pool(int dimension, size_t buffer_size) {
+mempool_t* bin_create_node_pool(int dimension, size_t buffer_size) {
     return mp_create_pool(size_of_node_t(dimension), buffer_size);
 }
 
-mempool_t* bin_prepare_item_pool(int dimension, size_t buffer_size) {
+mempool_t* bin_create_item_pool(int dimension, size_t buffer_size) {
     return mp_create_pool(size_of_item_t(dimension), buffer_size);
 }
 
@@ -193,6 +193,7 @@ void bin_free_item(bin_t* bin, item_t* item) {
     bin_node_t* node = start_node;
     while (node != finish_node)
         mr_isub(_node_usage(node), _item_demands(item), bin->dimension);
+    bin->_peak_need_update = true;
     _delete_item(bin, item);
     if (list_is_empty(start_node->start_items->start_list))
         _delete_node(bin, start_node);
@@ -217,4 +218,10 @@ void bin_extend_interval(bin_t* bin, item_t* item, res_t* capacities,
         if (node->time < 0) break;
         *ei_end = node->time;
     }
+}
+
+item_t* bin_extend_item(bin_t* bin, item_t* item, int st, int ft){
+    item_t* new_item = bin_alloc_item(bin, st, ft-st, _item_demands(item), NULL);
+    bin_free_item(bin, item);
+    return new_item;
 }

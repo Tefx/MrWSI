@@ -4,28 +4,26 @@
 
 #include "../include/resource.h"
 
-bool mr_richcmp(res_t* r0, res_t* r1, int op) {
+bool mr_richcmp(res_t* r0, res_t* r1, int op, int dim) {
     bool res;
     switch (op) {
         case 0:
-            res = r_le(r0[0], r1[0]) && r_le(r0[1], r1[1]) &&
-                  (r_ne(r0[0], r1[0]) || r_ne(r1[1], r1[1]));
+            res = mr_le(r0, r1, dim) && !mr_eq(r0, r1, dim);
             break;
         case 1:
-            res = r_le(r0[0], r1[0]) && r_le(r0[1], r1[1]);
+            res = mr_le(r0, r1, dim);
             break;
         case 2:
-            res = r_eq(r0[0], r1[0]) && r_eq(r0[1], r1[1]);
+            res = mr_eq(r0, r1, dim);
             break;
         case 3:
-            res = r_ne(r0[0], r1[0]) || r_ne(r0[1], r1[1]);
+            res = !mr_eq(r0, r1, dim);
             break;
         case 4:
-            res = r_ge(r0[0], r1[0]) && r_ge(r0[1], r1[1]) &&
-                  (r_ne(r0[0], r1[0]) || r_ne(r0[1], r1[1]));
+            res = mr_le(r1, r0, dim);
             break;
         case 5:
-            res = r_ge(r0[0], r1[0]) && r_ge(r0[1], r1[1]);
+            res = mr_le(r1, r0, dim) && ! mr_eq(r0, r1, dim);
             break;
         default:
             res = false;

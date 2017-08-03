@@ -32,7 +32,8 @@ typedef struct bin_t {
     bin_node_t* _last_start_node;
 } bin_t;
 
-mempool_t* bin_prepare_pool(int dimension, size_t buffer_size);
+mempool_t* bin_create_node_pool(int dimension, size_t buffer_size);
+mempool_t* bin_create_item_pool(int dimension, size_t buffer_size);
 void bin_init(bin_t* bin, int dimension, mempool_t* node_pool,
               mempool_t* item_pool);
 void bin_print(bin_t* bin);
@@ -51,6 +52,6 @@ item_t* bin_alloc_item(bin_t* bin, int start_time, int length, res_t* demands,
 void bin_extend_interval(bin_t* bin, item_t* item, res_t* capacities,
                          int* ei_begin, int* ei_end);
 
-void bin_extend_item(bin_t* bin, item_t* item, int st, int ft);
+item_t* bin_extend_item(bin_t* bin, item_t* item, int st, int ft);
 
 #endif
