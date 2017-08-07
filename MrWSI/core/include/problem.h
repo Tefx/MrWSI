@@ -37,6 +37,8 @@ typedef struct problem_t {
     type_info_t* types;
     int charge_unit;
     res_t* platform_limits;
+    int platform_limit_dim;
+
 } problem_t;
 
 void problem_init(problem_t* problem, int num_tasks, int num_types,

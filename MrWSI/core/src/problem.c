@@ -41,6 +41,7 @@ void problem_init(problem_t* problem, int num_tasks, int num_types,
     problem->tasks = (task_info_t*)malloc(sizeof(task_info_t) * num_tasks);
     problem->types = (type_info_t*)malloc(sizeof(type_info_t) * num_types);
     problem->platform_limits = mr_alloc(platform_limit_dim);
+    problem->platform_limit_dim = platform_limit_dim;
     problem->charge_unit = 1;
     mr_set(problem->platform_limits, RES_MAX, platform_limit_dim);
 }

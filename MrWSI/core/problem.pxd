@@ -11,6 +11,7 @@ cdef extern from "problem.h":
         type_info_t* types
         int charge_unit
         res_t* platform_limits
+        int platform_limit_dim;
 
     void task_info_init(task_info_t* task, res_t* demands, int* prevs,
                         int num_prevs, int* succs, int num_succs, int* runtimes,

@@ -21,6 +21,20 @@ typedef struct item_t {
     list_node_t finish_list;
 } item_t;
 
+#define size_of_node_t(dimension) \
+    (sizeof(bin_node_t) + sizeof(res_t) * (dimension))
+#define size_of_item_t(dimension) (sizeof(item_t) + sizeof(res_t) * (dimension))
+
+#define _node_usage(x) ((res_t*)((x) + 1))
+#define _item_demands(x) ((res_t*)((x) + 1))
+
+#define _node_next(node) list_entry((node)->list.next, bin_node_t, list)
+#define _node_prev(node) list_entry((node)->list.prev, bin_node_t, list)
+#define _item_next_start(item) \
+    list_entry((item)->start_list.next, item_t, start_list)
+#define _item_next_finish(item) \
+    list_entry((item)->finish_list.next, item_t, finish_list)
+
 typedef struct bin_t {
     bin_node_t* head;
     int dimension;
@@ -34,23 +48,23 @@ typedef struct bin_t {
 
 mempool_t* bin_create_node_pool(int dimension, size_t buffer_size);
 mempool_t* bin_create_item_pool(int dimension, size_t buffer_size);
-void bin_init(bin_t* bin, int dimension, mempool_t* node_pool,
-              mempool_t* item_pool);
+bin_t* bin_create(int dimension, mempool_t* node_pool, mempool_t* item_pool);
+void bin_free(bin_t* bin);
 void bin_print(bin_t* bin);
 
-#define bin_is_empty(bin) (list_is_empty((bin)->head->list))
-#define bin_open_time(bin) (_node_next((bin)->head)->time)
-#define bin_close_time(bin) (_node_prev((bin)->head)->time)
-#define bin_span(bin) (bin_close_time(bin) - bin_open_time(bin))
-
+bool bin_is_empty(bin_t* bin);
+int bin_open_time(bin_t* bin);
+int bin_close_time(bin_t* bin);
+int bin_span(bin_t* bin);
 res_t* bin_peak_usage(bin_t* bin);
+
 int bin_earliest_slot(bin_t* bin, res_t* capacities, res_t* demands, int length,
                       int est, bin_node_t** start_node, bool only_forward);
-item_t* bin_alloc_item(bin_t* bin, int start_time, int length, res_t* demands,
+item_t* bin_alloc_item(bin_t* bin, int start_time, res_t* demands, int length,
                        bin_node_t* start_node);
 
-void bin_extend_interval(bin_t* bin, item_t* item, res_t* capacities,
-                         int* ei_begin, int* ei_end);
+void bin_extendable_interval(bin_t* bin, item_t* item, res_t* capacities,
+                             int* ei_begin, int* ei_end);
 
 item_t* bin_extend_item(bin_t* bin, item_t* item, int st, int ft);
 

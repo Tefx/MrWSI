@@ -55,10 +55,20 @@ cdef class Problem:
     cdef type_info_t* _ctype_info(self, int type_id):
         return self.c.types + type_id
 
-    def set_charge_unit(self, int charge_unit):
+    @property
+    def charge_unit(self):
+        return self.c.charge_unit
+
+    @charge_unit.setter
+    def charge_unit(self, int charge_unit):
         problem_set_charge_unit(&self.c, charge_unit)
 
-    def set_platform_limits(self, list platform_limits):
+    @property
+    def platform_limits(self):
+        return mr_wrap_c(self.c.platform_limits)
+
+    @platform_limits.setter
+    def platform_limits(self, list platform_limits):
         cdef array.array pls = array.array("l", platform_limits)
         problem_set_platform_limits(&self.c, pls.data.as_longs, len(pls))
 
@@ -76,15 +86,27 @@ cdef class Problem:
             raw_types = json.load(f)
         return cls(raw_tasks, raw_types, 1)
 
+    @property
     def num_tasks(self):
         return self.c.num_tasks
 
+    @property
     def num_types(self):
         return self.c.num_types
 
+    @property
+    def multiresource_dimension(self):
+        return MULTIRES_DIM
+
+    @property
+    def platform_limit_dimension(self):
+        return self.c.platform_limit_dim
+
+    @property
     def tasks(self):
         return list(range(self.c.num_tasks))
 
+    @property
     def types(self):
         return list(range(self.c.num_types))
 
