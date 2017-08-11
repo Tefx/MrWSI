@@ -52,6 +52,7 @@ bin_t* bin_create(int dimension, mempool_t* node_pool, mempool_t* item_pool);
 void bin_free(bin_t* bin);
 void bin_print(bin_t* bin);
 
+int bin_dimension(bin_t* bin);
 bool bin_is_empty(bin_t* bin);
 int bin_open_time(bin_t* bin);
 int bin_close_time(bin_t* bin);

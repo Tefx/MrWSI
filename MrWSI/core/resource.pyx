@@ -1,51 +1,52 @@
 from libc.string cimport memcpy
 
-DEF MULTIRES_DIM=3
-
 cdef class MultiRes:
+    def __cinit__(self, dimension):
+        self.c = mr_alloc(dimension)
+        self.dimension = dimension
+
     @classmethod
-    def zero(cls):
-        mr = MultiRes()
-        mr_set(mr.c, 0, MULTIRES_DIM)
+    def zero(cls, dimension):
+        mr = MultiRes(dimension)
+        mr_set(mr.c, 0, dimension)
         return mr
 
     def __iadd__(MultiRes self, MultiRes other):
-        mr_iadd(self.c, other.c, MULTIRES_DIM)
+        mr_iadd(self.c, other.c, self.dimension)
         return self
 
     def __isub__(MultiRes self, MultiRes other):
-        mr_isub(self.c, other.c, MULTIRES_DIM)
+        mr_isub(self.c, other.c, self.dimension)
         return self
 
     def __add__(MultiRes self, MultiRes other):
-        mr = mr_wrap_c(self.c)
+        mr = mr_wrap_c(self.c, self.dimension)
         mr += other
         return mr
 
     def imax(MultiRes self, MultiRes other):
-        mr_imax(self.c, other.c, MULTIRES_DIM)
+        mr_imax(self.c, other.c, self.dimension)
 
     @classmethod
-    def max(cls, mrs):
-        result = MultiRes.zero()
-        for mr in mrs:
-            result.imax(mr)
+    def max(cls, MultiRes mr_0, MultiRes mr_1):
+        result = mr_0.__copy__()
+        result.imax(mr_1)
         return result
 
-    def __copy(MultiRes self):
-        return mr_wrap_c(self.c)
+    def __copy__(MultiRes self):
+        return mr_wrap_c(self.c, self.dimension)
 
     def __richcmp__(MultiRes self, MultiRes other, int op):
-        return mr_richcmp(self.c, other.c, op, MULTIRES_DIM)
+        return mr_richcmp(self.c, other.c, op, self.dimension)
 
     def __getitem__(self, int index):
         return self.c[index]
 
     def __repr__(self):
-        return str(self.c)
+        return str([self.c[i] for i in range(self.dimension)])
 
-cdef mr_wrap_c(res_t* c):
-    mr = MultiRes()
-    memcpy(mr.c, c, sizeof(res_t) * MULTIRES_DIM)
+cdef mr_wrap_c(res_t* c, int dimension):
+    mr = MultiRes(dimension)
+    mr_copy(mr.c, c, dimension)
     return mr
 

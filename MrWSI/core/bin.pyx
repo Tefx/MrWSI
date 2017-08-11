@@ -34,21 +34,17 @@ cdef class Bin:
     def is_empty(self):
         return bin_is_empty(self.c_ptr)
 
-    @property
     def open_time(self):
         return bin_open_time(self.c_ptr)
 
-    @property
     def close_time(self):
         return bin_close_time(self.c_ptr)
 
-    @property
     def span(self):
         return bin_span(self.c_ptr)
 
-    @property
     def peak_usage(self):
-        return mr_wrap_c(bin_peak_usage(self.c_ptr))
+        return mr_wrap_c(bin_peak_usage(self.c_ptr), bin_dimension(self.c_ptr))
 
     def earliest_slot(self, MultiRes capacities, MultiRes demands, int length,
                       int est, bool only_forward=False):

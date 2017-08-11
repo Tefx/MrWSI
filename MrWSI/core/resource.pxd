@@ -27,7 +27,11 @@ cdef extern from "resource.h":
 
     bool mr_richcmp(res_t* r0, res_t* r1, int op, int dim)
 
-cdef class MultiRes:
-    cdef res_t c[MULTIRES_DIM]
+    res_t* mr_alloc(int dim);
+    void mr_copy(res_t* dest, res_t* src, int dim)
 
-cdef mr_wrap_c(res_t* c)
+cdef class MultiRes:
+    cdef res_t* c
+    cdef int dimension
+
+cdef mr_wrap_c(res_t* c, int dimension)

@@ -13,12 +13,10 @@ static inline void _node_init(bin_node_t* node, int time, res_t* demands,
                               bin_t* bin) {
     node->time = time;
     memcpy(_node_usage(node), demands, sizeof(res_t) * bin->dimension);
-    item_t* item = _alloc_item(bin);
-    list_init_head(&item->start_list);
-    node->start_items = item;
-    item = _alloc_item(bin);
-    list_init_head(&item->finish_list);
-    node->finish_items = item;
+    node->start_items = _alloc_item(bin);
+    node->finish_items = _alloc_item(bin);
+    list_init_head(&node->start_items->start_list);
+    list_init_head(&node->finish_items->finish_list);
 }
 
 static inline void _node_destory(bin_t* bin, bin_node_t* node) {
@@ -42,7 +40,8 @@ static inline void _delete_node(bin_t* bin, bin_node_t* node) {
 
 void _node_print(bin_node_t* node, int dim) {
     printf("[%d, <", node->time);
-    for (int i = 0; i < dim; ++i) printf("%d,", _node_usage(node)[i]);
+    res_t* usage = _node_usage(node);
+    for (int i = 0; i < dim; ++i) printf("%ld,", usage[i]);
     printf("\b>]");
 }
 
@@ -52,9 +51,9 @@ item_t* _add_item(bin_t* bin, res_t* demands, bin_node_t* start_node,
     mr_copy(_item_demands(item), demands, bin->dimension);
     item->start_node = start_node;
     item->finish_node = finish_node;
-    list_insert_before(&start_node->start_items->start_list, &item->start_list);
-    list_insert_before(&finish_node->finish_items->finish_list,
-                       &item->finish_list);
+    list_insert_after(&start_node->start_items->start_list, &item->start_list);
+    list_insert_after(&finish_node->finish_items->finish_list,
+                      &item->finish_list);
     return item;
 }
 
@@ -107,6 +106,8 @@ void bin_print(bin_t* bin) {
     }
     printf("\n");
 }
+
+int bin_dimension(bin_t* bin) { return bin->dimension; }
 
 bool bin_is_empty(bin_t* bin) { return list_is_empty((bin)->head->list); }
 
@@ -191,20 +192,22 @@ item_t* bin_alloc_item(bin_t* bin, int start_time, res_t* demands, int length,
     return _add_item(bin, demands, start_node, node);
 }
 
+#define no_item_at_node(node)                          \
+    (list_is_empty((node)->start_items->start_list) && \
+     list_is_empty((node)->finish_items->finish_list))
+
 void bin_free_item(bin_t* bin, item_t* item) {
     bin_node_t* start_node = item->start_node;
     bin_node_t* finish_node = item->finish_node;
     bin_node_t* node = start_node;
-    while (node != finish_node){
+    while (node != finish_node) {
         mr_isub(_node_usage(node), _item_demands(item), bin->dimension);
         node = _node_next(node);
     }
     bin->_peak_need_update = true;
     _delete_item(bin, item);
-    if (list_is_empty(start_node->start_items->start_list))
-        _delete_node(bin, start_node);
-    if (list_is_empty(finish_node->finish_items->finish_list))
-        _delete_node(bin, finish_node);
+    if (no_item_at_node(start_node)) _delete_node(bin, start_node);
+    if (no_item_at_node(finish_node)) _delete_node(bin, finish_node);
 }
 
 void bin_extendable_interval(bin_t* bin, item_t* item, res_t* capacities,

@@ -15,42 +15,43 @@ class Context(object):
                                           problem.num_types, "item")
 
 
-class Task(objective):
-    def __init__(self, problem, type_id):
-        self.problem = problem
-        self.type_id = type_id
-
-    def runtime(self, machine):
-        return self.problem.task_runtime(self.task_id, machine.type_id)
-
-    def demands(self, machine):
-        return self.problem.task_demands(self.task_id)
-
-
 class Machine(Bin):
-    def __init__(self, type_id, context):
+    def __init__(self, vm_type, context):
         super().__init__(context.problem.multiresource_dimension,
                          context.machine_node_pool, context.machine_item_pool)
         self.item = None
         self.problem = context.problem
-        self.type_id = type_id
+        self.vm_type = vm_type
         self.tasks = set()
 
     def capacities(self):
         return self.problem.type_capacities(self.type_id)
 
-    def earliest_slot(self, task, est):
-        return super().earliest_slot(self.capacities(),
-                                     task.demands(self),
-                                     task.runtime(self), est)
+    def earliest_slot(self, vm_type, task, est):
+        return super().earliest_slot(vm_type.capacities(),
+                                     task.demands(), task.runtime(vm_type),
+                                     est)
 
-    def place_task(self, task, start_time, start_node):
+    def place_task(self, task, start_time, start_node=None):
+        self.tasks.add(task)
         task.item = self.alloc_item(start_time,
-                                    task.demands(self),
-                                    task.runtime(self), start_node)
+                                    task.demands(),
+                                    task.runtime(self.vm_type), start_node)
 
     def extendable_interval(self, task):
         return super().extendable_interval(task.item, self.capacities())
+
+    def cost(self):
+        return self.vm_type.charge(self.span())
+
+    def cost_increase(self, start_time, runtime):
+        new_runtime = max(start_time + runtime, self.close_time()) - min(
+            start_time, self.open_time())
+        return self.vm_type.charge(new_runtime) - self.cost()
+
+    def __iter__(self):
+        for task in self.tasks:
+            yield task
 
 
 class Platform(Bin):
@@ -73,14 +74,25 @@ class Platform(Bin):
     def update_machine(self, machine, start_node=None):
         if machine not in self.machines:
             self.machines.add(machine)
-            machine.item = self.alloc_item(
-                machine.open_time,
-                problem.type_capacities(machine.type_id), machine.span,
-                start_node)
+            machine.item = self.alloc_item(machine.open_time(),
+                                           machine.vm_type.demands(),
+                                           machine.span(), start_node)
         else:
-            machine.item = self.extend_item(machine.item, machine.open_time,
-                                            machine.close_time)
+            machine.item = self.extend_item(machine.item, machine.open_time(),
+                                            machine.close_time())
 
     def earliest_slot(self, demands, length, est):
         return super().earliest_slot(self.problem.platform_limits, demands,
                                      length, est)
+
+    def __iter__(self):
+        for machine in self.machines:
+            yield machine
+
+    def cost(self):
+        return sum(machine.cost() for machine in self)
+
+    def span(self):
+        return max(machine.close_time()
+                   for machine in self) - min(machine.open_time()
+                                              for machine in self)
