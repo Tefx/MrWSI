@@ -124,6 +124,7 @@ int bin_close_time(bin_t* bin) {
 int bin_span(bin_t* bin) { return bin_close_time(bin) - bin_open_time(bin); }
 
 res_t* bin_peak_usage(bin_t* bin) {
+    /*bin->_peak_need_update = true;*/
     if (bin->_peak_need_update) {
         mr_set(bin->peak_usage, 0, bin->dimension);
         bin_node_t* node = _node_next(bin->head);

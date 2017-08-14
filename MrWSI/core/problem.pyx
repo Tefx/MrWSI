@@ -1,6 +1,8 @@
 from cpython cimport array
 import array
 import json
+from math import ceil
+from itertools import product
 
 DEF MULTIRES_DIM = 3
 
@@ -18,6 +20,9 @@ cdef class VMType:
 
     def capacities(VMType self):
         return self.problem.type_capacities(self.type_id)
+
+    def bandwidth(VMType self):
+        return self.problem.type_capacities(self.type_id)[2]
 
     def demands(VMType self):
         return self.problem.type_demands(self.type_id)
@@ -57,6 +62,9 @@ class Task(object):
     def mean_runtime(self):
         return self.problem.task_mean_runtime(self.task_id)
 
+    def data_size_between(self, to_task):
+        return self.problem.data_size_between(self.task_id, to_task.task_id)
+
     def __str__(self):
         return self.problem.task_str_ids[self.task_id]
 
@@ -76,11 +84,12 @@ cdef class Problem:
         for task_id, task_str_id in enumerate(self.task_str_ids):
             task_info = self._ctask_info(task_id)
             raw_task = tasks[task_str_id]
-            raw_task["demands"][0] *= 1000
+            raw_task["demands"][0] = ceil(raw_task["demands"][0]) * 1000
+            # raw_task["demands"][0] *= 1000
             demands = array.array("l", map(int, raw_task["demands"]))
             prevs = array.array("i", [self.task_str_ids.index(t) for t in raw_task["prevs"].keys()])
             succs = array.array("i", [self.task_str_ids.index(t) for t in raw_succs[task_str_id]])
-            runtimes = array.array("i", [int(raw_task["runtime"]/types[p]["speed"]) for p in self.type_str_ids])
+            runtimes = array.array("i", [ceil(raw_task["runtime"]/types[p]["speed"]) for p in self.type_str_ids])
             data_sizes = array.array("i", [0 for _ in range(len(tasks))])
             for prev_id, data in raw_task["prevs"].items():
                 data_sizes[self.task_str_ids.index(prev_id)] = data
@@ -97,6 +106,9 @@ cdef class Problem:
             capacities = array.array("l", raw_type["capacities"])
             type_demands = array.array("l", [1 for _ in range(platform_limit_dim)])
             type_info_init(type_info, capacities.data.as_longs, type_demands.data.as_longs, platform_limit_dim, raw_type["price"])
+
+        bws = [min(typ0.bandwidth(), typ1.bandwidth()) for typ0, typ1 in product(self.types, self.types)]
+        self.mean_bandwidth = int(sum(bws) / len(bws))
 
     cdef task_info_t* _ctask_info(Problem self, int task_id):
         return self.c.tasks + task_id
@@ -196,3 +208,6 @@ cdef class Problem:
 
     def task_mean_runtime(Problem self, int task_id):
         return problem_task_average_runtime(&self.c, task_id)
+
+    def type_mean_bandwidth(Problem self):
+        return self.mean_bandwidth

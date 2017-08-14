@@ -39,9 +39,9 @@ def read_dax(dax_path):
         for uses in job.find_all("uses"):
             file_name = uses["file"]
             if file_name not in files:
-                files[file_name] = [None, None, abs(int(uses["size"]))]
+                files[file_name] = [None, [], abs(int(uses["size"]))]
             if uses["link"] == "input":
-                files[file_name][1] = job["id"]
+                files[file_name][1].append(job["id"])
             else:
                 files[file_name][0] = job["id"]
 
@@ -51,12 +51,13 @@ def read_dax(dax_path):
             parent = p["ref"]
             tasks[child]["prevs"][parent] = 0
 
-    for task_from, task_to, data in files.values():
-        if task_from and task_to:
-            if task_from not in tasks[task_to]["prevs"]:
-                tasks[task_to]["prevs"][task_from] = data
-            else:
-                tasks[task_to]["prevs"][task_from] += data
+    for task_from, task_to_set, data in files.values():
+        if task_from and task_to_set:
+            for task_to in task_to_set:
+                if task_from not in tasks[task_to]["prevs"]:
+                    tasks[task_to]["prevs"][task_from] = data
+                else:
+                    tasks[task_to]["prevs"][task_from] += data
 
     return tasks
 

@@ -69,7 +69,7 @@ class Platform(Bin):
             ei0 = 0
         if ei1 == self.close_time:
             ei1 = int(float("inf"))
-        return e10, ei1
+        return ei0, ei1
 
     def update_machine(self, machine, start_node=None):
         if machine not in self.machines:

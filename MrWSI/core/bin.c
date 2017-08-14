@@ -699,10 +699,11 @@ struct __pyx_obj_5MrWSI_4core_7problem_Problem {
   struct problem_t c;
   PyObject *task_str_ids;
   PyObject *type_str_ids;
+  res_t mean_bandwidth;
 };
 
 
-/* "MrWSI/core/problem.pxd":57
+/* "MrWSI/core/problem.pxd":58
  *     cdef type_info_t* _ctype_info(self, int type_id)
  * 
  * cdef class VMType:             # <<<<<<<<<<<<<<
@@ -2974,7 +2975,7 @@ PyMODINIT_FUNC PyInit_bin(void)
   __pyx_ptype_5MrWSI_4core_8resource_MultiRes = __Pyx_ImportType("MrWSI.core.resource", "MultiRes", sizeof(struct __pyx_obj_5MrWSI_4core_8resource_MultiRes), 1); if (unlikely(!__pyx_ptype_5MrWSI_4core_8resource_MultiRes)) __PYX_ERR(2, 33, __pyx_L1_error)
   __pyx_ptype_5MrWSI_4core_7problem_Problem = __Pyx_ImportType("MrWSI.core.problem", "Problem", sizeof(struct __pyx_obj_5MrWSI_4core_7problem_Problem), 1); if (unlikely(!__pyx_ptype_5MrWSI_4core_7problem_Problem)) __PYX_ERR(3, 49, __pyx_L1_error)
   __pyx_vtabptr_5MrWSI_4core_7problem_Problem = (struct __pyx_vtabstruct_5MrWSI_4core_7problem_Problem*)__Pyx_GetVtable(__pyx_ptype_5MrWSI_4core_7problem_Problem->tp_dict); if (unlikely(!__pyx_vtabptr_5MrWSI_4core_7problem_Problem)) __PYX_ERR(3, 49, __pyx_L1_error)
-  __pyx_ptype_5MrWSI_4core_7problem_VMType = __Pyx_ImportType("MrWSI.core.problem", "VMType", sizeof(struct __pyx_obj_5MrWSI_4core_7problem_VMType), 1); if (unlikely(!__pyx_ptype_5MrWSI_4core_7problem_VMType)) __PYX_ERR(3, 57, __pyx_L1_error)
+  __pyx_ptype_5MrWSI_4core_7problem_VMType = __Pyx_ImportType("MrWSI.core.problem", "VMType", sizeof(struct __pyx_obj_5MrWSI_4core_7problem_VMType), 1); if (unlikely(!__pyx_ptype_5MrWSI_4core_7problem_VMType)) __PYX_ERR(3, 58, __pyx_L1_error)
   /*--- Variable import code ---*/
   /*--- Function import code ---*/
   __pyx_t_1 = __Pyx_ImportModule("MrWSI.core.resource"); if (!__pyx_t_1) __PYX_ERR(0, 1, __pyx_L1_error)
