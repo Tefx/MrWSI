@@ -61,6 +61,7 @@ class Platform(Bin):
                          context.platform_item_pool)
         self.problem = context.problem
         self.machines = set()
+        self.context = context
 
     def extendable_interval(self, machine):
         ei0, ei1 = super().extendable_interval(machine.item,

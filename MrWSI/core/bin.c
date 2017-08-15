@@ -12,9 +12,7 @@
             "-Ofast",
             "-march=native",
             "-ffast-math",
-            "-funroll-loops",
-            "-g",
-            "-fno-omit-frame-pointer"
+            "-funroll-loops"
         ],
         "include_dirs": [
             "./MrWSI/core/include"
