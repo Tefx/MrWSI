@@ -64,8 +64,8 @@ def heft(problem, limit=1000):
                     st_bst, ci_bst, machine_bst, type_bst = st, ci, machine, vm_type
 
         if limit > len(platform.machines):
-            for vm_type in candidate_types(problem, task.demands(),
-                                           task.demands()):
+            for vm_type in candidate_types(problem,
+                                           task.demands(), task.demands()):
                 est = 0
                 for prev_task in task.prevs():
                     bandwidth = min(
@@ -89,9 +89,32 @@ def heft(problem, limit=1000):
         finish_times[task.task_id] = st_bst + task.runtime(type_bst)
 
     pls = {}
-    typs = [0] * len(platform.machines)
+    typs = []
     for i, machine in enumerate(platform.machines):
         for task in machine.tasks:
             pls[task.task_id] = i
-        typs[i] = machine.vm_type
-    return platform, Schedule.from_arrays(pls, typs, start_times)
+        typs.append(machine.vm_type)
+    schedule = Schedule.from_arrays(problem, pls, typs, start_times)
+    cost = sum(
+        machine_info(machine, schedule)[2] for machine in platform.machines)
+    return schedule, cost
+
+
+def machine_info(machine, schedule):
+    def comm_time(task, succ_task):
+        if schedule.PL(task) == schedule.PL(succ_task):
+            return 0
+        else:
+            return ceil(
+                task.data_size_between(succ_task) / min(
+                    schedule.TYP_PL(task).bandwidth(),
+                    schedule.TYP_PL(succ_task).bandwidth()))
+
+    open_time = min(
+        min([schedule.FT(prev_task) for prev_task in task.prevs()],
+            default=schedule.ST(task)) for task in machine)
+    close_time = max(
+        schedule.FT(task) + max(
+            [comm_time(task, succ_task) for succ_task in task.succs()],
+            default=0) for task in machine)
+    return open_time, close_time, machine.cost(close_time - open_time)

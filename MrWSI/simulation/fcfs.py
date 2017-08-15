@@ -7,10 +7,12 @@ class FCFSMachineSnap(MachineSnap):
         self.in_link = self.out_link = None
         self.links = {"input": None, "output": None}
 
-    def start_communication(self, env, current_time, comm_event, comm_type):
-        self.links[comm_type] = comm_event
+    def start_communication(self, env, current_time, event, comm_type):
+        super().start_communication(env, current_time, event, comm_type)
+        self.links[comm_type] = event
 
-    def finish_communication(self, comm_event, comm_type):
+    def finish_communication(self, env, current_time, event, comm_type):
+        super().finish_communication(env, current_time, event, comm_type)
         self.links[comm_type] = None
 
     def available_bandwidth(self, vm_type):

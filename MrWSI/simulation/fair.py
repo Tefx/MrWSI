@@ -9,30 +9,30 @@ class FairMachineSnap(MachineSnap):
         self.in_links = set()
         self.out_links = set()
 
-    def start_communication(self, env, current_time, comm_event, comm_type):
+    def start_communication(self, env, current_time, event, comm_type):
+        super().start_communication(env, current_time, event, comm_type)
         fair_bandwidth = self.available_bandwidth(comm_type)
         links = self.in_links if comm_type == "input" else self.out_links
-        for event in [
-                event for event in links if event.bandwidth > fair_bandwidth
-        ]:
-            event.adjust_bandwidth(env, fair_bandwidth - event.bandwidth,
+        for other_event in [e for e in links if e.bandwidth > fair_bandwidth]:
+            other_event.adjust_bandwidth(env, fair_bandwidth - other_event.bandwidth,
                                    current_time)
         if comm_type == "input":
-            self.in_links.add(comm_event)
+            self.in_links.add(event)
             self.in_remaining_bandwidth = self.bandwidth - sum(
                 event.bandwidth for event in self.in_links)
         elif comm_type == "output":
-            self.out_links.add(comm_event)
+            self.out_links.add(event)
             self.out_remaining_bandwidth = self.bandwidth - sum(
                 event.bandwidth for event in self.out_links)
 
-    def finish_communication(self, comm_event, comm_type):
+    def finish_communication(self, env, current_time, event, comm_type):
+        super().finish_communication(env, current_time, event, comm_type)
         if comm_type == "input":
-            self.in_links.remove(comm_event)
-            self.in_remaining_bandwidth += comm_event.bandwidth
+            self.in_links.remove(event)
+            self.in_remaining_bandwidth += event.bandwidth
         elif comm_type == "output":
-            self.out_links.remove(comm_event)
-            self.out_remaining_bandwidth += comm_event.bandwidth
+            self.out_links.remove(event)
+            self.out_remaining_bandwidth += event.bandwidth
 
     def available_bandwidth(self, vm_type):
         num_links = len(self.in_links

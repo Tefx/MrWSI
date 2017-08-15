@@ -41,8 +41,9 @@ class Machine(Bin):
     def extendable_interval(self, task):
         return super().extendable_interval(task.item, self.capacities())
 
-    def cost(self):
-        return self.vm_type.charge(self.span())
+    def cost(self, span=None):
+        if not span: span = self.span()
+        return self.vm_type.charge(span)
 
     def cost_increase(self, start_time, runtime):
         new_runtime = max(start_time + runtime, self.close_time()) - min(
@@ -79,7 +80,8 @@ class Platform(Bin):
                                            machine.vm_type.demands(),
                                            machine.span(), start_node)
         else:
-            machine.item = self.extend_item(machine.item, machine.open_time(),
+            machine.item = self.extend_item(machine.item,
+                                            machine.open_time(),
                                             machine.close_time())
 
     def earliest_slot(self, demands, length, est):

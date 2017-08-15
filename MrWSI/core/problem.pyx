@@ -33,7 +33,7 @@ cdef class VMType:
     def charge(VMType self, int runtime):
         return self.problem.vm_cost(self.type_id, runtime)
 
-    def __str__(self):
+    def __repr__(self):
         return self.problem.type_str_ids[self.type_id]
 
 class Task(object):
@@ -65,7 +65,7 @@ class Task(object):
     def data_size_between(self, to_task):
         return self.problem.data_size_between(self.task_id, to_task.task_id)
 
-    def __str__(self):
+    def __repr__(self):
         return self.problem.task_str_ids[self.task_id]
 
 cdef class Problem:

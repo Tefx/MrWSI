@@ -86,23 +86,35 @@ class CommunicationFinishEvent(CommunicationEvent, FinishEvent):
 
 class MachineSnap(object):
     def __init__(self, vm_type):
+        self.vm_type = vm_type
         self.remaining_resources = vm_type.capacities()
         self.bandwidth = self.remaining_resources[2]
+        self.launched = False
+        self.open_time = self.close_time = 0
+
+    def cost(self):
+        return self.vm_type.charge(self.close_time - self.open_time)
 
     def resources_enough_for(self, task_event):
         return self.remaining_resources >= task_event.task.demands()
 
-    def start_task(self, task_event):
-        self.remaining_resources -= task_event.task.demands()
+    def start_task(self, env, current_time, event):
+        if not self.launched:
+            self.open_time = current_time
+            self.launched = True
+        self.remaining_resources -= event.task.demands()
 
-    def finish_task(self, task_event):
-        self.remaining_resources += task_event.task.demands()
+    def finish_task(self, env, current_time, event):
+        self.close_time = current_time
+        self.remaining_resources += event.task.demands()
 
-    def start_communication(self, env, current_time, comm_event, comm_type):
-        raise NotImplementedError
+    def start_communication(self, env, current_time, event, comm_type):
+        if not self.launched:
+            self.open_time = current_time
+            self.launched = True
 
-    def finish_communication(self, comm_event, comm_type):
-        raise NotImplementedError
+    def finish_communication(self, env, current_time, event, comm_type):
+        self.close_time = current_time
 
     def available_bandwidth(self, vm_type):
         raise NotImplementedError
@@ -187,7 +199,10 @@ class SimulationEnvironment(object):
                     else:
                         self.delayed_events.append((current_time, e))
             self.adjust(current_time)
-        return current_time
+        span = max(machine.close_time for machine in self.machines) - min(
+            machine.open_time for machine in self.machines)
+        cost = sum(machine.cost() for machine in self.machines)
+        return span, cost
 
     def on_start_event(self, event, current_time):
         if isinstance(event, TaskEvent):
@@ -202,7 +217,7 @@ class SimulationEnvironment(object):
             self.on_finish_communication(event, current_time)
 
     def on_start_task(self, event, current_time):
-        event.machine.start_task(event)
+        event.machine.start_task(self, current_time, event)
         finish_event = self.task_finish_event_cls.from_start_event(event)
         self.push_event(
             finish_event.finish_time(current_time, self), finish_event)
@@ -222,12 +237,14 @@ class SimulationEnvironment(object):
         self.push_event(finish_event.finish_time(), finish_event)
 
     def on_finish_task(self, event, current_time):
-        event.machine.finish_task(event)
+        event.machine.finish_task(self, current_time, event)
         self.finished_tasks.add(event.task.task_id)
 
     def on_finish_communication(self, event, current_time):
-        event.from_machine(self).finish_communication(event, "output")
-        event.to_machine(self).finish_communication(event, "input")
+        event.from_machine(self).finish_communication(self, current_time,
+                                                      event, "output")
+        event.to_machine(self).finish_communication(self, current_time, event,
+                                                    "input")
         self.finished_communications.add(event.task_id_pair())
 
     def adjust(self, current_time):
