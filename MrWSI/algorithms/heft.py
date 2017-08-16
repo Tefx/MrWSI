@@ -5,7 +5,7 @@ from MrWSI.core.schedule import Schedule
 from math import ceil
 
 
-def task_prioritizing(problem):
+def sort_by_rank_u(problem):
     mean_bandwidth = problem.type_mean_bandwidth()
     ranks = {}
 
@@ -38,7 +38,7 @@ def heft(problem, limit=1000):
     start_times = {}
     finish_times = {}
     machines = {}
-    for task in task_prioritizing(problem):
+    for task in sort_by_rank_u(problem):
         st_bst, ci_bst, machine_bst, type_bst = float("inf"), float(
             "inf", ), None, None
         for machine in platform:
@@ -94,7 +94,8 @@ def heft(problem, limit=1000):
         for task in machine.tasks:
             pls[task.task_id] = i
         typs.append(machine.vm_type)
-    schedule = Schedule.from_arrays(problem, pls, typs, start_times)
+        schedule = Schedule.from_arrays(problem, pls, typs, start_times,
+                                        lambda x, y: finish_times[x.task_id])
     cost = sum(
         machine_info(machine, schedule)[2] for machine in platform.machines)
     return schedule, cost

@@ -38,13 +38,16 @@ typedef struct item_t {
 typedef struct bin_t {
     bin_node_t* head;
     int dimension;
-    res_t peak_usage[RES_DIM_MAX];
 
     mempool_t* _node_pool;
     mempool_t* _item_pool;
     bool _peak_need_update;
     bin_node_t* _last_start_node;
 } bin_t;
+
+#define size_of_bin_t(dimension) (sizeof(bin_t) + sizeof(res_t) * (dimension)*2)
+#define _peak_usage(bin) ((res_t*)((bin) + 1))
+#define _vol_tmp(bin) (_peak_usage(bin) + 1)
 
 mempool_t* bin_create_node_pool(int dimension, size_t buffer_size);
 mempool_t* bin_create_item_pool(int dimension, size_t buffer_size);
@@ -61,6 +64,10 @@ res_t* bin_peak_usage(bin_t* bin);
 
 int bin_earliest_slot(bin_t* bin, res_t* capacities, res_t* demands, int length,
                       int est, bin_node_t** start_node, bool only_forward);
+int bin_earliest_slot_2(bin_t* bin_x, bin_t* bin_y, res_t* capacities_x,
+                        res_t* capacities_y, res_t* demands, int length,
+                        int est, bin_node_t** start_node_x,
+                        bin_node_t** start_node_y);
 item_t* bin_alloc_item(bin_t* bin, int start_time, res_t* demands, int length,
                        bin_node_t* start_node);
 

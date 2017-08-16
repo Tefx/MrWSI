@@ -24,6 +24,10 @@ cdef extern from "bin.h":
     res_t* bin_peak_usage(bin_t* bin)
     int bin_earliest_slot(bin_t* bin, res_t* capacities, res_t* demands, int length,
                           int est, bin_node_t** start_node, bool only_forward)
+    int bin_earliest_slot_2(bin_t* bin_x, bin_t* bin_y, res_t* capacities_x,
+                            res_t* capacities_y, res_t* demands, int length,
+                            int est, bin_node_t** start_node_x,
+                            bin_node_t** start_node_y)
     item_t* bin_alloc_item(bin_t* bin, int start_time, res_t* demands, int length,
                            bin_node_t* start_node)
     void bin_extendable_interval(bin_t* bin, item_t* item, res_t* capacities,

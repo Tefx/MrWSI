@@ -4,7 +4,8 @@ import heapq
 
 class Event(object):
     def __lt__(self, other):
-        return True
+        # return repr(self) <= repr(other)
+        return id(self) <= id(self)
 
 
 class StartEvent(Event):
@@ -16,46 +17,72 @@ class FinishEvent(Event):
 
 
 class TaskEvent(Event):
-    def __init__(self, task, machine):
+    def __init__(self, env, task):
+        self.env = env
         self.task = task
-        self.machine = machine
+        self.machine = env.task2machine(task)
 
 
 class TaskStartEvent(TaskEvent, StartEvent):
+    def start(self, current_time):
+        self.machine.start_task(current_time, self)
+        return self.env.task_finish_event_cls(self.env, self.task,
+                                              current_time)
+
     def __repr__(self):
         return "TASK_START({})".format(self.task.task_id)
 
 
 class TaskFinishEvent(TaskEvent, FinishEvent):
-    def finish_time(self, start_time, env):
-        return start_time + self.task.runtime(
-            env.schedule.TYP(env.schedule.PL(self.task)))
+    def __init__(self, env, task, current_time):
+        super().__init__(env, task)
+        self.start_time = current_time
 
-    @classmethod
-    def from_start_event(cls, start_event):
-        return cls(start_event.task, start_event.machine)
+    def finish(self, current_time):
+        self.machine.finish_task(current_time, self)
+
+    def finish_time(self):
+        return self.start_time + self.task.runtime(
+            self.env.schedule.TYP(self.env.schedule.PL(self.task)))
 
     def __repr__(self):
         return "TASK_STOP({})".format(self.task.task_id)
 
 
 class CommunicationEvent(Event):
-    def __init__(self, from_task, to_task):
+    def __init__(self, env, from_task, to_task):
+        self.env = env
         self.task_pair = (from_task, to_task)
+        self.from_machine = env.task2machine(from_task)
+        self.to_machine = env.task2machine(to_task)
 
     def task_id_pair(self):
         return self.task_pair[0].task_id, self.task_pair[1].task_id
-
-    def from_machine(self, env):
-        return env.task2machine(self.task_pair[0])
-
-    def to_machine(self, env):
-        return env.task2machine(self.task_pair[1])
 
 
 class CommunicationStartEvent(CommunicationEvent, StartEvent):
     def data_size(self):
         return self.task_pair[0].data_size_between(self.task_pair[1])
+
+    def possible_bandwidth(self):
+        raise NotImplementedError
+
+    def start(self, current_time):
+        finish_event = self.env.comm_finish_event_cls(
+            self.env, self.task_pair,
+            self.possible_bandwidth(), current_time, self.data_size())
+        self.from_machine.start_communication(current_time, finish_event,
+                                              "output")
+        self.to_machine.start_communication(current_time, finish_event,
+                                            "input")
+        return finish_event
+
+    def bandwidth_is_ready(self):
+        bandwidth_demands = self.possible_bandwidth()
+        return self.from_machine.available_bandwidth(
+            "output"
+        ) >= bandwidth_demands and self.to_machine.available_bandwidth(
+            "input") >= bandwidth_demands
 
     def __repr__(self):
         return "COMM_START({}, {})".format(self.task_pair[0].task_id,
@@ -63,25 +90,23 @@ class CommunicationStartEvent(CommunicationEvent, StartEvent):
 
 
 class CommunicationFinishEvent(CommunicationEvent, FinishEvent):
-    def __init__(self, task_pair, bandwidth, current_time, data_size):
-        super().__init__(*task_pair)
+    def __init__(self, env, task_pair, bandwidth, current_time, data_size):
+        super().__init__(env, *task_pair)
         self.data_size = data_size
         self.bandwidth = bandwidth
         self.start_time = current_time
 
-    @classmethod
-    def from_start_event(cls, start_event, bandwidth, current_time):
-        return cls(start_event.task_pair, bandwidth, current_time,
-                   start_event.data_size())
+    def finish(self, current_time):
+        self.from_machine.finish_communication(current_time, self, "output")
+        self.to_machine.finish_communication(current_time, self, "input")
 
     def finish_time(self):
         return self.start_time + ceil(float(self.data_size) / self.bandwidth)
 
     def __repr__(self):
-        return "COMM_STOP[{}]({}, {}|{})".format(self.cancelled,
-                                                 self.task_pair[0].task_id,
-                                                 self.task_pair[1].task_id,
-                                                 self.finish_time())
+        return "COMM_STOP({}, {})[{}]".format(self.task_pair[0].task_id,
+                                              self.task_pair[1].task_id,
+                                              self.finish_time())
 
 
 class MachineSnap(object):
@@ -98,25 +123,25 @@ class MachineSnap(object):
     def resources_enough_for(self, task_event):
         return self.remaining_resources >= task_event.task.demands()
 
-    def start_task(self, env, current_time, event):
+    def start_task(self, current_time, event):
         if not self.launched:
             self.open_time = current_time
             self.launched = True
         self.remaining_resources -= event.task.demands()
 
-    def finish_task(self, env, current_time, event):
+    def finish_task(self, current_time, event):
         self.close_time = current_time
         self.remaining_resources += event.task.demands()
 
-    def start_communication(self, env, current_time, event, comm_type):
+    def start_communication(self, current_time, event, comm_type):
         if not self.launched:
             self.open_time = current_time
             self.launched = True
 
-    def finish_communication(self, env, current_time, event, comm_type):
+    def finish_communication(self, current_time, event, comm_type):
         self.close_time = current_time
 
-    def available_bandwidth(self, vm_type):
+    def available_bandwidth(self, comm_type):
         raise NotImplementedError
 
 
@@ -144,14 +169,13 @@ class SimulationEnvironment(object):
 
     def prepare_events(self):
         for task in self.problem.tasks:
-            st = self.schedule.ST(task)
-            pl = self.schedule.PL(task)
-            self.push_event(st,
-                            self.task_start_event_cls(task, self.machines[pl]))
+            self.push_event(
+                self.schedule.ST(task), self.task_start_event_cls(self, task))
             for succ_task in task.succs():
                 if self.schedule.PL(task) != self.schedule.PL(succ_task):
-                    self.push_event(st + task.runtime(self.schedule.TYP(pl)),
-                                    self.comm_start_event_cls(task, succ_task))
+                    self.push_event(
+                        self.schedule.CST(task, succ_task),
+                        self.comm_start_event_cls(self, task, succ_task))
 
     def pop_event(self):
         return heapq.heappop(self.event_queue)
@@ -171,7 +195,9 @@ class SimulationEnvironment(object):
         return event.machine.resources_enough_for(event)
 
     def communication_is_ready(self, event):
-        return event.task_id_pair()[0] in self.finished_tasks
+        return event.task_id_pair(
+        )[0] in self.finished_tasks and event.possible_bandwidth(
+        ) > 0 and event.bandwidth_is_ready()
 
     def event_is_ready(self, event):
         if isinstance(event, TaskEvent):
@@ -205,47 +231,15 @@ class SimulationEnvironment(object):
         return span, cost
 
     def on_start_event(self, event, current_time):
-        if isinstance(event, TaskEvent):
-            self.on_start_task(event, current_time)
-        elif isinstance(event, CommunicationEvent):
-            self.on_start_communication(event, current_time)
-
-    def on_finish_event(self, event, current_time):
-        if isinstance(event, TaskEvent):
-            self.on_finish_task(event, current_time)
-        elif isinstance(event, CommunicationEvent):
-            self.on_finish_communication(event, current_time)
-
-    def on_start_task(self, event, current_time):
-        event.machine.start_task(self, current_time, event)
-        finish_event = self.task_finish_event_cls.from_start_event(event)
-        self.push_event(
-            finish_event.finish_time(current_time, self), finish_event)
-
-    def on_start_communication(self, event, current_time):
-        from_machine = event.from_machine(self)
-        to_machine = event.to_machine(self)
-        bandwidth = min(
-            from_machine.available_bandwidth("output"),
-            to_machine.available_bandwidth("input"))
-        finish_event = self.comm_finish_event_cls.from_start_event(
-            event, bandwidth, current_time)
-        from_machine.start_communication(self, current_time, finish_event,
-                                         "output")
-        to_machine.start_communication(self, current_time, finish_event,
-                                       "input")
+        finish_event = event.start(current_time)
         self.push_event(finish_event.finish_time(), finish_event)
 
-    def on_finish_task(self, event, current_time):
-        event.machine.finish_task(self, current_time, event)
-        self.finished_tasks.add(event.task.task_id)
-
-    def on_finish_communication(self, event, current_time):
-        event.from_machine(self).finish_communication(self, current_time,
-                                                      event, "output")
-        event.to_machine(self).finish_communication(self, current_time, event,
-                                                    "input")
-        self.finished_communications.add(event.task_id_pair())
+    def on_finish_event(self, event, current_time):
+        event.finish(current_time)
+        if isinstance(event, TaskEvent):
+            self.finished_tasks.add(event.task.task_id)
+        elif isinstance(event, CommunicationEvent):
+            self.finished_communications.add(event.task_id_pair())
 
     def adjust(self, current_time):
         pass

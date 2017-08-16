@@ -53,6 +53,12 @@ cdef class Bin:
                                     est, &start_node, only_forward)
         return st, bn_wrap_c(start_node)
 
+    def earliest_slot_2(self, Bin other,
+                        MultiRes capacities, MultiRes capacities_other,
+                        demands, int length, int est):
+        return earliest_slot_in_both(self, other, capacities, capacities_other,
+                                     demands, length, est)
+
     def alloc_item(self, int start_time, MultiRes demands, int length,
                    BinNode start_node=None):
         return item_wrap_c(bin_alloc_item(self.c_ptr, start_time, demands.c, length,
@@ -65,3 +71,14 @@ cdef class Bin:
 
     def extend_item(self, Item item, int st, int ft):
         return item_wrap_c(bin_extend_item(self.c_ptr, item.c_ptr, st, ft))
+
+cpdef earliest_slot_in_both(Bin bin_x, Bin bin_y,
+                            MultiRes capacities_x, MultiRes capacities_y,
+                            MultiRes demands, int length, int est):
+    cdef bin_node_t* start_node_x
+    cdef bin_node_t* start_node_y
+    cdef st = bin_earliest_slot_2(bin_x.c_ptr, bin_y.c_ptr,
+                                  capacities_x.c, capacities_y.c,
+                                  demands.c, length, est,
+                                  &start_node_x, &start_node_y)
+    return st, bn_wrap_c(start_node_x), bn_wrap_c(start_node_y)

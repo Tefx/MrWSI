@@ -4,8 +4,6 @@
 #include <stdio.h>
 #include <string.h>
 
-static res_t res_tmp[RES_DIM_MAX];
-
 #define _alloc_node(bin) ((bin_node_t*)mp_alloc((bin)->_node_pool))
 #define _alloc_item(bin) ((item_t*)mp_alloc((bin)->_item_pool))
 
@@ -76,7 +74,7 @@ mempool_t* bin_create_item_pool(int dimension, size_t buffer_size) {
 }
 
 bin_t* bin_create(int dimension, mempool_t* node_pool, mempool_t* item_pool) {
-    bin_t* bin = (bin_t*)malloc(sizeof(bin_t));
+    bin_t* bin = (bin_t*)malloc(size_of_bin_t(dimension));
     bin->_node_pool = node_pool;
     bin->_item_pool = item_pool;
 
@@ -86,7 +84,7 @@ bin_t* bin_create(int dimension, mempool_t* node_pool, mempool_t* item_pool) {
     list_init_head(&bin->head->list);
 
     bin->dimension = dimension;
-    mr_set(bin->peak_usage, 0, dimension);
+    mr_set(_peak_usage(bin), 0, dimension);
     bin->_peak_need_update = false;
     bin->_last_start_node = bin->head;
     return bin;
@@ -126,14 +124,14 @@ int bin_span(bin_t* bin) { return bin_close_time(bin) - bin_open_time(bin); }
 res_t* bin_peak_usage(bin_t* bin) {
     /*bin->_peak_need_update = true;*/
     if (bin->_peak_need_update) {
-        mr_set(bin->peak_usage, 0, bin->dimension);
+        mr_set(_peak_usage(bin), 0, bin->dimension);
         bin_node_t* node = _node_next(bin->head);
         while (node != bin->head) {
-            mr_imax(bin->peak_usage, _node_usage(node), bin->dimension);
+            mr_imax(_peak_usage(bin), _node_usage(node), bin->dimension);
             node = _node_next(node);
         }
     }
-    return bin->peak_usage;
+    return _peak_usage(bin);
 }
 
 bin_node_t* _bin_search(bin_t* bin, int time) {
@@ -159,19 +157,85 @@ bin_node_t* _earliest_slot(bin_node_t* node, res_t* vol, int length, int est,
 
 int bin_earliest_slot(bin_t* bin, res_t* capacities, res_t* demands, int length,
                       int est, bin_node_t** start_node, bool only_forward) {
-    mr_sub(res_tmp, capacities, demands, bin->dimension);
+    res_t* vol = _vol_tmp(bin);
+    mr_sub(vol, capacities, demands, bin->dimension);
     bin_node_t* node =
         only_forward ? bin->_last_start_node : _bin_search(bin, est);
-    *start_node = _earliest_slot(node, res_tmp, length, est, bin->dimension);
+    *start_node = _earliest_slot(node, vol, length, est, bin->dimension);
     return fmax((*start_node)->time, est);
 }
 
-#define _update_peak(bin, node, delta)                                       \
-    {                                                                        \
-        if ((delta)[0] < 0)                                                  \
-            (bin)->_peak_need_update = true;                                 \
-        else if (!(bin)->_peak_need_update)                                  \
-            mr_imax((bin)->peak_usage, _node_usage(node), (bin)->dimension); \
+int _earliest_slot_2(bin_node_t* node_x, bin_node_t* node_y, res_t* vol_x,
+                     res_t* vol_y, int length, int est, int dimension,
+                     bin_node_t** start_node_x, bin_node_t** start_node_y) {
+    int ft = est + length;
+    mr_iadd_v(vol_x, EPSILON, dimension);
+    mr_iadd_v(vol_y, EPSILON, dimension);
+    while ((node_x->time >= 0 || node_y->time >= 0) &&
+           (node_x->time < ft || node_y->time < ft)) {
+        if (node_x->time < node_y->time) {
+            if (!mr_le_precise(_node_usage(node_x), vol_x, dimension)) {
+                node_x = _node_next(node_x);
+                *start_node_x = node_x;
+                ft = node_x->time + length;
+                while (node_y->time >= 0 && node_y->time < node_x->time)
+                    node_y = _node_next(node_y);
+                if (node_y->time != node_x->time) node_y = _node_prev(node_y);
+            } else {
+                node_x = _node_next(node_x);
+                while (node_y->time >= 0 && node_y->time < node_x->time) {
+                    if (!mr_le_precise(_node_usage(node_y), vol_y, dimension)) {
+                        *start_node_y = _node_next(node_y);
+                        ft = (*start_node_y)->time + length;
+                    }
+                    node_y = _node_next(node_y);
+                }
+            }
+        } else {
+            if (!mr_le_precise(_node_usage(node_y), vol_y, dimension)) {
+                node_y = _node_next(node_y);
+                *start_node_y = node_y;
+                ft = node_y->time + length;
+                while (node_x->time >= 0 && node_x->time < node_y->time)
+                    node_x = _node_next(node_x);
+                if (node_x->time != node_y->time) node_x = _node_prev(node_x);
+            } else {
+                node_y = _node_next(node_y);
+                while (node_x->time >= 0 && node_x->time < node_y->time) {
+                    if (!mr_le_precise(_node_usage(node_x), vol_x, dimension)) {
+                        *start_node_x = _node_next(node_x);
+                        ft = (*start_node_x)->time + length;
+                    }
+                    node_x = _node_next(node_x);
+                }
+            }
+        }
+    }
+    *start_node_x = node_x;
+    *start_node_y = node_y;
+    return ft - length;
+}
+
+int bin_earliest_slot_2(bin_t* bin_x, bin_t* bin_y, res_t* capacities_x,
+                        res_t* capacities_y, res_t* demands, int length,
+                        int est, bin_node_t** start_node_x,
+                        bin_node_t** start_node_y) {
+    bin_node_t* node_x = _bin_search(bin_x, est);
+    bin_node_t* node_y = _bin_search(bin_y, est);
+    res_t* vol_x = _vol_tmp(bin_x);
+    res_t* vol_y = _vol_tmp(bin_y);
+    mr_sub(vol_x, capacities_x, demands, bin_x->dimension);
+    mr_sub(vol_y, capacities_y, demands, bin_y->dimension);
+    return _earliest_slot_2(node_x, node_y, vol_x, vol_y, length, est,
+                            bin_x->dimension, start_node_x, start_node_y);
+}
+
+#define _update_peak(bin, node, delta)                                      \
+    {                                                                       \
+        if ((delta)[0] < 0)                                                 \
+            (bin)->_peak_need_update = true;                                \
+        else if (!(bin)->_peak_need_update)                                 \
+            mr_imax(_peak_usage(bin), _node_usage(node), (bin)->dimension); \
     }
 
 item_t* bin_alloc_item(bin_t* bin, int start_time, res_t* demands, int length,
@@ -213,17 +277,17 @@ void bin_free_item(bin_t* bin, item_t* item) {
 
 void bin_extendable_interval(bin_t* bin, item_t* item, res_t* capacities,
                              int* ei_begin, int* ei_end) {
-    mr_sub(res_tmp, capacities, _item_demands(item), bin->dimension);
+    res_t* vol = _vol_tmp(bin);
+    mr_sub(vol, capacities, _item_demands(item), bin->dimension);
     *ei_begin = item->start_node->time;
     bin_node_t* node = _node_prev(item->start_node);
-    while (node->time >= 0 &&
-           mr_le(_node_usage(node), res_tmp, bin->dimension)) {
+    while (node->time >= 0 && mr_le(_node_usage(node), vol, bin->dimension)) {
         *ei_begin = node->time;
         node = _node_prev(node);
     }
     node = item->finish_node;
     *ei_end = node->time;
-    while (mr_le(_node_usage(node), res_tmp, bin->dimension)) {
+    while (mr_le(_node_usage(node), vol, bin->dimension)) {
         node = _node_next(node);
         if (node->time < 0) break;
         *ei_end = node->time;

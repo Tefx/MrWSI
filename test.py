@@ -4,7 +4,7 @@ from MrWSI.core.problem import Problem
 from MrWSI.core.platform import Context
 from MrWSI.algorithms.heft import heft
 from MrWSI.simulation.fair import FairEnvironment
-from MrWSI.simulation.fcfs import FCFSEnvironment
+from MrWSI.simulation.fcfs import FCFSEnvironment, FCFS2Environment
 
 if __name__ == "__main__":
     import os
@@ -21,9 +21,12 @@ if __name__ == "__main__":
                 charge_unit=1)
             schedule, scheduled_cost = heft(problem)
             scheduled_span = schedule.span()
-            fair_makespan, fair_cost = FairEnvironment(problem, schedule).run()
             fcfs_makespan, fcfs_cost = FCFSEnvironment(problem, schedule).run()
+            fcfs2_makespan, fcfs2_cost = FCFS2Environment(problem,
+                                                          schedule).run()
+            fair_makespan, fair_cost = FairEnvironment(problem, schedule).run()
             print(
-                "{:<16} Scheduled: {:6}s/${:<6.2f} FCFS: {:6}s/${:<6.2f} Fair: {:6}s/${:<6.2f}".
+                "{:<16} Scheduled: {:6}s/${:<6.2f} FCFS: {:6}s/${:<6.2f}  FCFS2: {:6}s/${:<6.2f} Fair: {:6}s/${:<6.2f}".
                 format(wrk[:-4], scheduled_span, scheduled_cost, fcfs_makespan,
-                       fcfs_cost, fair_makespan, fair_cost))
+                       fcfs_cost, fcfs2_makespan, fcfs2_cost, fair_makespan,
+                       fair_cost))

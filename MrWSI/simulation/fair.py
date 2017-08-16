@@ -4,95 +4,86 @@ from MrWSI.simulation.common import *
 class FairMachineSnap(MachineSnap):
     def __init__(self, vm_type):
         super().__init__(vm_type)
-        self.in_remaining_bandwidth = self.bandwidth
-        self.out_remaining_bandwidth = self.bandwidth
-        self.in_links = set()
-        self.out_links = set()
+        self.remaining_bandwidths = {
+            "input": self.bandwidth,
+            "output": self.bandwidth
+        }
+        self.links = {"input": set(), "output": set()}
 
-    def start_communication(self, env, current_time, event, comm_type):
-        super().start_communication(env, current_time, event, comm_type)
+    def start_communication(self, current_time, event, comm_type):
+        super().start_communication(current_time, event, comm_type)
         fair_bandwidth = self.available_bandwidth(comm_type)
-        links = self.in_links if comm_type == "input" else self.out_links
-        for other_event in [e for e in links if e.bandwidth > fair_bandwidth]:
-            other_event.adjust_bandwidth(env, fair_bandwidth - other_event.bandwidth,
-                                   current_time)
-        if comm_type == "input":
-            self.in_links.add(event)
-            self.in_remaining_bandwidth = self.bandwidth - sum(
-                event.bandwidth for event in self.in_links)
-        elif comm_type == "output":
-            self.out_links.add(event)
-            self.out_remaining_bandwidth = self.bandwidth - sum(
-                event.bandwidth for event in self.out_links)
+        for other_event in [
+                e for e in self.links[comm_type]
+                if e.bandwidth > fair_bandwidth
+        ]:
+            other_event.adjust_bandwidth(
+                fair_bandwidth - other_event.bandwidth, current_time)
+        self.links[comm_type].add(event)
+        self.remaining_bandwidths[comm_type] = self.bandwidth - sum(
+            event.bandwidth for event in self.links[comm_type])
 
-    def finish_communication(self, env, current_time, event, comm_type):
-        super().finish_communication(env, current_time, event, comm_type)
-        if comm_type == "input":
-            self.in_links.remove(event)
-            self.in_remaining_bandwidth += event.bandwidth
-        elif comm_type == "output":
-            self.out_links.remove(event)
-            self.out_remaining_bandwidth += event.bandwidth
+    def finish_communication(self, current_time, event, comm_type):
+        super().finish_communication(current_time, event, comm_type)
+        self.links[comm_type].remove(event)
+        self.remaining_bandwidths[comm_type] += event.bandwidth
 
-    def available_bandwidth(self, vm_type):
-        num_links = len(self.in_links
-                        if vm_type == "input" else self.out_links) + 1
-        return floor(self.bandwidth / num_links)
+    def available_bandwidth(self, comm_type):
+        return floor(self.bandwidth / (len(self.links[comm_type]) + 1))
 
     def assign_adjustable_bandwidths(self):
-        if self.in_remaining_bandwidth > 0 and self.in_links:
-            in_increase = floor(
-                self.in_remaining_bandwidth / len(self.in_links))
-            for event in self.in_links:
-                event.in_adjustable_bandwidth = in_increase
-        if self.out_remaining_bandwidth > 0 and self.out_links:
-            out_increase = floor(
-                self.out_remaining_bandwidth / len(self.out_links))
-            for event in self.out_links:
-                event.out_adjustable_bandwidth = out_increase
+        for comm_type in ("input", "output"):
+            if self.remaining_bandwidths[comm_type] > 0 and self.links[comm_type]:
+                increase = floor(
+                    self.remaining_bandwidths[comm_type] / len(self.links[comm_type]))
+                for event in self.links[comm_type]:
+                    event.adjustable_bandwidths[comm_type] = increase
 
-    def adjust_bandwidths(self, env, current_time):
+    def adjust_bandwidths(self, current_time):
         has_adjustment = False
-        for event in self.in_links:
-            adjustable_bandwidth = min(event.in_adjustable_bandwidth,
-                                       event.out_adjustable_bandwidth)
-            if adjustable_bandwidth > 0:
-                event.adjust_bandwidth(env, adjustable_bandwidth, current_time)
-                self.in_remaining_bandwidth -= adjustable_bandwidth
-                has_adjustment = True
-        for event in self.out_links:
-            adjustable_bandwidth = min(event.in_adjustable_bandwidth,
-                                       event.out_adjustable_bandwidth)
-            if adjustable_bandwidth > 0:
-                event.adjust_bandwidth(env, adjustable_bandwidth, current_time)
-                self.out_remaining_bandwidth -= adjustable_bandwidth
-                has_adjustment = True
+        for comm_type in ("input", "output"):
+            for event in self.links[comm_type]:
+                adjustable_bandwidth = min(event.adjustable_bandwidths.values())
+                if adjustable_bandwidth > 0:
+                    event.adjust_bandwidth(adjustable_bandwidth, current_time)
+                    self.remaining_bandwidths[comm_type] -= adjustable_bandwidth
+                    has_adjustment = True
         return has_adjustment
 
 
+class FairCommunicationStartEvent(CommunicationStartEvent):
+    def possible_bandwidth(self):
+        return min(
+            self.from_machine.available_bandwidth("output"),
+            self.to_machine.available_bandwidth("input"))
+
+
 class FairCommunicationFinishEvent(CommunicationFinishEvent):
-    def __init__(self, task_pair, bandwidth, current_time, data_size):
-        super().__init__(task_pair, bandwidth, current_time, data_size)
-        self.in_adjustable_bandwidth = 0
-        self.out_adjustable_bandwidth = 0
+    def __init__(self, env, task_pair, bandwidth, current_time, data_size):
+        super().__init__(env, task_pair, bandwidth, current_time, data_size)
+        self.adjustable_bandwidths = {"input": 0, "output": 0}
         self.cancelled = False
 
-    def adjust_bandwidth(self, env, adjust_bandwidth, current_time):
+    def adjust_bandwidth(self, adjust_bandwidth, current_time):
         new_event = FairCommunicationFinishEvent(
-            self.task_pair, self.bandwidth + adjust_bandwidth, current_time,
+            self.env, self.task_pair, self.bandwidth + adjust_bandwidth,
+            current_time,
             self.data_size - self.bandwidth * (current_time - self.start_time))
-        from_machine = self.from_machine(env)
-        from_machine.out_links.remove(self)
-        from_machine.out_links.add(new_event)
-        to_machine = self.to_machine(env)
-        to_machine.in_links.remove(self)
-        to_machine.in_links.add(new_event)
+        self.from_machine.links["output"].remove(self)
+        self.from_machine.links["output"].add(new_event)
+        self.to_machine.links["input"].remove(self)
+        self.to_machine.links["input"].add(new_event)
         self.cancelled = True
-        env.push_event(new_event.finish_time(), new_event)
+        self.env.push_event(new_event.finish_time(), new_event)
+
+    def finish(self, current_time):
+        if not self.cancelled:
+            super().finish(current_time)
 
 
 class FairEnvironment(SimulationEnvironment):
     machine_snap_cls = FairMachineSnap
+    comm_start_event_cls = FairCommunicationStartEvent
     comm_finish_event_cls = FairCommunicationFinishEvent
 
     def on_finish_communication(self, event, current_time):
@@ -105,4 +96,4 @@ class FairEnvironment(SimulationEnvironment):
             for machine in self.machines:
                 machine.assign_adjustable_bandwidths()
             for machine in self.machines:
-                has_adjustment = machine.adjust_bandwidths(self, current_time)
+                has_adjustment = machine.adjust_bandwidths(current_time)
