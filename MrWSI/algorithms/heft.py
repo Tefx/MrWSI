@@ -6,16 +6,14 @@ from math import ceil
 
 
 def sort_by_rank_u(problem):
-    mean_bandwidth = problem.type_mean_bandwidth()
     ranks = {}
 
     def upward_rank(task):
         if task.task_id not in ranks:
             ranks[task.task_id] = max(
                 [
-                    upward_rank(t) + ceil(
-                        task.data_size_between(t) / mean_bandwidth)
-                    for t in task.succs()
+                    upward_rank(comm.to_task) + comm.mean_runtime()
+                    for comm in task.out_communications
                 ],
                 default=0) + task.mean_runtime()
         return ranks[task.task_id]
@@ -24,11 +22,14 @@ def sort_by_rank_u(problem):
 
 
 def candidate_types(problem, min_mr, max_mr):
-    typs = [typ for typ in problem.types if typ.capacities() >= min_mr]
+    typs = [typ for typ in problem.types if typ.capacities >= min_mr]
     for typ in typs:
-        if not any(
-                t for t in typs
-                if t != typ and max_mr <= t.capacities() <= typ.capacities()):
+        flag = False
+        for t in typs:
+            if t != typ and max_mr <= t.capacities <= typ.capacities:
+                flag = True
+                break
+        if not flag:
             yield typ
 
 
@@ -39,8 +40,10 @@ def heft(problem, limit=1000):
     finish_times = {}
     machines = {}
     for task in sort_by_rank_u(problem):
-        st_bst, ci_bst, machine_bst, type_bst = float("inf"), float(
-            "inf", ), None, None
+        st_bst, ft_bst, ci_bst, machine_bst, type_bst = (float("inf"),
+                                                         float("inf"),
+                                                         float("inf"), None,
+                                                         None)
         for machine in platform:
             for vm_type in candidate_types(
                     problem,
@@ -48,36 +51,44 @@ def heft(problem, limit=1000):
                     machine.peak_usage() + task.demands()):
 
                 est = 0
-                for prev_task in task.prevs():
-                    if prev_task in machine.tasks:
-                        est = max(est, finish_times[prev_task.task_id])
+                for comm in task.in_communications:
+                    prev_task_id = comm.from_task_id
+                    if comm.from_task in machine:
+                        est = max(est, finish_times[prev_task_id])
                     else:
                         bandwidth = min(
-                            machines[prev_task.task_id].vm_type.bandwidth(),
-                            vm_type.bandwidth())
-                        est = max(est, finish_times[prev_task.task_id] + ceil(
-                            prev_task.data_size_between(task) / bandwidth))
+                            machines[prev_task_id].vm_type.bandwidth,
+                            vm_type.bandwidth)
+                        est = max(est, finish_times[prev_task_id] +
+                                  comm.runtime(bandwidth))
 
-                st, _ = machine.earliest_slot(vm_type, task, est)
-                ci = machine.cost_increase(st, task.runtime(vm_type))
-                if (st, ci) < (st_bst, ci_bst):
-                    st_bst, ci_bst, machine_bst, type_bst = st, ci, machine, vm_type
+                st, _ = machine.earliest_slot_for_task(vm_type, task, est)
+                runtime = task.runtime(vm_type)
+                ft = st + runtime
+                ci = machine.cost_increase(st, runtime, vm_type)
+                if (ft, ci) < (ft_bst, ci_bst):
+                    st_bst, ft_bst, ci_bst, machine_bst, type_bst = (st, ft,
+                                                                     ci,
+                                                                     machine,
+                                                                     vm_type)
 
         if limit > len(platform.machines):
             for vm_type in candidate_types(problem,
                                            task.demands(), task.demands()):
                 est = 0
-                for prev_task in task.prevs():
-                    bandwidth = min(
-                        machines[prev_task.task_id].vm_type.bandwidth(),
-                        vm_type.bandwidth())
-                    est = max(est, finish_times[prev_task.task_id] + ceil(
-                        prev_task.data_size_between(task) / bandwidth))
-
+                for comm in task.in_communications:
+                    prev_task_id = comm.from_task_id
+                    bandwidth = min(machines[prev_task_id].vm_type.bandwidth,
+                                    vm_type.bandwidth)
+                    est = max(
+                        est,
+                        finish_times[prev_task_id] + comm.runtime(bandwidth))
+                ft = est + task.runtime(vm_type)
                 ci = vm_type.charge(task.runtime(vm_type))
-                if (est, ci) < (st_bst, ci_bst):
-                    st_bst, ci_bst, machine_bst, type_bst = est, ci, None, vm_type
-
+                if (ft, ci) < (ft_bst, ci_bst):
+                    st_bst, ft_bst, ci_bst, machine_bst, type_bst = (est, ft,
+                                                                     ci, None,
+                                                                     vm_type)
         if not machine_bst:
             machine_bst = Machine(type_bst, context)
         else:
@@ -102,20 +113,20 @@ def heft(problem, limit=1000):
 
 
 def machine_info(machine, schedule):
-    def comm_time(task, succ_task):
-        if schedule.PL(task) == schedule.PL(succ_task):
+    def comm_time(comm):
+        if schedule.PL(comm.from_task) == schedule.PL(comm.to_task):
             return 0
         else:
-            return ceil(
-                task.data_size_between(succ_task) / min(
-                    schedule.TYP_PL(task).bandwidth(),
-                    schedule.TYP_PL(succ_task).bandwidth()))
+            return comm.runtime(
+                min(
+                    schedule.TYP_PL(comm.from_task).bandwidth,
+                    schedule.TYP_PL(comm.to_task).bandwidth))
 
     open_time = min(
         min([schedule.FT(prev_task) for prev_task in task.prevs()],
-            default=schedule.ST(task)) for task in machine)
+            default=schedule.ST(task)) for task in machine.tasks)
     close_time = max(
         schedule.FT(task) + max(
-            [comm_time(task, succ_task) for succ_task in task.succs()],
-            default=0) for task in machine)
+            [comm_time(comm) for comm in task.out_communications], default=0)
+        for task in machine.tasks)
     return open_time, close_time, machine.cost(close_time - open_time)

@@ -27,11 +27,13 @@ static inline bin_node_t* _clone_node(bin_t* bin, bin_node_t* prev_node,
     bin_node_t* node = _alloc_node(bin);
     _node_init(node, time, _node_usage(prev_node), bin);
     list_insert_after(&prev_node->list, &node->list);
+    bin->num ++;
     return node;
 }
 
 static inline void _delete_node(bin_t* bin, bin_node_t* node) {
     list_delete(&(node)->list);
+    bin->num --;
     _node_destory(bin, node);
     mp_free(bin->_node_pool, node);
 }
@@ -77,6 +79,7 @@ bin_t* bin_create(int dimension, mempool_t* node_pool, mempool_t* item_pool) {
     bin_t* bin = (bin_t*)malloc(size_of_bin_t(dimension));
     bin->_node_pool = node_pool;
     bin->_item_pool = item_pool;
+    bin->num = 0;
 
     bin->head = _alloc_node(bin);
     bin->head->time = -1;
@@ -119,11 +122,24 @@ int bin_close_time(bin_t* bin) {
     return node->time;
 }
 
+int bin_length(bin_t* bin) {return bin->num;}
+
+void bin_to_array(bin_t* bin, int* sts, res_t* usages, int dim) {
+    bin_node_t* node = _node_next(bin->head);
+    int i = 0;
+    while (node != bin->head){
+        sts[i] = node->time;
+        usages[i] = _node_usage(node)[dim];
+        i++;
+        node = _node_next(node);
+    }
+}
+
 int bin_span(bin_t* bin) { return bin_close_time(bin) - bin_open_time(bin); }
 
-res_t* bin_peak_usage(bin_t* bin) {
+res_t* bin_peak_usage(bin_t* bin, bool force) {
     /*bin->_peak_need_update = true;*/
-    if (bin->_peak_need_update) {
+    if (force || bin->_peak_need_update) {
         mr_set(_peak_usage(bin), 0, bin->dimension);
         bin_node_t* node = _node_next(bin->head);
         while (node != bin->head) {
@@ -140,11 +156,20 @@ bin_node_t* _bin_search(bin_t* bin, int time) {
     return node;
 }
 
+int bin_current_block(bin_t* bin, int time, res_t* volumn) {
+    bin_node_t* current_node = _bin_search(bin, time);
+    bin_node_t* next_node = _node_next(current_node);
+    int finish_time = next_node->time < 0 ? INT_MAX : next_node->time;
+    mr_copy(volumn, _node_usage(current_node), bin->dimension);
+    return finish_time - fmax(time, current_node->time);
+}
+
 bin_node_t* _earliest_slot(bin_node_t* node, res_t* vol, int length, int est,
                            int dim) {
     int ft = est + length;
     bin_node_t* start_node = node;
     mr_iadd_v(vol, EPSILON, dim);
+    if (node->time < 0) node = _node_next(node);
     while (node->time >= 0 && node->time < ft) {
         if (!mr_le_precise(_node_usage(node), vol, dim)) {
             start_node = _node_next(node);
@@ -171,61 +196,73 @@ int _earliest_slot_2(bin_node_t* node_x, bin_node_t* node_y, res_t* vol_x,
     int ft = est + length;
     mr_iadd_v(vol_x, EPSILON, dimension);
     mr_iadd_v(vol_y, EPSILON, dimension);
-    while ((node_x->time >= 0 || node_y->time >= 0) &&
-           (node_x->time < ft || node_y->time < ft)) {
-        if (node_x->time < node_y->time) {
-            if (!mr_le_precise(_node_usage(node_x), vol_x, dimension)) {
-                node_x = _node_next(node_x);
-                *start_node_x = node_x;
-                ft = node_x->time + length;
-                while (node_y->time >= 0 && node_y->time < node_x->time)
-                    node_y = _node_next(node_y);
-                if (node_y->time != node_x->time) node_y = _node_prev(node_y);
-            } else {
-                node_x = _node_next(node_x);
-                while (node_y->time >= 0 && node_y->time < node_x->time) {
-                    if (!mr_le_precise(_node_usage(node_y), vol_y, dimension)) {
-                        *start_node_y = _node_next(node_y);
-                        ft = (*start_node_y)->time + length;
-                    }
-                    node_y = _node_next(node_y);
+    *start_node_x = node_x;
+    *start_node_y = node_y;
+    if (node_x->time < 0) node_x = _node_next(node_x);
+    if (node_y->time < 0) node_y = _node_next(node_y);
+    while ((node_x->time >= 0 && node_x->time < ft) ||
+           (node_y->time >= 0 && node_y->time < ft)) {
+        if (node_x->time < 0) {
+            while (node_y->time >= 0 && node_y->time < ft) {
+                if (!mr_le_precise(_node_usage(node_y), vol_y, dimension)) {
+                    *start_node_y = _node_next(node_y);
+                    ft = fmax(ft, (*start_node_y)->time + length);
                 }
+                node_y = _node_next(node_y);
+            }
+            break;
+        }
+        if (node_y->time < 0) {
+            while (node_x->time >= 0 && node_x->time < ft) {
+                if (!mr_le_precise(_node_usage(node_x), vol_x, dimension)) {
+                    *start_node_x = _node_next(node_x);
+                    ft = fmax(ft, (*start_node_x)->time + length);
+                }
+                node_x = _node_next(node_x);
+            }
+            break;
+        }
+        if (node_x->time <= node_y->time) {
+            if (!mr_le_precise(_node_usage(node_x), vol_x, dimension)) {
+                *start_node_x = _node_next(node_x);
+                ft = fmax(ft, (*start_node_x)->time + length);
+            }
+            node_x = _node_next(node_x);
+            while (node_y->time >= 0 && node_y->time < fmin(ft, node_x->time)) {
+                if (!mr_le_precise(_node_usage(node_y), vol_y, dimension)) {
+                    *start_node_y = _node_next(node_y);
+                    ft = fmax(ft, (*start_node_y)->time + length);
+                }
+                node_y = _node_next(node_y);
             }
         } else {
             if (!mr_le_precise(_node_usage(node_y), vol_y, dimension)) {
-                node_y = _node_next(node_y);
-                *start_node_y = node_y;
-                ft = node_y->time + length;
-                while (node_x->time >= 0 && node_x->time < node_y->time)
-                    node_x = _node_next(node_x);
-                if (node_x->time != node_y->time) node_x = _node_prev(node_x);
-            } else {
-                node_y = _node_next(node_y);
-                while (node_x->time >= 0 && node_x->time < node_y->time) {
-                    if (!mr_le_precise(_node_usage(node_x), vol_x, dimension)) {
-                        *start_node_x = _node_next(node_x);
-                        ft = (*start_node_x)->time + length;
-                    }
-                    node_x = _node_next(node_x);
+                *start_node_y = _node_next(node_y);
+                ft = fmax(ft, (*start_node_y)->time + length);
+            }
+            node_y = _node_next(node_y);
+            while (node_x->time >= 0 && node_x->time < fmin(ft, node_y->time)) {
+                if (!mr_le_precise(_node_usage(node_x), vol_x, dimension)) {
+                    *start_node_x = _node_next(node_x);
+                    ft = fmax(ft, (*start_node_x)->time + length);
                 }
+                node_x = _node_next(node_x);
             }
         }
     }
-    *start_node_x = node_x;
-    *start_node_y = node_y;
     return ft - length;
 }
 
 int bin_earliest_slot_2(bin_t* bin_x, bin_t* bin_y, res_t* capacities_x,
-                        res_t* capacities_y, res_t* demands, int length,
-                        int est, bin_node_t** start_node_x,
+                        res_t* capacities_y, res_t* demands_x, res_t* demands_y,
+                        int length, int est, bin_node_t** start_node_x,
                         bin_node_t** start_node_y) {
     bin_node_t* node_x = _bin_search(bin_x, est);
     bin_node_t* node_y = _bin_search(bin_y, est);
     res_t* vol_x = _vol_tmp(bin_x);
     res_t* vol_y = _vol_tmp(bin_y);
-    mr_sub(vol_x, capacities_x, demands, bin_x->dimension);
-    mr_sub(vol_y, capacities_y, demands, bin_y->dimension);
+    mr_sub(vol_x, capacities_x, demands_x, bin_x->dimension);
+    mr_sub(vol_y, capacities_y, demands_y, bin_y->dimension);
     return _earliest_slot_2(node_x, node_y, vol_x, vol_y, length, est,
                             bin_x->dimension, start_node_x, start_node_y);
 }

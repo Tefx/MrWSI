@@ -14,7 +14,6 @@
 typedef long res_t;
 #define RES_MAX LONG_MAX
 #define MRWSI_RES_UNIT_IS_INT
-#define RES_DIM_MAX 5
 
 #ifdef MRWSI_RES_UNIT_IS_INT
 #define EPSILON 0
@@ -95,6 +94,7 @@ inline bool mr_eq(res_t* a, res_t* b, int dim) {
 bool mr_richcmp(res_t* r0, res_t* r1, int op, int dim);
 
 #define mr_alloc(dim) ((res_t*)malloc(sizeof(res_t) * (dim)))
+#define mr_free(r) (free(r))
 #define mr_copy(dest, src, dim) memcpy((dest), (src), sizeof(res_t) * (dim))
 
 #endif /* ifndef MRWSI_RESOURCE_H */

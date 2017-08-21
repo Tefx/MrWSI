@@ -101,3 +101,4 @@ ENV/
 .mypy_cache/
 /perf.data
 /perf.data.old
+*.png

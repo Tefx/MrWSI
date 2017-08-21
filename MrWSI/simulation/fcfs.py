@@ -30,8 +30,9 @@ class FCFSEnvironment(SimulationEnvironment):
 
 class FCFS2CommunicationStartEvent(CommunicationStartEvent):
     def possible_bandwidth(self):
-        return min(self.from_machine.available_bandwidth("output"),
-                   self.to_machine.available_bandwidth("input"))
+        return min(
+            self.from_machine.available_bandwidth("output"),
+            self.to_machine.available_bandwidth("input"))
 
 
 class FCFS2MachineSnap(MachineSnap):

@@ -34,8 +34,8 @@ class FairMachineSnap(MachineSnap):
     def assign_adjustable_bandwidths(self):
         for comm_type in ("input", "output"):
             if self.remaining_bandwidths[comm_type] > 0 and self.links[comm_type]:
-                increase = floor(
-                    self.remaining_bandwidths[comm_type] / len(self.links[comm_type]))
+                increase = floor(self.remaining_bandwidths[comm_type] /
+                                 len(self.links[comm_type]))
                 for event in self.links[comm_type]:
                     event.adjustable_bandwidths[comm_type] = increase
 
@@ -43,10 +43,12 @@ class FairMachineSnap(MachineSnap):
         has_adjustment = False
         for comm_type in ("input", "output"):
             for event in self.links[comm_type]:
-                adjustable_bandwidth = min(event.adjustable_bandwidths.values())
+                adjustable_bandwidth = min(
+                    event.adjustable_bandwidths.values())
                 if adjustable_bandwidth > 0:
                     event.adjust_bandwidth(adjustable_bandwidth, current_time)
-                    self.remaining_bandwidths[comm_type] -= adjustable_bandwidth
+                    self.remaining_bandwidths[
+                        comm_type] -= adjustable_bandwidth
                     has_adjustment = True
         return has_adjustment
 
@@ -59,14 +61,14 @@ class FairCommunicationStartEvent(CommunicationStartEvent):
 
 
 class FairCommunicationFinishEvent(CommunicationFinishEvent):
-    def __init__(self, env, task_pair, bandwidth, current_time, data_size):
-        super().__init__(env, task_pair, bandwidth, current_time, data_size)
+    def __init__(self, env, comm, bandwidth, current_time, data_size):
+        super().__init__(env, comm, bandwidth, current_time, data_size)
         self.adjustable_bandwidths = {"input": 0, "output": 0}
         self.cancelled = False
 
     def adjust_bandwidth(self, adjust_bandwidth, current_time):
         new_event = FairCommunicationFinishEvent(
-            self.env, self.task_pair, self.bandwidth + adjust_bandwidth,
+            self.env, self.communication, self.bandwidth + adjust_bandwidth,
             current_time,
             self.data_size - self.bandwidth * (current_time - self.start_time))
         self.from_machine.links["output"].remove(self)

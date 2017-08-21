@@ -4,15 +4,17 @@ import heapq
 
 class Event(object):
     def __lt__(self, other):
-        # return repr(self) <= repr(other)
-        return id(self) <= id(self)
+        return (self.rank, repr(self)) <= (other.rank, repr(other))
+        # return (self.rank, id(self)) <= (other.rank, id(self))
 
 
 class StartEvent(Event):
+    rank = 1
     pass
 
 
 class FinishEvent(Event):
+    rank = 0
     pass
 
 
@@ -50,27 +52,31 @@ class TaskFinishEvent(TaskEvent, FinishEvent):
 
 
 class CommunicationEvent(Event):
-    def __init__(self, env, from_task, to_task):
+    def __init__(self, env, communication):
         self.env = env
-        self.task_pair = (from_task, to_task)
-        self.from_machine = env.task2machine(from_task)
-        self.to_machine = env.task2machine(to_task)
+        self.communication = communication
+        self.data_size = communication.data_size
+        self.from_machine = env.task2machine(communication.from_task)
+        self.to_machine = env.task2machine(communication.to_task)
+
+    def from_task(self):
+        return self.communication.from_task
+
+    def to_task(self):
+        return self.communication.to_task
 
     def task_id_pair(self):
-        return self.task_pair[0].task_id, self.task_pair[1].task_id
+        return self.communication.from_task_id, self.communication.to_task_id
 
 
 class CommunicationStartEvent(CommunicationEvent, StartEvent):
-    def data_size(self):
-        return self.task_pair[0].data_size_between(self.task_pair[1])
-
     def possible_bandwidth(self):
         raise NotImplementedError
 
     def start(self, current_time):
         finish_event = self.env.comm_finish_event_cls(
-            self.env, self.task_pair,
-            self.possible_bandwidth(), current_time, self.data_size())
+            self.env, self.communication,
+            self.possible_bandwidth(), current_time, self.data_size)
         self.from_machine.start_communication(current_time, finish_event,
                                               "output")
         self.to_machine.start_communication(current_time, finish_event,
@@ -85,13 +91,12 @@ class CommunicationStartEvent(CommunicationEvent, StartEvent):
             "input") >= bandwidth_demands
 
     def __repr__(self):
-        return "COMM_START({}, {})".format(self.task_pair[0].task_id,
-                                           self.task_pair[1].task_id)
+        return "COMM_START({}, {})".format(*self.task_id_pair())
 
 
 class CommunicationFinishEvent(CommunicationEvent, FinishEvent):
-    def __init__(self, env, task_pair, bandwidth, current_time, data_size):
-        super().__init__(env, *task_pair)
+    def __init__(self, env, communication, bandwidth, current_time, data_size):
+        super().__init__(env, communication)
         self.data_size = data_size
         self.bandwidth = bandwidth
         self.start_time = current_time
@@ -104,16 +109,16 @@ class CommunicationFinishEvent(CommunicationEvent, FinishEvent):
         return self.start_time + ceil(float(self.data_size) / self.bandwidth)
 
     def __repr__(self):
-        return "COMM_STOP({}, {})[{}]".format(self.task_pair[0].task_id,
-                                              self.task_pair[1].task_id,
+        return "COMM_STOP({}, {})[{}]".format(self.communication.from_task_id,
+                                              self.communication.to_task_id,
                                               self.finish_time())
 
 
 class MachineSnap(object):
     def __init__(self, vm_type):
         self.vm_type = vm_type
-        self.remaining_resources = vm_type.capacities()
-        self.bandwidth = self.remaining_resources[2]
+        self.remaining_resources = vm_type.capacities
+        self.bandwidth = vm_type.bandwidth
         self.launched = False
         self.open_time = self.close_time = 0
 
@@ -171,11 +176,12 @@ class SimulationEnvironment(object):
         for task in self.problem.tasks:
             self.push_event(
                 self.schedule.ST(task), self.task_start_event_cls(self, task))
-            for succ_task in task.succs():
-                if self.schedule.PL(task) != self.schedule.PL(succ_task):
+            for comm in task.out_communications:
+                if self.schedule.PL(comm.from_task) != self.schedule.PL(
+                        comm.to_task):
                     self.push_event(
-                        self.schedule.CST(task, succ_task),
-                        self.comm_start_event_cls(self, task, succ_task))
+                        self.schedule.CST(comm.from_task, comm.to_task),
+                        self.comm_start_event_cls(self, comm))
 
     def pop_event(self):
         return heapq.heappop(self.event_queue)
@@ -192,6 +198,8 @@ class SimulationEnvironment(object):
                 if (prev_task.task_id, event.task.task_id
                     ) not in self.finished_communications:
                     return False
+            elif prev_task.task_id not in self.finished_tasks:
+                return False
         return event.machine.resources_enough_for(event)
 
     def communication_is_ready(self, event):

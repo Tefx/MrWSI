@@ -4,7 +4,7 @@
 #include <limits.h>
 #include "resource.h"
 
-#define MULTIRES_DIM 3
+#define MULTIRES_DIM 4
 
 typedef struct task_info_t {
     int num_prevs;

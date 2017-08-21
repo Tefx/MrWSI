@@ -4,7 +4,7 @@ import json
 from math import ceil
 from itertools import product
 
-DEF MULTIRES_DIM = 3
+DEF MULTIRES_DIM = 4
 
 def calculate_succs(tasks):
     succs = {task_id:[] for task_id in tasks}
@@ -17,18 +17,14 @@ cdef class VMType:
     def __cinit__(VMType self, Problem problem, int type_id):
         self.problem = problem
         self.type_id = type_id
+        self.bandwidth = self.capacities[2]
 
-    def capacities(VMType self):
+    @property
+    def capacities(self):
         return self.problem.type_capacities(self.type_id)
-
-    def bandwidth(VMType self):
-        return self.problem.type_capacities(self.type_id)[2]
 
     def demands(VMType self):
         return self.problem.type_demands(self.type_id)
-
-    def price(VMType self):
-        return self.problem.type_price(self.type_id)
 
     def charge(VMType self, int runtime):
         return self.problem.vm_cost(self.type_id, runtime)
@@ -40,6 +36,16 @@ class Task(object):
     def __init__(self, problem, task_id):
         self.problem = problem
         self.task_id = task_id
+        self.in_communications = problem.task_in_communications(task_id)
+        self.out_communications = problem.task_out_communications(task_id)
+
+    # @property
+    # def in_communications(self):
+    #     return self.problem.task_in_communications(self.task_id)
+    #
+    # @property
+    # def out_communications(self):
+    #     return self.problem.task_out_communications(self.task_id)
 
     def demands(self):
         return self.problem.task_demands(self.task_id)
@@ -51,22 +57,45 @@ class Task(object):
         return self.problem.task_prevs(self.task_id)
 
     def succs(self):
-        return self.problem.task_succs(self.task_id)
-
-    def is_entry(self):
-        return not self.prevs()
-
-    def is_exit(self):
-        return not self.succs()
+        return self.problem.task_prevs(self.task_id)
 
     def mean_runtime(self):
         return self.problem.task_mean_runtime(self.task_id)
 
-    def data_size_between(self, to_task):
-        return self.problem.data_size_between(self.task_id, to_task.task_id)
-
     def __repr__(self):
         return self.problem.task_str_ids[self.task_id]
+
+class Communication(object):
+    def __init__(self, problem, from_task_id, to_task_id):
+        self.problem = problem
+        self.from_task_id = from_task_id
+        self.to_task_id = to_task_id
+        self.data_size = self.problem.communication_data_size(from_task_id, to_task_id)
+
+    @property
+    def pair_id(self):
+        return "{}=>{}".format(self.from_task_id, self.to_task_id)
+
+    @property
+    def from_task(self):
+        return self.problem.tasks[self.from_task_id]
+
+    @property
+    def to_task(self):
+        return self.problem.tasks[self.to_task_id]
+
+    def runtime(self, bandwidth):
+        if bandwidth == float("inf"):
+            return 0
+        else:
+            return ceil(self.data_size / bandwidth)
+
+    def mean_runtime(self):
+        return self.runtime(self.problem.type_mean_bandwidth())
+
+    def __repr__(self):
+        return "({}=>{})".format(self.problem.task_str_ids[self.from_task_id], 
+                                 self.problem.task_str_ids[self.to_task_id])
 
 cdef class Problem:
     def __cinit__(Problem self, dict tasks, dict types, int platform_limit_dim):
@@ -86,6 +115,7 @@ cdef class Problem:
             raw_task = tasks[task_str_id]
             raw_task["demands"][0] = ceil(raw_task["demands"][0]) * 1000
             # raw_task["demands"][0] *= 1000
+            raw_task["demands"].append(raw_task["demands"][-1])
             demands = array.array("l", map(int, raw_task["demands"]))
             prevs = array.array("i", [self.task_str_ids.index(t) for t in raw_task["prevs"].keys()])
             succs = array.array("i", [self.task_str_ids.index(t) for t in raw_succs[task_str_id]])
@@ -103,11 +133,15 @@ cdef class Problem:
             type_info = self._ctype_info(type_id)
             raw_type = types[type_str_id]
             raw_type["capacities"][0] *= 1000
+            raw_type["capacities"].append(raw_type["capacities"][-1])
             capacities = array.array("l", raw_type["capacities"])
             type_demands = array.array("l", [1 for _ in range(platform_limit_dim)])
             type_info_init(type_info, capacities.data.as_longs, type_demands.data.as_longs, platform_limit_dim, raw_type["price"])
 
-        bws = [min(typ0.bandwidth(), typ1.bandwidth()) for typ0, typ1 in product(self.types, self.types)]
+        self.tasks = [Task(self, task_id) for task_id in range(self.c.num_tasks)]
+        self.types = [VMType(self, type_id) for type_id in range(self.c.num_types)]
+
+        bws = [min(typ0.bandwidth, typ1.bandwidth) for typ0, typ1 in product(self.types, self.types)]
         self.mean_bandwidth = int(sum(bws) / len(bws))
 
     cdef task_info_t* _ctask_info(Problem self, int task_id):
@@ -169,14 +203,6 @@ cdef class Problem:
     def platform_limit_dimension(Problem self):
         return self.c.platform_limit_dim
 
-    @property
-    def tasks(Problem self):
-        return [Task(self, task_id) for task_id in range(self.c.num_tasks)]
-
-    @property
-    def types(Problem self):
-        return [VMType(self, type_id) for type_id in range(self.c.num_types)]
-
     def task_demands(Problem self, int task_id):
         return mr_wrap_c(problem_task_demands(&self.c, task_id), MULTIRES_DIM)
 
@@ -185,13 +211,21 @@ cdef class Problem:
 
     def task_prevs(Problem self, int task_id):
         cdef int* prevs = problem_task_prevs(&self.c, task_id)
-        return [Task(self, prevs[i]) for i in range(problem_task_num_prevs(&self.c, task_id))]
+        return [self.tasks[prevs[i]] for i in range(problem_task_num_prevs(&self.c, task_id))]
 
     def task_succs(Problem self, int task_id):
         cdef int* succs = problem_task_succs(&self.c, task_id)
-        return [Task(self, succs[i]) for i in range(problem_task_num_succs(&self.c, task_id))]
+        return [self.tasks[succs[i]] for i in range(problem_task_num_succs(&self.c, task_id))]
 
-    def data_size_between(Problem self, int task_0, int task_1):
+    def task_in_communications(Problem self, int task_id):
+        cdef int* prevs = problem_task_prevs(&self.c, task_id)
+        return [Communication(self, prevs[i], task_id) for i in range(problem_task_num_prevs(&self.c, task_id))]
+
+    def task_out_communications(Problem self, int task_id):
+        cdef int* succs = problem_task_succs(&self.c, task_id)
+        return [Communication(self, task_id, succs[i]) for i in range(problem_task_num_succs(&self.c, task_id))]
+
+    def communication_data_size(Problem self, int task_0, int task_1):
         return problem_data_size(&self.c, task_0, task_1)
 
     def type_demands(Problem self, int type_id):
@@ -211,3 +245,6 @@ cdef class Problem:
 
     def type_mean_bandwidth(Problem self):
         return self.mean_bandwidth
+
+    def type_max_bandwidth(Problem self):
+        return max(typ.bandwidth for typ in self.types)

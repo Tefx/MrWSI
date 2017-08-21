@@ -5,6 +5,9 @@ cdef class MultiRes:
         self.c = mr_alloc(dimension)
         self.dimension = dimension
 
+    def __dealloc__(self):
+        mr_free(self.c)
+
     @classmethod
     def zero(cls, dimension):
         mr = MultiRes(dimension)
@@ -41,6 +44,9 @@ cdef class MultiRes:
 
     def __getitem__(self, int index):
         return self.c[index]
+
+    def __setitem__(self, int index, res_t value):
+        self.c[index] = value
 
     def __repr__(self):
         return str([self.c[i] for i in range(self.dimension)])

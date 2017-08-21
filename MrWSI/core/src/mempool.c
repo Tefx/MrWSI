@@ -29,6 +29,7 @@ void mp_init_pool(mempool_t* pool, size_t block_size, size_t block_num) {
     pool->buffer_list = NULL;
     pool->block_size = block_size + sizeof(block_ext_t);
     pool->ncr = 0;
+    pool->buffer_count = 0;
 
 #ifdef MRWSI_MPOOL_ALWAYS_LT_PAGESIZE
     if (!page_size_avail)

@@ -1,4 +1,4 @@
-from MrWSI.core.resource cimport res_t, mr_wrap_c
+from MrWSI.core.resource cimport res_t, mr_wrap_c, MultiRes
 from libcpp cimport bool
 
 cdef extern from "problem.h":
@@ -50,6 +50,8 @@ cdef class Problem:
     cdef problem_t c
     cdef public list task_str_ids
     cdef public list type_str_ids
+    cdef public list tasks
+    cdef public list types
     cdef res_t mean_bandwidth
 
     cdef task_info_t* _ctask_info(self, int task_id)
@@ -58,4 +60,5 @@ cdef class Problem:
 cdef class VMType:
     cdef Problem problem
     cdef public int type_id
+    cdef public int bandwidth
 

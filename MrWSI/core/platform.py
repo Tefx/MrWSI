@@ -1,5 +1,15 @@
 from MrWSI.core.problem import Problem
 from MrWSI.core.bin import MemPool, Bin
+from MrWSI.core.resource import MultiRes
+
+COMM_INPUT = 0
+COMM_OUTPUT = 1
+
+
+def bandwidth2capacities(bw, dimension, comm_type):
+    c = MultiRes.zero(dimension)
+    c[2 + comm_type] = bw
+    return c
 
 
 class Context(object):
@@ -23,14 +33,30 @@ class Machine(Bin):
         self.problem = context.problem
         self.vm_type = vm_type
         self.tasks = set()
+        self.communications = set()
+        self.self_context = not context
 
     def capacities(self):
         return self.problem.type_capacities(self.type_id)
 
-    def earliest_slot(self, vm_type, task, est):
-        return super().earliest_slot(vm_type.capacities(),
-                                     task.demands(), task.runtime(vm_type),
-                                     est)
+    def current_available_cr(self, time, vm_type, comm_type):
+        vol, length = self.current_block(time)
+        cr = vm_type.bandwidth - vol[2+comm_type]
+        return cr, length
+
+    def earliest_slot_for_task(self, vm_type, task, est):
+        return self.earliest_slot(vm_type.capacities,
+                                  task.demands(), task.runtime(vm_type), est)
+
+    def earliest_slot_for_communication(self, to_machine, vm_type, to_vm_type,
+                                        communication, bandwidth, est):
+        return self.earliest_slot_2(
+            to_machine, vm_type.capacities, to_vm_type.capacities,
+            bandwidth2capacities(
+                bandwidth, self.problem.multiresource_dimension, COMM_OUTPUT),
+            bandwidth2capacities(
+                bandwidth, self.problem.multiresource_dimension, COMM_INPUT),
+            communication.runtime(bandwidth), est)
 
     def place_task(self, task, start_time, start_node=None):
         self.tasks.add(task)
@@ -38,21 +64,43 @@ class Machine(Bin):
                                     task.demands(),
                                     task.runtime(self.vm_type), start_node)
 
+    def remove_task(self, task):
+        self.tasks.remove(task)
+        self.free_item(task.item)
+
+    def place_communication_2(self, comm, start_time, crs, comm_type):
+        self.communications.add(comm)
+        if not hasattr(comm, "items"): comm.items = [[], []]
+        dimension = self.problem.multiresource_dimension
+        comm.items[comm_type] = []
+        for rt, cr in crs:
+            comm.items[comm_type].append(
+                self.alloc_item(start_time,
+                                bandwidth2capacities(cr, dimension, comm_type),
+                                rt, None))
+            start_time += rt
+
+    def remove_communication_2(self, comm, comm_type):
+        self.communications.remove(comm)
+        for item in comm.items[comm_type]:
+            self.free_item(item)
+        comm.items[comm_type] = []
+
     def extendable_interval(self, task):
         return super().extendable_interval(task.item, self.capacities())
 
     def cost(self, span=None):
+        if not self.vm_type: return 0
         if not span: span = self.span()
         return self.vm_type.charge(span)
 
-    def cost_increase(self, start_time, runtime):
+    def cost_increase(self, start_time, runtime, vm_type):
         new_runtime = max(start_time + runtime, self.close_time()) - min(
             start_time, self.open_time())
-        return self.vm_type.charge(new_runtime) - self.cost()
+        return vm_type.charge(new_runtime) - self.cost()
 
-    def __iter__(self):
-        for task in self.tasks:
-            yield task
+    def __contains__(self, x):
+        return x in self.tasks or x in self.communications
 
 
 class Platform(Bin):

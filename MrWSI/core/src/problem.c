@@ -20,8 +20,8 @@ void task_info_init(task_info_t* task, res_t* demands, int* prevs,
 void task_info_destory(task_info_t* task) {
     free(task->prevs);
     free(task->succs);
-    free(task->data_sizes);
     free(task->runtimes);
+    free(task->data_sizes);
 }
 
 void type_info_init(type_info_t* type, res_t* capacities, res_t* demands,

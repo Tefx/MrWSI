@@ -7,8 +7,7 @@ extra_compile_args = [
     '-march=native',
     '-ffast-math',
     '-funroll-loops',
-    # '-g',
-    # '-fno-omit-frame-pointer',
+    # '-g'
 ]
 
 extensions = [

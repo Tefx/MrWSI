@@ -38,6 +38,7 @@ typedef struct item_t {
 typedef struct bin_t {
     bin_node_t* head;
     int dimension;
+    int num;
 
     mempool_t* _node_pool;
     mempool_t* _item_pool;
@@ -59,17 +60,21 @@ int bin_dimension(bin_t* bin);
 bool bin_is_empty(bin_t* bin);
 int bin_open_time(bin_t* bin);
 int bin_close_time(bin_t* bin);
+int bin_length(bin_t* bin);
+void bin_to_array(bin_t* bin, int* sts, res_t* usages, int dim);
 int bin_span(bin_t* bin);
-res_t* bin_peak_usage(bin_t* bin);
+res_t* bin_peak_usage(bin_t* bin, bool force);
 
+int bin_current_block(bin_t* bin, int time, res_t* volumn);
 int bin_earliest_slot(bin_t* bin, res_t* capacities, res_t* demands, int length,
                       int est, bin_node_t** start_node, bool only_forward);
 int bin_earliest_slot_2(bin_t* bin_x, bin_t* bin_y, res_t* capacities_x,
-                        res_t* capacities_y, res_t* demands, int length,
-                        int est, bin_node_t** start_node_x,
+                        res_t* capacities_y, res_t* demands_x, res_t* demands_y,
+                        int length, int est, bin_node_t** start_node_x,
                         bin_node_t** start_node_y);
 item_t* bin_alloc_item(bin_t* bin, int start_time, res_t* demands, int length,
                        bin_node_t* start_node);
+void bin_free_item(bin_t* bin, item_t* item);
 
 void bin_extendable_interval(bin_t* bin, item_t* item, res_t* capacities,
                              int* ei_begin, int* ei_end);

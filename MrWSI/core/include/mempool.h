@@ -19,6 +19,7 @@ typedef struct mempool_t {
     size_t ncr;  // Number of blocks available in current block
     size_t block_size;
     size_t block_num;
+    int buffer_count;
 } mempool_t;
 
 void mp_init_pool(mempool_t* pool, size_t block_size, size_t block_num);
