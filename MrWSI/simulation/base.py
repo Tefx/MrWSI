@@ -1,4 +1,5 @@
 from MrWSI.core.platform import bandwidth2capacities, COMM_INPUT, COMM_OUTPUT
+from MrWSI.core.resource import MultiRes
 
 from math import floor, ceil
 import heapq
@@ -144,7 +145,7 @@ class CommFinishEvent(CommEvent, FinishEvent):
         return self.start_time + ceil(self.data_size / self.bandwidth)
 
     def __repr__(self):
-        return "[CommFinish:{}]<{}>".format(self.comm, self.cancelled)
+        return "[CommFinish:{}]<{}|{}>".format(self.comm, self.bandwidth, self.cancelled)
 
 
 class SimMachine(object):
@@ -182,14 +183,18 @@ class SimMachine(object):
 
     def add_comm(self, event, current_time, comm_type):
         self.links[comm_type].add(event)
+        assert self.remaining_bandwidth(comm_type) >= 0
         self.remaining_resources -= bandwidth2capacities(
             event.bandwidth, RES_DIM, comm_type)
+        assert self.remaining_bandwidth(comm_type) >= 0
         self.record(current_time)
 
     def remove_comm(self, event, current_time, comm_type):
         self.links[comm_type].remove(event)
+        assert self.remaining_bandwidth(comm_type) >= 0
         self.remaining_resources += bandwidth2capacities(
             event.bandwidth, RES_DIM, comm_type)
+        assert self.remaining_bandwidth(comm_type) >= 0
         self.record(current_time)
 
     def remaining_bandwidth(self, comm_type):
@@ -197,6 +202,10 @@ class SimMachine(object):
 
     def available_bandwidth(self, comm_type):
         return self.remaining_bandwidth(comm_type)
+
+    def fix_remaining_bandwidth(self, comm_type):
+        self.remaining_resources[2 + comm_type] = self.bandwidth - sum(
+            e.bandwidth for e in self.links[comm_type])
 
 
 class SimEnv(object):
@@ -266,10 +275,6 @@ class SimEnv(object):
 
     def run(self):
         while self.event_queue:
-            # print("TIME:", self.event_queue[0][0])
-            # print(self.finished_set)
-            # print("EQ:", sorted(self.event_queue))
-            # print("DQ:", sorted(self.delayed_events))
             current_time, events = self.pop_events_at_next_time()
             for e in events:
                 if isinstance(e, FinishEvent):
@@ -285,6 +290,11 @@ class SimEnv(object):
                     else:
                         self.delayed_events.append((current_time, e))
             self.after_events(current_time)
+        for machine in self.machines:
+            for t, u in machine.histroy:
+                if not MultiRes.zero(
+                        RES_DIM) <= u <= machine.vm_type.capacities:
+                    print(t, u)
         span = max(machine.close_time for machine in self.machines) - min(
             machine.open_time for machine in self.machines)
         cost = sum(machine.cost() for machine in self.machines)

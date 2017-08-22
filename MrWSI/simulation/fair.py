@@ -29,7 +29,7 @@ class FairCommFinishEvent(CommFinishEvent):
 class FairMachine(SimMachine):
     def add_comm(self, event, current_time, comm_type):
         fair_bandwidth = self.available_bandwidth(comm_type)
-        for e in self.links[comm_type]:
+        for e in list(self.links[comm_type]):
             if e.bandwidth > fair_bandwidth:
                 e.adjust_bandwidth(fair_bandwidth - e.bandwidth, current_time)
         super().add_comm(event, current_time, comm_type)
@@ -39,13 +39,13 @@ class FairMachine(SimMachine):
 
     def mark_adjustable_comms(self):
         for comm_type in (COMM_OUTPUT, COMM_INPUT):
-            if self.remaining_bandwidth(
-                    comm_type) > 0 and self.links[comm_type]:
-                increase = floor(
+            if self.remaining_bandwidth(comm_type) > 0 \
+               and self.links[comm_type]:
+                fair_share = floor(
                     self.remaining_bandwidth(comm_type) /
                     len(self.links[comm_type]))
                 for e in self.links[comm_type]:
-                    e.adjustable_bandwidths[comm_type] = increase
+                    e.adjustable_bandwidths[comm_type] = fair_share
 
     def adjust_task_bandwidths(self, current_time):
         has_adjustment = False

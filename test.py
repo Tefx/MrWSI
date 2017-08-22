@@ -19,18 +19,18 @@ if __name__ == "__main__":
     wrk_dir = "./resources/workflows/"
     for wrk in sorted(
             os.listdir(wrk_dir), key=lambda x: int(x[:-4].split("_")[1])):
-        # for wrk in ["Epigenomics_24.wrk"]:
+    # for wrk in ["CyberShake_1000.wrk"]:
         if wrk.endswith(".wrk"):
             problem = Problem.load(
                 os.path.join(wrk_dir, wrk),
                 ec2_file,
-                type_family="t2",
+                type_family="t2.large",
                 charge_unit=60)
             schedule, scheduled_cost = heft(problem)
             scheduled_span = schedule.span()
             results = [
                 ("Schedule", (scheduled_span, scheduled_cost)),
-                # ("CA_EFT", (CA_EFT(problem).solve())),
+                ("CA_EFT", (CA_EFT(problem).solve())),
                 ("CA_EFT2", CA_EFT2(problem).solve()),
                 ("FCFS", FCFSEnv(problem, schedule).run()),
                 ("FAIR", FairEnv(problem, schedule).run()),
