@@ -1658,6 +1658,7 @@ static const char __pyx_k_metaclass[] = "__metaclass__";
 static const char __pyx_k_Task_prevs[] = "Task.prevs";
 static const char __pyx_k_Task_succs[] = "Task.succs";
 static const char __pyx_k_capacities[] = "capacities";
+static const char __pyx_k_id_for_set[] = "id_for_set";
 static const char __pyx_k_pyx_vtable[] = "__pyx_vtable__";
 static const char __pyx_k_task_prevs[] = "task_prevs";
 static const char __pyx_k_to_task_id[] = "to_task_id";
@@ -1675,6 +1676,7 @@ static const char __pyx_k_task_runtime[] = "task_runtime";
 static const char __pyx_k_task_str_ids[] = "task_str_ids";
 static const char __pyx_k_type_demands[] = "type_demands";
 static const char __pyx_k_Communication[] = "Communication";
+static const char __pyx_k_Task_id_for_set[] = "Task.id_for_set";
 static const char __pyx_k_calculate_succs[] = "calculate_succs";
 static const char __pyx_k_platform_limits[] = "platform_limits";
 static const char __pyx_k_type_capacities[] = "type_capacities";
@@ -1694,6 +1696,7 @@ static const char __pyx_k_task_in_communications[] = "task_in_communications";
 static const char __pyx_k_Communication_from_task[] = "Communication.from_task";
 static const char __pyx_k_communication_data_size[] = "communication_data_size";
 static const char __pyx_k_task_out_communications[] = "task_out_communications";
+static const char __pyx_k_Communication_id_for_set[] = "Communication.id_for_set";
 static const char __pyx_k_Communication_mean_runtime[] = "Communication.mean_runtime";
 static const char __pyx_k_home_zhaomengz_Desktop_Dropbox[] = "/home/zhaomengz/Desktop/Dropbox/Projects/MrWSI/MrWSI/core/problem.pyx";
 static const char __pyx_k_type_max_bandwidth_locals_genexp[] = "type_max_bandwidth.<locals>.genexpr";
@@ -1702,6 +1705,7 @@ static PyObject *__pyx_n_s_Communication;
 static PyObject *__pyx_n_s_Communication___init;
 static PyObject *__pyx_n_s_Communication___repr;
 static PyObject *__pyx_n_s_Communication_from_task;
+static PyObject *__pyx_n_s_Communication_id_for_set;
 static PyObject *__pyx_n_s_Communication_mean_runtime;
 static PyObject *__pyx_n_s_Communication_pair_id;
 static PyObject *__pyx_n_s_Communication_runtime;
@@ -1712,6 +1716,7 @@ static PyObject *__pyx_n_s_Task;
 static PyObject *__pyx_n_s_Task___init;
 static PyObject *__pyx_n_s_Task___repr;
 static PyObject *__pyx_n_s_Task_demands;
+static PyObject *__pyx_n_s_Task_id_for_set;
 static PyObject *__pyx_n_s_Task_mean_runtime;
 static PyObject *__pyx_n_s_Task_prevs;
 static PyObject *__pyx_n_s_Task_runtime;
@@ -1740,6 +1745,7 @@ static PyObject *__pyx_n_s_from_task_id;
 static PyObject *__pyx_n_s_genexpr;
 static PyObject *__pyx_kp_s_home_zhaomengz_Desktop_Dropbox;
 static PyObject *__pyx_n_s_i;
+static PyObject *__pyx_n_s_id_for_set;
 static PyObject *__pyx_n_s_import;
 static PyObject *__pyx_n_s_in_communications;
 static PyObject *__pyx_n_s_index;
@@ -1825,13 +1831,15 @@ static PyObject *__pyx_pf_5MrWSI_4core_7problem_4Task_6prevs(CYTHON_UNUSED PyObj
 static PyObject *__pyx_pf_5MrWSI_4core_7problem_4Task_8succs(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_self); /* proto */
 static PyObject *__pyx_pf_5MrWSI_4core_7problem_4Task_10mean_runtime(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_self); /* proto */
 static PyObject *__pyx_pf_5MrWSI_4core_7problem_4Task_12__repr__(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_self); /* proto */
+static PyObject *__pyx_pf_5MrWSI_4core_7problem_4Task_14id_for_set(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_self); /* proto */
 static PyObject *__pyx_pf_5MrWSI_4core_7problem_13Communication___init__(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_self, PyObject *__pyx_v_problem, PyObject *__pyx_v_from_task_id, PyObject *__pyx_v_to_task_id); /* proto */
 static PyObject *__pyx_pf_5MrWSI_4core_7problem_13Communication_2pair_id(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_self); /* proto */
-static PyObject *__pyx_pf_5MrWSI_4core_7problem_13Communication_4from_task(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_self); /* proto */
-static PyObject *__pyx_pf_5MrWSI_4core_7problem_13Communication_6to_task(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_self); /* proto */
-static PyObject *__pyx_pf_5MrWSI_4core_7problem_13Communication_8runtime(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_self, PyObject *__pyx_v_bandwidth); /* proto */
-static PyObject *__pyx_pf_5MrWSI_4core_7problem_13Communication_10mean_runtime(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_self); /* proto */
-static PyObject *__pyx_pf_5MrWSI_4core_7problem_13Communication_12__repr__(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_self); /* proto */
+static PyObject *__pyx_pf_5MrWSI_4core_7problem_13Communication_4id_for_set(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_self); /* proto */
+static PyObject *__pyx_pf_5MrWSI_4core_7problem_13Communication_6from_task(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_self); /* proto */
+static PyObject *__pyx_pf_5MrWSI_4core_7problem_13Communication_8to_task(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_self); /* proto */
+static PyObject *__pyx_pf_5MrWSI_4core_7problem_13Communication_10runtime(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_self, PyObject *__pyx_v_bandwidth); /* proto */
+static PyObject *__pyx_pf_5MrWSI_4core_7problem_13Communication_12mean_runtime(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_self); /* proto */
+static PyObject *__pyx_pf_5MrWSI_4core_7problem_13Communication_14__repr__(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_self); /* proto */
 static int __pyx_pf_5MrWSI_4core_7problem_7Problem___cinit__(struct __pyx_obj_5MrWSI_4core_7problem_Problem *__pyx_v_self, PyObject *__pyx_v_tasks, PyObject *__pyx_v_types, int __pyx_v_platform_limit_dim); /* proto */
 static PyObject *__pyx_pf_5MrWSI_4core_7problem_7Problem_11charge_unit___get__(struct __pyx_obj_5MrWSI_4core_7problem_Problem *__pyx_v_self); /* proto */
 static int __pyx_pf_5MrWSI_4core_7problem_7Problem_11charge_unit_2__set__(struct __pyx_obj_5MrWSI_4core_7problem_Problem *__pyx_v_self, int __pyx_v_charge_unit); /* proto */
@@ -1902,6 +1910,8 @@ static PyObject *__pyx_tuple__28;
 static PyObject *__pyx_tuple__30;
 static PyObject *__pyx_tuple__32;
 static PyObject *__pyx_tuple__34;
+static PyObject *__pyx_tuple__36;
+static PyObject *__pyx_tuple__38;
 static PyObject *__pyx_codeobj__7;
 static PyObject *__pyx_codeobj__9;
 static PyObject *__pyx_codeobj__11;
@@ -1917,6 +1927,8 @@ static PyObject *__pyx_codeobj__29;
 static PyObject *__pyx_codeobj__31;
 static PyObject *__pyx_codeobj__33;
 static PyObject *__pyx_codeobj__35;
+static PyObject *__pyx_codeobj__37;
+static PyObject *__pyx_codeobj__39;
 
 /* "MrWSI/core/problem.pyx":9
  * DEF MULTIRES_DIM = 4
@@ -3176,7 +3188,7 @@ static PyObject *__pyx_pf_5MrWSI_4core_7problem_4Task___init__(CYTHON_UNUSED PyO
  *         self.in_communications = problem.task_in_communications(task_id)
  *         self.out_communications = problem.task_out_communications(task_id)             # <<<<<<<<<<<<<<
  * 
- *     # @property
+ *     def demands(self):
  */
   __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_v_problem, __pyx_n_s_task_out_communications); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 40, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
@@ -3250,8 +3262,8 @@ static PyObject *__pyx_pf_5MrWSI_4core_7problem_4Task___init__(CYTHON_UNUSED PyO
   return __pyx_r;
 }
 
-/* "MrWSI/core/problem.pyx":50
- *     #     return self.problem.task_out_communications(self.task_id)
+/* "MrWSI/core/problem.pyx":42
+ *         self.out_communications = problem.task_out_communications(task_id)
  * 
  *     def demands(self):             # <<<<<<<<<<<<<<
  *         return self.problem.task_demands(self.task_id)
@@ -3282,7 +3294,7 @@ static PyObject *__pyx_pf_5MrWSI_4core_7problem_4Task_2demands(CYTHON_UNUSED PyO
   PyObject *__pyx_t_5 = NULL;
   __Pyx_RefNannySetupContext("demands", 0);
 
-  /* "MrWSI/core/problem.pyx":51
+  /* "MrWSI/core/problem.pyx":43
  * 
  *     def demands(self):
  *         return self.problem.task_demands(self.task_id)             # <<<<<<<<<<<<<<
@@ -3290,12 +3302,12 @@ static PyObject *__pyx_pf_5MrWSI_4core_7problem_4Task_2demands(CYTHON_UNUSED PyO
  *     def runtime(self, typ):
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_v_self, __pyx_n_s_problem); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 51, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_v_self, __pyx_n_s_problem); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 43, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
-  __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_task_demands); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 51, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_task_demands); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 43, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_v_self, __pyx_n_s_task_id); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 51, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_v_self, __pyx_n_s_task_id); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 43, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __pyx_t_4 = NULL;
   if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_3))) {
@@ -3308,14 +3320,14 @@ static PyObject *__pyx_pf_5MrWSI_4core_7problem_4Task_2demands(CYTHON_UNUSED PyO
     }
   }
   if (!__pyx_t_4) {
-    __pyx_t_1 = __Pyx_PyObject_CallOneArg(__pyx_t_3, __pyx_t_2); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 51, __pyx_L1_error)
+    __pyx_t_1 = __Pyx_PyObject_CallOneArg(__pyx_t_3, __pyx_t_2); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 43, __pyx_L1_error)
     __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
     __Pyx_GOTREF(__pyx_t_1);
   } else {
     #if CYTHON_FAST_PYCALL
     if (PyFunction_Check(__pyx_t_3)) {
       PyObject *__pyx_temp[2] = {__pyx_t_4, __pyx_t_2};
-      __pyx_t_1 = __Pyx_PyFunction_FastCall(__pyx_t_3, __pyx_temp+1-1, 1+1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 51, __pyx_L1_error)
+      __pyx_t_1 = __Pyx_PyFunction_FastCall(__pyx_t_3, __pyx_temp+1-1, 1+1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 43, __pyx_L1_error)
       __Pyx_XDECREF(__pyx_t_4); __pyx_t_4 = 0;
       __Pyx_GOTREF(__pyx_t_1);
       __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
@@ -3324,20 +3336,20 @@ static PyObject *__pyx_pf_5MrWSI_4core_7problem_4Task_2demands(CYTHON_UNUSED PyO
     #if CYTHON_FAST_PYCCALL
     if (__Pyx_PyFastCFunction_Check(__pyx_t_3)) {
       PyObject *__pyx_temp[2] = {__pyx_t_4, __pyx_t_2};
-      __pyx_t_1 = __Pyx_PyCFunction_FastCall(__pyx_t_3, __pyx_temp+1-1, 1+1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 51, __pyx_L1_error)
+      __pyx_t_1 = __Pyx_PyCFunction_FastCall(__pyx_t_3, __pyx_temp+1-1, 1+1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 43, __pyx_L1_error)
       __Pyx_XDECREF(__pyx_t_4); __pyx_t_4 = 0;
       __Pyx_GOTREF(__pyx_t_1);
       __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
     } else
     #endif
     {
-      __pyx_t_5 = PyTuple_New(1+1); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 51, __pyx_L1_error)
+      __pyx_t_5 = PyTuple_New(1+1); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 43, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_5);
       __Pyx_GIVEREF(__pyx_t_4); PyTuple_SET_ITEM(__pyx_t_5, 0, __pyx_t_4); __pyx_t_4 = NULL;
       __Pyx_GIVEREF(__pyx_t_2);
       PyTuple_SET_ITEM(__pyx_t_5, 0+1, __pyx_t_2);
       __pyx_t_2 = 0;
-      __pyx_t_1 = __Pyx_PyObject_Call(__pyx_t_3, __pyx_t_5, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 51, __pyx_L1_error)
+      __pyx_t_1 = __Pyx_PyObject_Call(__pyx_t_3, __pyx_t_5, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 43, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_1);
       __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
     }
@@ -3347,8 +3359,8 @@ static PyObject *__pyx_pf_5MrWSI_4core_7problem_4Task_2demands(CYTHON_UNUSED PyO
   __pyx_t_1 = 0;
   goto __pyx_L0;
 
-  /* "MrWSI/core/problem.pyx":50
- *     #     return self.problem.task_out_communications(self.task_id)
+  /* "MrWSI/core/problem.pyx":42
+ *         self.out_communications = problem.task_out_communications(task_id)
  * 
  *     def demands(self):             # <<<<<<<<<<<<<<
  *         return self.problem.task_demands(self.task_id)
@@ -3370,7 +3382,7 @@ static PyObject *__pyx_pf_5MrWSI_4core_7problem_4Task_2demands(CYTHON_UNUSED PyO
   return __pyx_r;
 }
 
-/* "MrWSI/core/problem.pyx":53
+/* "MrWSI/core/problem.pyx":45
  *         return self.problem.task_demands(self.task_id)
  * 
  *     def runtime(self, typ):             # <<<<<<<<<<<<<<
@@ -3407,11 +3419,11 @@ static PyObject *__pyx_pw_5MrWSI_4core_7problem_4Task_5runtime(PyObject *__pyx_s
         case  1:
         if (likely((values[1] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_typ)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("runtime", 1, 2, 2, 1); __PYX_ERR(0, 53, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("runtime", 1, 2, 2, 1); __PYX_ERR(0, 45, __pyx_L3_error)
         }
       }
       if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "runtime") < 0)) __PYX_ERR(0, 53, __pyx_L3_error)
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "runtime") < 0)) __PYX_ERR(0, 45, __pyx_L3_error)
       }
     } else if (PyTuple_GET_SIZE(__pyx_args) != 2) {
       goto __pyx_L5_argtuple_error;
@@ -3424,7 +3436,7 @@ static PyObject *__pyx_pw_5MrWSI_4core_7problem_4Task_5runtime(PyObject *__pyx_s
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("runtime", 1, 2, 2, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 53, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("runtime", 1, 2, 2, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 45, __pyx_L3_error)
   __pyx_L3_error:;
   __Pyx_AddTraceback("MrWSI.core.problem.Task.runtime", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
@@ -3449,7 +3461,7 @@ static PyObject *__pyx_pf_5MrWSI_4core_7problem_4Task_4runtime(CYTHON_UNUSED PyO
   PyObject *__pyx_t_7 = NULL;
   __Pyx_RefNannySetupContext("runtime", 0);
 
-  /* "MrWSI/core/problem.pyx":54
+  /* "MrWSI/core/problem.pyx":46
  * 
  *     def runtime(self, typ):
  *         return self.problem.task_runtime(self.task_id, typ.type_id)             # <<<<<<<<<<<<<<
@@ -3457,14 +3469,14 @@ static PyObject *__pyx_pf_5MrWSI_4core_7problem_4Task_4runtime(CYTHON_UNUSED PyO
  *     def prevs(self):
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_v_self, __pyx_n_s_problem); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 54, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_v_self, __pyx_n_s_problem); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 46, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
-  __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_task_runtime); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 54, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_task_runtime); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 46, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_v_self, __pyx_n_s_task_id); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 54, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_v_self, __pyx_n_s_task_id); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 46, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
-  __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_v_typ, __pyx_n_s_type_id); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 54, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_v_typ, __pyx_n_s_type_id); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 46, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
   __pyx_t_5 = NULL;
   __pyx_t_6 = 0;
@@ -3481,7 +3493,7 @@ static PyObject *__pyx_pf_5MrWSI_4core_7problem_4Task_4runtime(CYTHON_UNUSED PyO
   #if CYTHON_FAST_PYCALL
   if (PyFunction_Check(__pyx_t_3)) {
     PyObject *__pyx_temp[3] = {__pyx_t_5, __pyx_t_2, __pyx_t_4};
-    __pyx_t_1 = __Pyx_PyFunction_FastCall(__pyx_t_3, __pyx_temp+1-__pyx_t_6, 2+__pyx_t_6); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 54, __pyx_L1_error)
+    __pyx_t_1 = __Pyx_PyFunction_FastCall(__pyx_t_3, __pyx_temp+1-__pyx_t_6, 2+__pyx_t_6); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 46, __pyx_L1_error)
     __Pyx_XDECREF(__pyx_t_5); __pyx_t_5 = 0;
     __Pyx_GOTREF(__pyx_t_1);
     __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
@@ -3491,7 +3503,7 @@ static PyObject *__pyx_pf_5MrWSI_4core_7problem_4Task_4runtime(CYTHON_UNUSED PyO
   #if CYTHON_FAST_PYCCALL
   if (__Pyx_PyFastCFunction_Check(__pyx_t_3)) {
     PyObject *__pyx_temp[3] = {__pyx_t_5, __pyx_t_2, __pyx_t_4};
-    __pyx_t_1 = __Pyx_PyCFunction_FastCall(__pyx_t_3, __pyx_temp+1-__pyx_t_6, 2+__pyx_t_6); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 54, __pyx_L1_error)
+    __pyx_t_1 = __Pyx_PyCFunction_FastCall(__pyx_t_3, __pyx_temp+1-__pyx_t_6, 2+__pyx_t_6); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 46, __pyx_L1_error)
     __Pyx_XDECREF(__pyx_t_5); __pyx_t_5 = 0;
     __Pyx_GOTREF(__pyx_t_1);
     __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
@@ -3499,7 +3511,7 @@ static PyObject *__pyx_pf_5MrWSI_4core_7problem_4Task_4runtime(CYTHON_UNUSED PyO
   } else
   #endif
   {
-    __pyx_t_7 = PyTuple_New(2+__pyx_t_6); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 54, __pyx_L1_error)
+    __pyx_t_7 = PyTuple_New(2+__pyx_t_6); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 46, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_7);
     if (__pyx_t_5) {
       __Pyx_GIVEREF(__pyx_t_5); PyTuple_SET_ITEM(__pyx_t_7, 0, __pyx_t_5); __pyx_t_5 = NULL;
@@ -3510,7 +3522,7 @@ static PyObject *__pyx_pf_5MrWSI_4core_7problem_4Task_4runtime(CYTHON_UNUSED PyO
     PyTuple_SET_ITEM(__pyx_t_7, 1+__pyx_t_6, __pyx_t_4);
     __pyx_t_2 = 0;
     __pyx_t_4 = 0;
-    __pyx_t_1 = __Pyx_PyObject_Call(__pyx_t_3, __pyx_t_7, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 54, __pyx_L1_error)
+    __pyx_t_1 = __Pyx_PyObject_Call(__pyx_t_3, __pyx_t_7, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 46, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
     __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
   }
@@ -3519,7 +3531,7 @@ static PyObject *__pyx_pf_5MrWSI_4core_7problem_4Task_4runtime(CYTHON_UNUSED PyO
   __pyx_t_1 = 0;
   goto __pyx_L0;
 
-  /* "MrWSI/core/problem.pyx":53
+  /* "MrWSI/core/problem.pyx":45
  *         return self.problem.task_demands(self.task_id)
  * 
  *     def runtime(self, typ):             # <<<<<<<<<<<<<<
@@ -3543,7 +3555,7 @@ static PyObject *__pyx_pf_5MrWSI_4core_7problem_4Task_4runtime(CYTHON_UNUSED PyO
   return __pyx_r;
 }
 
-/* "MrWSI/core/problem.pyx":56
+/* "MrWSI/core/problem.pyx":48
  *         return self.problem.task_runtime(self.task_id, typ.type_id)
  * 
  *     def prevs(self):             # <<<<<<<<<<<<<<
@@ -3575,7 +3587,7 @@ static PyObject *__pyx_pf_5MrWSI_4core_7problem_4Task_6prevs(CYTHON_UNUSED PyObj
   PyObject *__pyx_t_5 = NULL;
   __Pyx_RefNannySetupContext("prevs", 0);
 
-  /* "MrWSI/core/problem.pyx":57
+  /* "MrWSI/core/problem.pyx":49
  * 
  *     def prevs(self):
  *         return self.problem.task_prevs(self.task_id)             # <<<<<<<<<<<<<<
@@ -3583,12 +3595,12 @@ static PyObject *__pyx_pf_5MrWSI_4core_7problem_4Task_6prevs(CYTHON_UNUSED PyObj
  *     def succs(self):
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_v_self, __pyx_n_s_problem); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 57, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_v_self, __pyx_n_s_problem); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 49, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
-  __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_task_prevs); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 57, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_task_prevs); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 49, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_v_self, __pyx_n_s_task_id); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 57, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_v_self, __pyx_n_s_task_id); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 49, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __pyx_t_4 = NULL;
   if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_3))) {
@@ -3601,14 +3613,14 @@ static PyObject *__pyx_pf_5MrWSI_4core_7problem_4Task_6prevs(CYTHON_UNUSED PyObj
     }
   }
   if (!__pyx_t_4) {
-    __pyx_t_1 = __Pyx_PyObject_CallOneArg(__pyx_t_3, __pyx_t_2); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 57, __pyx_L1_error)
+    __pyx_t_1 = __Pyx_PyObject_CallOneArg(__pyx_t_3, __pyx_t_2); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 49, __pyx_L1_error)
     __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
     __Pyx_GOTREF(__pyx_t_1);
   } else {
     #if CYTHON_FAST_PYCALL
     if (PyFunction_Check(__pyx_t_3)) {
       PyObject *__pyx_temp[2] = {__pyx_t_4, __pyx_t_2};
-      __pyx_t_1 = __Pyx_PyFunction_FastCall(__pyx_t_3, __pyx_temp+1-1, 1+1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 57, __pyx_L1_error)
+      __pyx_t_1 = __Pyx_PyFunction_FastCall(__pyx_t_3, __pyx_temp+1-1, 1+1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 49, __pyx_L1_error)
       __Pyx_XDECREF(__pyx_t_4); __pyx_t_4 = 0;
       __Pyx_GOTREF(__pyx_t_1);
       __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
@@ -3617,20 +3629,20 @@ static PyObject *__pyx_pf_5MrWSI_4core_7problem_4Task_6prevs(CYTHON_UNUSED PyObj
     #if CYTHON_FAST_PYCCALL
     if (__Pyx_PyFastCFunction_Check(__pyx_t_3)) {
       PyObject *__pyx_temp[2] = {__pyx_t_4, __pyx_t_2};
-      __pyx_t_1 = __Pyx_PyCFunction_FastCall(__pyx_t_3, __pyx_temp+1-1, 1+1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 57, __pyx_L1_error)
+      __pyx_t_1 = __Pyx_PyCFunction_FastCall(__pyx_t_3, __pyx_temp+1-1, 1+1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 49, __pyx_L1_error)
       __Pyx_XDECREF(__pyx_t_4); __pyx_t_4 = 0;
       __Pyx_GOTREF(__pyx_t_1);
       __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
     } else
     #endif
     {
-      __pyx_t_5 = PyTuple_New(1+1); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 57, __pyx_L1_error)
+      __pyx_t_5 = PyTuple_New(1+1); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 49, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_5);
       __Pyx_GIVEREF(__pyx_t_4); PyTuple_SET_ITEM(__pyx_t_5, 0, __pyx_t_4); __pyx_t_4 = NULL;
       __Pyx_GIVEREF(__pyx_t_2);
       PyTuple_SET_ITEM(__pyx_t_5, 0+1, __pyx_t_2);
       __pyx_t_2 = 0;
-      __pyx_t_1 = __Pyx_PyObject_Call(__pyx_t_3, __pyx_t_5, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 57, __pyx_L1_error)
+      __pyx_t_1 = __Pyx_PyObject_Call(__pyx_t_3, __pyx_t_5, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 49, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_1);
       __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
     }
@@ -3640,7 +3652,7 @@ static PyObject *__pyx_pf_5MrWSI_4core_7problem_4Task_6prevs(CYTHON_UNUSED PyObj
   __pyx_t_1 = 0;
   goto __pyx_L0;
 
-  /* "MrWSI/core/problem.pyx":56
+  /* "MrWSI/core/problem.pyx":48
  *         return self.problem.task_runtime(self.task_id, typ.type_id)
  * 
  *     def prevs(self):             # <<<<<<<<<<<<<<
@@ -3663,7 +3675,7 @@ static PyObject *__pyx_pf_5MrWSI_4core_7problem_4Task_6prevs(CYTHON_UNUSED PyObj
   return __pyx_r;
 }
 
-/* "MrWSI/core/problem.pyx":59
+/* "MrWSI/core/problem.pyx":51
  *         return self.problem.task_prevs(self.task_id)
  * 
  *     def succs(self):             # <<<<<<<<<<<<<<
@@ -3695,7 +3707,7 @@ static PyObject *__pyx_pf_5MrWSI_4core_7problem_4Task_8succs(CYTHON_UNUSED PyObj
   PyObject *__pyx_t_5 = NULL;
   __Pyx_RefNannySetupContext("succs", 0);
 
-  /* "MrWSI/core/problem.pyx":60
+  /* "MrWSI/core/problem.pyx":52
  * 
  *     def succs(self):
  *         return self.problem.task_prevs(self.task_id)             # <<<<<<<<<<<<<<
@@ -3703,12 +3715,12 @@ static PyObject *__pyx_pf_5MrWSI_4core_7problem_4Task_8succs(CYTHON_UNUSED PyObj
  *     def mean_runtime(self):
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_v_self, __pyx_n_s_problem); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 60, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_v_self, __pyx_n_s_problem); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 52, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
-  __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_task_prevs); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 60, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_task_prevs); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 52, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_v_self, __pyx_n_s_task_id); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 60, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_v_self, __pyx_n_s_task_id); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 52, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __pyx_t_4 = NULL;
   if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_3))) {
@@ -3721,14 +3733,14 @@ static PyObject *__pyx_pf_5MrWSI_4core_7problem_4Task_8succs(CYTHON_UNUSED PyObj
     }
   }
   if (!__pyx_t_4) {
-    __pyx_t_1 = __Pyx_PyObject_CallOneArg(__pyx_t_3, __pyx_t_2); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 60, __pyx_L1_error)
+    __pyx_t_1 = __Pyx_PyObject_CallOneArg(__pyx_t_3, __pyx_t_2); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 52, __pyx_L1_error)
     __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
     __Pyx_GOTREF(__pyx_t_1);
   } else {
     #if CYTHON_FAST_PYCALL
     if (PyFunction_Check(__pyx_t_3)) {
       PyObject *__pyx_temp[2] = {__pyx_t_4, __pyx_t_2};
-      __pyx_t_1 = __Pyx_PyFunction_FastCall(__pyx_t_3, __pyx_temp+1-1, 1+1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 60, __pyx_L1_error)
+      __pyx_t_1 = __Pyx_PyFunction_FastCall(__pyx_t_3, __pyx_temp+1-1, 1+1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 52, __pyx_L1_error)
       __Pyx_XDECREF(__pyx_t_4); __pyx_t_4 = 0;
       __Pyx_GOTREF(__pyx_t_1);
       __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
@@ -3737,20 +3749,20 @@ static PyObject *__pyx_pf_5MrWSI_4core_7problem_4Task_8succs(CYTHON_UNUSED PyObj
     #if CYTHON_FAST_PYCCALL
     if (__Pyx_PyFastCFunction_Check(__pyx_t_3)) {
       PyObject *__pyx_temp[2] = {__pyx_t_4, __pyx_t_2};
-      __pyx_t_1 = __Pyx_PyCFunction_FastCall(__pyx_t_3, __pyx_temp+1-1, 1+1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 60, __pyx_L1_error)
+      __pyx_t_1 = __Pyx_PyCFunction_FastCall(__pyx_t_3, __pyx_temp+1-1, 1+1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 52, __pyx_L1_error)
       __Pyx_XDECREF(__pyx_t_4); __pyx_t_4 = 0;
       __Pyx_GOTREF(__pyx_t_1);
       __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
     } else
     #endif
     {
-      __pyx_t_5 = PyTuple_New(1+1); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 60, __pyx_L1_error)
+      __pyx_t_5 = PyTuple_New(1+1); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 52, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_5);
       __Pyx_GIVEREF(__pyx_t_4); PyTuple_SET_ITEM(__pyx_t_5, 0, __pyx_t_4); __pyx_t_4 = NULL;
       __Pyx_GIVEREF(__pyx_t_2);
       PyTuple_SET_ITEM(__pyx_t_5, 0+1, __pyx_t_2);
       __pyx_t_2 = 0;
-      __pyx_t_1 = __Pyx_PyObject_Call(__pyx_t_3, __pyx_t_5, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 60, __pyx_L1_error)
+      __pyx_t_1 = __Pyx_PyObject_Call(__pyx_t_3, __pyx_t_5, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 52, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_1);
       __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
     }
@@ -3760,7 +3772,7 @@ static PyObject *__pyx_pf_5MrWSI_4core_7problem_4Task_8succs(CYTHON_UNUSED PyObj
   __pyx_t_1 = 0;
   goto __pyx_L0;
 
-  /* "MrWSI/core/problem.pyx":59
+  /* "MrWSI/core/problem.pyx":51
  *         return self.problem.task_prevs(self.task_id)
  * 
  *     def succs(self):             # <<<<<<<<<<<<<<
@@ -3783,7 +3795,7 @@ static PyObject *__pyx_pf_5MrWSI_4core_7problem_4Task_8succs(CYTHON_UNUSED PyObj
   return __pyx_r;
 }
 
-/* "MrWSI/core/problem.pyx":62
+/* "MrWSI/core/problem.pyx":54
  *         return self.problem.task_prevs(self.task_id)
  * 
  *     def mean_runtime(self):             # <<<<<<<<<<<<<<
@@ -3815,7 +3827,7 @@ static PyObject *__pyx_pf_5MrWSI_4core_7problem_4Task_10mean_runtime(CYTHON_UNUS
   PyObject *__pyx_t_5 = NULL;
   __Pyx_RefNannySetupContext("mean_runtime", 0);
 
-  /* "MrWSI/core/problem.pyx":63
+  /* "MrWSI/core/problem.pyx":55
  * 
  *     def mean_runtime(self):
  *         return self.problem.task_mean_runtime(self.task_id)             # <<<<<<<<<<<<<<
@@ -3823,12 +3835,12 @@ static PyObject *__pyx_pf_5MrWSI_4core_7problem_4Task_10mean_runtime(CYTHON_UNUS
  *     def __repr__(self):
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_v_self, __pyx_n_s_problem); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 63, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_v_self, __pyx_n_s_problem); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 55, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
-  __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_task_mean_runtime); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 63, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_task_mean_runtime); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 55, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_v_self, __pyx_n_s_task_id); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 63, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_v_self, __pyx_n_s_task_id); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 55, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __pyx_t_4 = NULL;
   if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_3))) {
@@ -3841,14 +3853,14 @@ static PyObject *__pyx_pf_5MrWSI_4core_7problem_4Task_10mean_runtime(CYTHON_UNUS
     }
   }
   if (!__pyx_t_4) {
-    __pyx_t_1 = __Pyx_PyObject_CallOneArg(__pyx_t_3, __pyx_t_2); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 63, __pyx_L1_error)
+    __pyx_t_1 = __Pyx_PyObject_CallOneArg(__pyx_t_3, __pyx_t_2); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 55, __pyx_L1_error)
     __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
     __Pyx_GOTREF(__pyx_t_1);
   } else {
     #if CYTHON_FAST_PYCALL
     if (PyFunction_Check(__pyx_t_3)) {
       PyObject *__pyx_temp[2] = {__pyx_t_4, __pyx_t_2};
-      __pyx_t_1 = __Pyx_PyFunction_FastCall(__pyx_t_3, __pyx_temp+1-1, 1+1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 63, __pyx_L1_error)
+      __pyx_t_1 = __Pyx_PyFunction_FastCall(__pyx_t_3, __pyx_temp+1-1, 1+1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 55, __pyx_L1_error)
       __Pyx_XDECREF(__pyx_t_4); __pyx_t_4 = 0;
       __Pyx_GOTREF(__pyx_t_1);
       __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
@@ -3857,20 +3869,20 @@ static PyObject *__pyx_pf_5MrWSI_4core_7problem_4Task_10mean_runtime(CYTHON_UNUS
     #if CYTHON_FAST_PYCCALL
     if (__Pyx_PyFastCFunction_Check(__pyx_t_3)) {
       PyObject *__pyx_temp[2] = {__pyx_t_4, __pyx_t_2};
-      __pyx_t_1 = __Pyx_PyCFunction_FastCall(__pyx_t_3, __pyx_temp+1-1, 1+1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 63, __pyx_L1_error)
+      __pyx_t_1 = __Pyx_PyCFunction_FastCall(__pyx_t_3, __pyx_temp+1-1, 1+1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 55, __pyx_L1_error)
       __Pyx_XDECREF(__pyx_t_4); __pyx_t_4 = 0;
       __Pyx_GOTREF(__pyx_t_1);
       __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
     } else
     #endif
     {
-      __pyx_t_5 = PyTuple_New(1+1); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 63, __pyx_L1_error)
+      __pyx_t_5 = PyTuple_New(1+1); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 55, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_5);
       __Pyx_GIVEREF(__pyx_t_4); PyTuple_SET_ITEM(__pyx_t_5, 0, __pyx_t_4); __pyx_t_4 = NULL;
       __Pyx_GIVEREF(__pyx_t_2);
       PyTuple_SET_ITEM(__pyx_t_5, 0+1, __pyx_t_2);
       __pyx_t_2 = 0;
-      __pyx_t_1 = __Pyx_PyObject_Call(__pyx_t_3, __pyx_t_5, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 63, __pyx_L1_error)
+      __pyx_t_1 = __Pyx_PyObject_Call(__pyx_t_3, __pyx_t_5, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 55, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_1);
       __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
     }
@@ -3880,7 +3892,7 @@ static PyObject *__pyx_pf_5MrWSI_4core_7problem_4Task_10mean_runtime(CYTHON_UNUS
   __pyx_t_1 = 0;
   goto __pyx_L0;
 
-  /* "MrWSI/core/problem.pyx":62
+  /* "MrWSI/core/problem.pyx":54
  *         return self.problem.task_prevs(self.task_id)
  * 
  *     def mean_runtime(self):             # <<<<<<<<<<<<<<
@@ -3903,7 +3915,7 @@ static PyObject *__pyx_pf_5MrWSI_4core_7problem_4Task_10mean_runtime(CYTHON_UNUS
   return __pyx_r;
 }
 
-/* "MrWSI/core/problem.pyx":65
+/* "MrWSI/core/problem.pyx":57
  *         return self.problem.task_mean_runtime(self.task_id)
  * 
  *     def __repr__(self):             # <<<<<<<<<<<<<<
@@ -3933,22 +3945,22 @@ static PyObject *__pyx_pf_5MrWSI_4core_7problem_4Task_12__repr__(CYTHON_UNUSED P
   PyObject *__pyx_t_3 = NULL;
   __Pyx_RefNannySetupContext("__repr__", 0);
 
-  /* "MrWSI/core/problem.pyx":66
+  /* "MrWSI/core/problem.pyx":58
  * 
  *     def __repr__(self):
  *         return self.problem.task_str_ids[self.task_id]             # <<<<<<<<<<<<<<
  * 
- * class Communication(object):
+ *     @property
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_v_self, __pyx_n_s_problem); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 66, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_v_self, __pyx_n_s_problem); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 58, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_t_1, __pyx_n_s_task_str_ids); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 66, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_t_1, __pyx_n_s_task_str_ids); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 58, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_v_self, __pyx_n_s_task_id); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 66, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_v_self, __pyx_n_s_task_id); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 58, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_3 = PyObject_GetItem(__pyx_t_2, __pyx_t_1); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 66, __pyx_L1_error)
+  __pyx_t_3 = PyObject_GetItem(__pyx_t_2, __pyx_t_1); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 58, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
@@ -3956,7 +3968,7 @@ static PyObject *__pyx_pf_5MrWSI_4core_7problem_4Task_12__repr__(CYTHON_UNUSED P
   __pyx_t_3 = 0;
   goto __pyx_L0;
 
-  /* "MrWSI/core/problem.pyx":65
+  /* "MrWSI/core/problem.pyx":57
  *         return self.problem.task_mean_runtime(self.task_id)
  * 
  *     def __repr__(self):             # <<<<<<<<<<<<<<
@@ -3977,7 +3989,68 @@ static PyObject *__pyx_pf_5MrWSI_4core_7problem_4Task_12__repr__(CYTHON_UNUSED P
   return __pyx_r;
 }
 
-/* "MrWSI/core/problem.pyx":69
+/* "MrWSI/core/problem.pyx":61
+ * 
+ *     @property
+ *     def id_for_set(self):             # <<<<<<<<<<<<<<
+ *         return self.task_id
+ * 
+ */
+
+/* Python wrapper */
+static PyObject *__pyx_pw_5MrWSI_4core_7problem_4Task_15id_for_set(PyObject *__pyx_self, PyObject *__pyx_v_self); /*proto*/
+static PyMethodDef __pyx_mdef_5MrWSI_4core_7problem_4Task_15id_for_set = {"id_for_set", (PyCFunction)__pyx_pw_5MrWSI_4core_7problem_4Task_15id_for_set, METH_O, 0};
+static PyObject *__pyx_pw_5MrWSI_4core_7problem_4Task_15id_for_set(PyObject *__pyx_self, PyObject *__pyx_v_self) {
+  PyObject *__pyx_r = 0;
+  __Pyx_RefNannyDeclarations
+  __Pyx_RefNannySetupContext("id_for_set (wrapper)", 0);
+  __pyx_r = __pyx_pf_5MrWSI_4core_7problem_4Task_14id_for_set(__pyx_self, ((PyObject *)__pyx_v_self));
+
+  /* function exit code */
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
+static PyObject *__pyx_pf_5MrWSI_4core_7problem_4Task_14id_for_set(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_self) {
+  PyObject *__pyx_r = NULL;
+  __Pyx_RefNannyDeclarations
+  PyObject *__pyx_t_1 = NULL;
+  __Pyx_RefNannySetupContext("id_for_set", 0);
+
+  /* "MrWSI/core/problem.pyx":62
+ *     @property
+ *     def id_for_set(self):
+ *         return self.task_id             # <<<<<<<<<<<<<<
+ * 
+ * class Communication(object):
+ */
+  __Pyx_XDECREF(__pyx_r);
+  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_v_self, __pyx_n_s_task_id); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 62, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_1);
+  __pyx_r = __pyx_t_1;
+  __pyx_t_1 = 0;
+  goto __pyx_L0;
+
+  /* "MrWSI/core/problem.pyx":61
+ * 
+ *     @property
+ *     def id_for_set(self):             # <<<<<<<<<<<<<<
+ *         return self.task_id
+ * 
+ */
+
+  /* function exit code */
+  __pyx_L1_error:;
+  __Pyx_XDECREF(__pyx_t_1);
+  __Pyx_AddTraceback("MrWSI.core.problem.Task.id_for_set", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __pyx_r = NULL;
+  __pyx_L0:;
+  __Pyx_XGIVEREF(__pyx_r);
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
+/* "MrWSI/core/problem.pyx":65
  * 
  * class Communication(object):
  *     def __init__(self, problem, from_task_id, to_task_id):             # <<<<<<<<<<<<<<
@@ -4018,21 +4091,21 @@ static PyObject *__pyx_pw_5MrWSI_4core_7problem_13Communication_1__init__(PyObje
         case  1:
         if (likely((values[1] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_problem)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("__init__", 1, 4, 4, 1); __PYX_ERR(0, 69, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("__init__", 1, 4, 4, 1); __PYX_ERR(0, 65, __pyx_L3_error)
         }
         case  2:
         if (likely((values[2] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_from_task_id)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("__init__", 1, 4, 4, 2); __PYX_ERR(0, 69, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("__init__", 1, 4, 4, 2); __PYX_ERR(0, 65, __pyx_L3_error)
         }
         case  3:
         if (likely((values[3] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_to_task_id)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("__init__", 1, 4, 4, 3); __PYX_ERR(0, 69, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("__init__", 1, 4, 4, 3); __PYX_ERR(0, 65, __pyx_L3_error)
         }
       }
       if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "__init__") < 0)) __PYX_ERR(0, 69, __pyx_L3_error)
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "__init__") < 0)) __PYX_ERR(0, 65, __pyx_L3_error)
       }
     } else if (PyTuple_GET_SIZE(__pyx_args) != 4) {
       goto __pyx_L5_argtuple_error;
@@ -4049,7 +4122,7 @@ static PyObject *__pyx_pw_5MrWSI_4core_7problem_13Communication_1__init__(PyObje
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("__init__", 1, 4, 4, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 69, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("__init__", 1, 4, 4, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 65, __pyx_L3_error)
   __pyx_L3_error:;
   __Pyx_AddTraceback("MrWSI.core.problem.Communication.__init__", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
@@ -4072,43 +4145,43 @@ static PyObject *__pyx_pf_5MrWSI_4core_7problem_13Communication___init__(CYTHON_
   PyObject *__pyx_t_5 = NULL;
   __Pyx_RefNannySetupContext("__init__", 0);
 
-  /* "MrWSI/core/problem.pyx":70
+  /* "MrWSI/core/problem.pyx":66
  * class Communication(object):
  *     def __init__(self, problem, from_task_id, to_task_id):
  *         self.problem = problem             # <<<<<<<<<<<<<<
  *         self.from_task_id = from_task_id
  *         self.to_task_id = to_task_id
  */
-  if (__Pyx_PyObject_SetAttrStr(__pyx_v_self, __pyx_n_s_problem, __pyx_v_problem) < 0) __PYX_ERR(0, 70, __pyx_L1_error)
+  if (__Pyx_PyObject_SetAttrStr(__pyx_v_self, __pyx_n_s_problem, __pyx_v_problem) < 0) __PYX_ERR(0, 66, __pyx_L1_error)
 
-  /* "MrWSI/core/problem.pyx":71
+  /* "MrWSI/core/problem.pyx":67
  *     def __init__(self, problem, from_task_id, to_task_id):
  *         self.problem = problem
  *         self.from_task_id = from_task_id             # <<<<<<<<<<<<<<
  *         self.to_task_id = to_task_id
  *         self.data_size = self.problem.communication_data_size(from_task_id, to_task_id)
  */
-  if (__Pyx_PyObject_SetAttrStr(__pyx_v_self, __pyx_n_s_from_task_id, __pyx_v_from_task_id) < 0) __PYX_ERR(0, 71, __pyx_L1_error)
+  if (__Pyx_PyObject_SetAttrStr(__pyx_v_self, __pyx_n_s_from_task_id, __pyx_v_from_task_id) < 0) __PYX_ERR(0, 67, __pyx_L1_error)
 
-  /* "MrWSI/core/problem.pyx":72
+  /* "MrWSI/core/problem.pyx":68
  *         self.problem = problem
  *         self.from_task_id = from_task_id
  *         self.to_task_id = to_task_id             # <<<<<<<<<<<<<<
  *         self.data_size = self.problem.communication_data_size(from_task_id, to_task_id)
  * 
  */
-  if (__Pyx_PyObject_SetAttrStr(__pyx_v_self, __pyx_n_s_to_task_id, __pyx_v_to_task_id) < 0) __PYX_ERR(0, 72, __pyx_L1_error)
+  if (__Pyx_PyObject_SetAttrStr(__pyx_v_self, __pyx_n_s_to_task_id, __pyx_v_to_task_id) < 0) __PYX_ERR(0, 68, __pyx_L1_error)
 
-  /* "MrWSI/core/problem.pyx":73
+  /* "MrWSI/core/problem.pyx":69
  *         self.from_task_id = from_task_id
  *         self.to_task_id = to_task_id
  *         self.data_size = self.problem.communication_data_size(from_task_id, to_task_id)             # <<<<<<<<<<<<<<
  * 
  *     @property
  */
-  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_v_self, __pyx_n_s_problem); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 73, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_v_self, __pyx_n_s_problem); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 69, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
-  __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_communication_data_size); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 73, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_communication_data_size); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 69, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   __pyx_t_2 = NULL;
@@ -4126,7 +4199,7 @@ static PyObject *__pyx_pf_5MrWSI_4core_7problem_13Communication___init__(CYTHON_
   #if CYTHON_FAST_PYCALL
   if (PyFunction_Check(__pyx_t_3)) {
     PyObject *__pyx_temp[3] = {__pyx_t_2, __pyx_v_from_task_id, __pyx_v_to_task_id};
-    __pyx_t_1 = __Pyx_PyFunction_FastCall(__pyx_t_3, __pyx_temp+1-__pyx_t_4, 2+__pyx_t_4); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 73, __pyx_L1_error)
+    __pyx_t_1 = __Pyx_PyFunction_FastCall(__pyx_t_3, __pyx_temp+1-__pyx_t_4, 2+__pyx_t_4); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 69, __pyx_L1_error)
     __Pyx_XDECREF(__pyx_t_2); __pyx_t_2 = 0;
     __Pyx_GOTREF(__pyx_t_1);
   } else
@@ -4134,13 +4207,13 @@ static PyObject *__pyx_pf_5MrWSI_4core_7problem_13Communication___init__(CYTHON_
   #if CYTHON_FAST_PYCCALL
   if (__Pyx_PyFastCFunction_Check(__pyx_t_3)) {
     PyObject *__pyx_temp[3] = {__pyx_t_2, __pyx_v_from_task_id, __pyx_v_to_task_id};
-    __pyx_t_1 = __Pyx_PyCFunction_FastCall(__pyx_t_3, __pyx_temp+1-__pyx_t_4, 2+__pyx_t_4); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 73, __pyx_L1_error)
+    __pyx_t_1 = __Pyx_PyCFunction_FastCall(__pyx_t_3, __pyx_temp+1-__pyx_t_4, 2+__pyx_t_4); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 69, __pyx_L1_error)
     __Pyx_XDECREF(__pyx_t_2); __pyx_t_2 = 0;
     __Pyx_GOTREF(__pyx_t_1);
   } else
   #endif
   {
-    __pyx_t_5 = PyTuple_New(2+__pyx_t_4); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 73, __pyx_L1_error)
+    __pyx_t_5 = PyTuple_New(2+__pyx_t_4); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 69, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_5);
     if (__pyx_t_2) {
       __Pyx_GIVEREF(__pyx_t_2); PyTuple_SET_ITEM(__pyx_t_5, 0, __pyx_t_2); __pyx_t_2 = NULL;
@@ -4151,15 +4224,15 @@ static PyObject *__pyx_pf_5MrWSI_4core_7problem_13Communication___init__(CYTHON_
     __Pyx_INCREF(__pyx_v_to_task_id);
     __Pyx_GIVEREF(__pyx_v_to_task_id);
     PyTuple_SET_ITEM(__pyx_t_5, 1+__pyx_t_4, __pyx_v_to_task_id);
-    __pyx_t_1 = __Pyx_PyObject_Call(__pyx_t_3, __pyx_t_5, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 73, __pyx_L1_error)
+    __pyx_t_1 = __Pyx_PyObject_Call(__pyx_t_3, __pyx_t_5, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 69, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
     __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
   }
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-  if (__Pyx_PyObject_SetAttrStr(__pyx_v_self, __pyx_n_s_data_size, __pyx_t_1) < 0) __PYX_ERR(0, 73, __pyx_L1_error)
+  if (__Pyx_PyObject_SetAttrStr(__pyx_v_self, __pyx_n_s_data_size, __pyx_t_1) < 0) __PYX_ERR(0, 69, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-  /* "MrWSI/core/problem.pyx":69
+  /* "MrWSI/core/problem.pyx":65
  * 
  * class Communication(object):
  *     def __init__(self, problem, from_task_id, to_task_id):             # <<<<<<<<<<<<<<
@@ -4183,7 +4256,7 @@ static PyObject *__pyx_pf_5MrWSI_4core_7problem_13Communication___init__(CYTHON_
   return __pyx_r;
 }
 
-/* "MrWSI/core/problem.pyx":76
+/* "MrWSI/core/problem.pyx":72
  * 
  *     @property
  *     def pair_id(self):             # <<<<<<<<<<<<<<
@@ -4217,7 +4290,7 @@ static PyObject *__pyx_pf_5MrWSI_4core_7problem_13Communication_2pair_id(CYTHON_
   PyObject *__pyx_t_7 = NULL;
   __Pyx_RefNannySetupContext("pair_id", 0);
 
-  /* "MrWSI/core/problem.pyx":77
+  /* "MrWSI/core/problem.pyx":73
  *     @property
  *     def pair_id(self):
  *         return "{}=>{}".format(self.from_task_id, self.to_task_id)             # <<<<<<<<<<<<<<
@@ -4225,11 +4298,11 @@ static PyObject *__pyx_pf_5MrWSI_4core_7problem_13Communication_2pair_id(CYTHON_
  *     @property
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_kp_s_, __pyx_n_s_format); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 77, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_kp_s_, __pyx_n_s_format); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 73, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
-  __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_v_self, __pyx_n_s_from_task_id); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 77, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_v_self, __pyx_n_s_from_task_id); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 73, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
-  __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_v_self, __pyx_n_s_to_task_id); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 77, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_v_self, __pyx_n_s_to_task_id); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 73, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
   __pyx_t_5 = NULL;
   __pyx_t_6 = 0;
@@ -4246,7 +4319,7 @@ static PyObject *__pyx_pf_5MrWSI_4core_7problem_13Communication_2pair_id(CYTHON_
   #if CYTHON_FAST_PYCALL
   if (PyFunction_Check(__pyx_t_2)) {
     PyObject *__pyx_temp[3] = {__pyx_t_5, __pyx_t_3, __pyx_t_4};
-    __pyx_t_1 = __Pyx_PyFunction_FastCall(__pyx_t_2, __pyx_temp+1-__pyx_t_6, 2+__pyx_t_6); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 77, __pyx_L1_error)
+    __pyx_t_1 = __Pyx_PyFunction_FastCall(__pyx_t_2, __pyx_temp+1-__pyx_t_6, 2+__pyx_t_6); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 73, __pyx_L1_error)
     __Pyx_XDECREF(__pyx_t_5); __pyx_t_5 = 0;
     __Pyx_GOTREF(__pyx_t_1);
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
@@ -4256,7 +4329,7 @@ static PyObject *__pyx_pf_5MrWSI_4core_7problem_13Communication_2pair_id(CYTHON_
   #if CYTHON_FAST_PYCCALL
   if (__Pyx_PyFastCFunction_Check(__pyx_t_2)) {
     PyObject *__pyx_temp[3] = {__pyx_t_5, __pyx_t_3, __pyx_t_4};
-    __pyx_t_1 = __Pyx_PyCFunction_FastCall(__pyx_t_2, __pyx_temp+1-__pyx_t_6, 2+__pyx_t_6); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 77, __pyx_L1_error)
+    __pyx_t_1 = __Pyx_PyCFunction_FastCall(__pyx_t_2, __pyx_temp+1-__pyx_t_6, 2+__pyx_t_6); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 73, __pyx_L1_error)
     __Pyx_XDECREF(__pyx_t_5); __pyx_t_5 = 0;
     __Pyx_GOTREF(__pyx_t_1);
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
@@ -4264,7 +4337,7 @@ static PyObject *__pyx_pf_5MrWSI_4core_7problem_13Communication_2pair_id(CYTHON_
   } else
   #endif
   {
-    __pyx_t_7 = PyTuple_New(2+__pyx_t_6); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 77, __pyx_L1_error)
+    __pyx_t_7 = PyTuple_New(2+__pyx_t_6); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 73, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_7);
     if (__pyx_t_5) {
       __Pyx_GIVEREF(__pyx_t_5); PyTuple_SET_ITEM(__pyx_t_7, 0, __pyx_t_5); __pyx_t_5 = NULL;
@@ -4275,7 +4348,7 @@ static PyObject *__pyx_pf_5MrWSI_4core_7problem_13Communication_2pair_id(CYTHON_
     PyTuple_SET_ITEM(__pyx_t_7, 1+__pyx_t_6, __pyx_t_4);
     __pyx_t_3 = 0;
     __pyx_t_4 = 0;
-    __pyx_t_1 = __Pyx_PyObject_Call(__pyx_t_2, __pyx_t_7, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 77, __pyx_L1_error)
+    __pyx_t_1 = __Pyx_PyObject_Call(__pyx_t_2, __pyx_t_7, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 73, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
     __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
   }
@@ -4284,7 +4357,7 @@ static PyObject *__pyx_pf_5MrWSI_4core_7problem_13Communication_2pair_id(CYTHON_
   __pyx_t_1 = 0;
   goto __pyx_L0;
 
-  /* "MrWSI/core/problem.pyx":76
+  /* "MrWSI/core/problem.pyx":72
  * 
  *     @property
  *     def pair_id(self):             # <<<<<<<<<<<<<<
@@ -4308,6 +4381,81 @@ static PyObject *__pyx_pf_5MrWSI_4core_7problem_13Communication_2pair_id(CYTHON_
   return __pyx_r;
 }
 
+/* "MrWSI/core/problem.pyx":76
+ * 
+ *     @property
+ *     def id_for_set(self):             # <<<<<<<<<<<<<<
+ *         return self.from_task_id, self.to_task_id
+ * 
+ */
+
+/* Python wrapper */
+static PyObject *__pyx_pw_5MrWSI_4core_7problem_13Communication_5id_for_set(PyObject *__pyx_self, PyObject *__pyx_v_self); /*proto*/
+static PyMethodDef __pyx_mdef_5MrWSI_4core_7problem_13Communication_5id_for_set = {"id_for_set", (PyCFunction)__pyx_pw_5MrWSI_4core_7problem_13Communication_5id_for_set, METH_O, 0};
+static PyObject *__pyx_pw_5MrWSI_4core_7problem_13Communication_5id_for_set(PyObject *__pyx_self, PyObject *__pyx_v_self) {
+  PyObject *__pyx_r = 0;
+  __Pyx_RefNannyDeclarations
+  __Pyx_RefNannySetupContext("id_for_set (wrapper)", 0);
+  __pyx_r = __pyx_pf_5MrWSI_4core_7problem_13Communication_4id_for_set(__pyx_self, ((PyObject *)__pyx_v_self));
+
+  /* function exit code */
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
+static PyObject *__pyx_pf_5MrWSI_4core_7problem_13Communication_4id_for_set(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_self) {
+  PyObject *__pyx_r = NULL;
+  __Pyx_RefNannyDeclarations
+  PyObject *__pyx_t_1 = NULL;
+  PyObject *__pyx_t_2 = NULL;
+  PyObject *__pyx_t_3 = NULL;
+  __Pyx_RefNannySetupContext("id_for_set", 0);
+
+  /* "MrWSI/core/problem.pyx":77
+ *     @property
+ *     def id_for_set(self):
+ *         return self.from_task_id, self.to_task_id             # <<<<<<<<<<<<<<
+ * 
+ *     @property
+ */
+  __Pyx_XDECREF(__pyx_r);
+  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_v_self, __pyx_n_s_from_task_id); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 77, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_1);
+  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_v_self, __pyx_n_s_to_task_id); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 77, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_2);
+  __pyx_t_3 = PyTuple_New(2); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 77, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_3);
+  __Pyx_GIVEREF(__pyx_t_1);
+  PyTuple_SET_ITEM(__pyx_t_3, 0, __pyx_t_1);
+  __Pyx_GIVEREF(__pyx_t_2);
+  PyTuple_SET_ITEM(__pyx_t_3, 1, __pyx_t_2);
+  __pyx_t_1 = 0;
+  __pyx_t_2 = 0;
+  __pyx_r = __pyx_t_3;
+  __pyx_t_3 = 0;
+  goto __pyx_L0;
+
+  /* "MrWSI/core/problem.pyx":76
+ * 
+ *     @property
+ *     def id_for_set(self):             # <<<<<<<<<<<<<<
+ *         return self.from_task_id, self.to_task_id
+ * 
+ */
+
+  /* function exit code */
+  __pyx_L1_error:;
+  __Pyx_XDECREF(__pyx_t_1);
+  __Pyx_XDECREF(__pyx_t_2);
+  __Pyx_XDECREF(__pyx_t_3);
+  __Pyx_AddTraceback("MrWSI.core.problem.Communication.id_for_set", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __pyx_r = NULL;
+  __pyx_L0:;
+  __Pyx_XGIVEREF(__pyx_r);
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
 /* "MrWSI/core/problem.pyx":80
  * 
  *     @property
@@ -4317,20 +4465,20 @@ static PyObject *__pyx_pf_5MrWSI_4core_7problem_13Communication_2pair_id(CYTHON_
  */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_5MrWSI_4core_7problem_13Communication_5from_task(PyObject *__pyx_self, PyObject *__pyx_v_self); /*proto*/
-static PyMethodDef __pyx_mdef_5MrWSI_4core_7problem_13Communication_5from_task = {"from_task", (PyCFunction)__pyx_pw_5MrWSI_4core_7problem_13Communication_5from_task, METH_O, 0};
-static PyObject *__pyx_pw_5MrWSI_4core_7problem_13Communication_5from_task(PyObject *__pyx_self, PyObject *__pyx_v_self) {
+static PyObject *__pyx_pw_5MrWSI_4core_7problem_13Communication_7from_task(PyObject *__pyx_self, PyObject *__pyx_v_self); /*proto*/
+static PyMethodDef __pyx_mdef_5MrWSI_4core_7problem_13Communication_7from_task = {"from_task", (PyCFunction)__pyx_pw_5MrWSI_4core_7problem_13Communication_7from_task, METH_O, 0};
+static PyObject *__pyx_pw_5MrWSI_4core_7problem_13Communication_7from_task(PyObject *__pyx_self, PyObject *__pyx_v_self) {
   PyObject *__pyx_r = 0;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("from_task (wrapper)", 0);
-  __pyx_r = __pyx_pf_5MrWSI_4core_7problem_13Communication_4from_task(__pyx_self, ((PyObject *)__pyx_v_self));
+  __pyx_r = __pyx_pf_5MrWSI_4core_7problem_13Communication_6from_task(__pyx_self, ((PyObject *)__pyx_v_self));
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_5MrWSI_4core_7problem_13Communication_4from_task(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_self) {
+static PyObject *__pyx_pf_5MrWSI_4core_7problem_13Communication_6from_task(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_self) {
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
@@ -4391,20 +4539,20 @@ static PyObject *__pyx_pf_5MrWSI_4core_7problem_13Communication_4from_task(CYTHO
  */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_5MrWSI_4core_7problem_13Communication_7to_task(PyObject *__pyx_self, PyObject *__pyx_v_self); /*proto*/
-static PyMethodDef __pyx_mdef_5MrWSI_4core_7problem_13Communication_7to_task = {"to_task", (PyCFunction)__pyx_pw_5MrWSI_4core_7problem_13Communication_7to_task, METH_O, 0};
-static PyObject *__pyx_pw_5MrWSI_4core_7problem_13Communication_7to_task(PyObject *__pyx_self, PyObject *__pyx_v_self) {
+static PyObject *__pyx_pw_5MrWSI_4core_7problem_13Communication_9to_task(PyObject *__pyx_self, PyObject *__pyx_v_self); /*proto*/
+static PyMethodDef __pyx_mdef_5MrWSI_4core_7problem_13Communication_9to_task = {"to_task", (PyCFunction)__pyx_pw_5MrWSI_4core_7problem_13Communication_9to_task, METH_O, 0};
+static PyObject *__pyx_pw_5MrWSI_4core_7problem_13Communication_9to_task(PyObject *__pyx_self, PyObject *__pyx_v_self) {
   PyObject *__pyx_r = 0;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("to_task (wrapper)", 0);
-  __pyx_r = __pyx_pf_5MrWSI_4core_7problem_13Communication_6to_task(__pyx_self, ((PyObject *)__pyx_v_self));
+  __pyx_r = __pyx_pf_5MrWSI_4core_7problem_13Communication_8to_task(__pyx_self, ((PyObject *)__pyx_v_self));
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_5MrWSI_4core_7problem_13Communication_6to_task(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_self) {
+static PyObject *__pyx_pf_5MrWSI_4core_7problem_13Communication_8to_task(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_self) {
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
@@ -4465,9 +4613,9 @@ static PyObject *__pyx_pf_5MrWSI_4core_7problem_13Communication_6to_task(CYTHON_
  */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_5MrWSI_4core_7problem_13Communication_9runtime(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
-static PyMethodDef __pyx_mdef_5MrWSI_4core_7problem_13Communication_9runtime = {"runtime", (PyCFunction)__pyx_pw_5MrWSI_4core_7problem_13Communication_9runtime, METH_VARARGS|METH_KEYWORDS, 0};
-static PyObject *__pyx_pw_5MrWSI_4core_7problem_13Communication_9runtime(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
+static PyObject *__pyx_pw_5MrWSI_4core_7problem_13Communication_11runtime(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
+static PyMethodDef __pyx_mdef_5MrWSI_4core_7problem_13Communication_11runtime = {"runtime", (PyCFunction)__pyx_pw_5MrWSI_4core_7problem_13Communication_11runtime, METH_VARARGS|METH_KEYWORDS, 0};
+static PyObject *__pyx_pw_5MrWSI_4core_7problem_13Communication_11runtime(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
   PyObject *__pyx_v_self = 0;
   PyObject *__pyx_v_bandwidth = 0;
   PyObject *__pyx_r = 0;
@@ -4516,14 +4664,14 @@ static PyObject *__pyx_pw_5MrWSI_4core_7problem_13Communication_9runtime(PyObjec
   __Pyx_RefNannyFinishContext();
   return NULL;
   __pyx_L4_argument_unpacking_done:;
-  __pyx_r = __pyx_pf_5MrWSI_4core_7problem_13Communication_8runtime(__pyx_self, __pyx_v_self, __pyx_v_bandwidth);
+  __pyx_r = __pyx_pf_5MrWSI_4core_7problem_13Communication_10runtime(__pyx_self, __pyx_v_self, __pyx_v_bandwidth);
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_5MrWSI_4core_7problem_13Communication_8runtime(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_self, PyObject *__pyx_v_bandwidth) {
+static PyObject *__pyx_pf_5MrWSI_4core_7problem_13Communication_10runtime(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_self, PyObject *__pyx_v_bandwidth) {
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
@@ -4669,20 +4817,20 @@ static PyObject *__pyx_pf_5MrWSI_4core_7problem_13Communication_8runtime(CYTHON_
  */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_5MrWSI_4core_7problem_13Communication_11mean_runtime(PyObject *__pyx_self, PyObject *__pyx_v_self); /*proto*/
-static PyMethodDef __pyx_mdef_5MrWSI_4core_7problem_13Communication_11mean_runtime = {"mean_runtime", (PyCFunction)__pyx_pw_5MrWSI_4core_7problem_13Communication_11mean_runtime, METH_O, 0};
-static PyObject *__pyx_pw_5MrWSI_4core_7problem_13Communication_11mean_runtime(PyObject *__pyx_self, PyObject *__pyx_v_self) {
+static PyObject *__pyx_pw_5MrWSI_4core_7problem_13Communication_13mean_runtime(PyObject *__pyx_self, PyObject *__pyx_v_self); /*proto*/
+static PyMethodDef __pyx_mdef_5MrWSI_4core_7problem_13Communication_13mean_runtime = {"mean_runtime", (PyCFunction)__pyx_pw_5MrWSI_4core_7problem_13Communication_13mean_runtime, METH_O, 0};
+static PyObject *__pyx_pw_5MrWSI_4core_7problem_13Communication_13mean_runtime(PyObject *__pyx_self, PyObject *__pyx_v_self) {
   PyObject *__pyx_r = 0;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("mean_runtime (wrapper)", 0);
-  __pyx_r = __pyx_pf_5MrWSI_4core_7problem_13Communication_10mean_runtime(__pyx_self, ((PyObject *)__pyx_v_self));
+  __pyx_r = __pyx_pf_5MrWSI_4core_7problem_13Communication_12mean_runtime(__pyx_self, ((PyObject *)__pyx_v_self));
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_5MrWSI_4core_7problem_13Communication_10mean_runtime(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_self) {
+static PyObject *__pyx_pf_5MrWSI_4core_7problem_13Communication_12mean_runtime(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_self) {
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
@@ -4807,20 +4955,20 @@ static PyObject *__pyx_pf_5MrWSI_4core_7problem_13Communication_10mean_runtime(C
  */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_5MrWSI_4core_7problem_13Communication_13__repr__(PyObject *__pyx_self, PyObject *__pyx_v_self); /*proto*/
-static PyMethodDef __pyx_mdef_5MrWSI_4core_7problem_13Communication_13__repr__ = {"__repr__", (PyCFunction)__pyx_pw_5MrWSI_4core_7problem_13Communication_13__repr__, METH_O, 0};
-static PyObject *__pyx_pw_5MrWSI_4core_7problem_13Communication_13__repr__(PyObject *__pyx_self, PyObject *__pyx_v_self) {
+static PyObject *__pyx_pw_5MrWSI_4core_7problem_13Communication_15__repr__(PyObject *__pyx_self, PyObject *__pyx_v_self); /*proto*/
+static PyMethodDef __pyx_mdef_5MrWSI_4core_7problem_13Communication_15__repr__ = {"__repr__", (PyCFunction)__pyx_pw_5MrWSI_4core_7problem_13Communication_15__repr__, METH_O, 0};
+static PyObject *__pyx_pw_5MrWSI_4core_7problem_13Communication_15__repr__(PyObject *__pyx_self, PyObject *__pyx_v_self) {
   PyObject *__pyx_r = 0;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("__repr__ (wrapper)", 0);
-  __pyx_r = __pyx_pf_5MrWSI_4core_7problem_13Communication_12__repr__(__pyx_self, ((PyObject *)__pyx_v_self));
+  __pyx_r = __pyx_pf_5MrWSI_4core_7problem_13Communication_14__repr__(__pyx_self, ((PyObject *)__pyx_v_self));
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_5MrWSI_4core_7problem_13Communication_12__repr__(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_self) {
+static PyObject *__pyx_pf_5MrWSI_4core_7problem_13Communication_14__repr__(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_self) {
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
@@ -11241,6 +11389,7 @@ static __Pyx_StringTabEntry __pyx_string_tab[] = {
   {&__pyx_n_s_Communication___init, __pyx_k_Communication___init, sizeof(__pyx_k_Communication___init), 0, 0, 1, 1},
   {&__pyx_n_s_Communication___repr, __pyx_k_Communication___repr, sizeof(__pyx_k_Communication___repr), 0, 0, 1, 1},
   {&__pyx_n_s_Communication_from_task, __pyx_k_Communication_from_task, sizeof(__pyx_k_Communication_from_task), 0, 0, 1, 1},
+  {&__pyx_n_s_Communication_id_for_set, __pyx_k_Communication_id_for_set, sizeof(__pyx_k_Communication_id_for_set), 0, 0, 1, 1},
   {&__pyx_n_s_Communication_mean_runtime, __pyx_k_Communication_mean_runtime, sizeof(__pyx_k_Communication_mean_runtime), 0, 0, 1, 1},
   {&__pyx_n_s_Communication_pair_id, __pyx_k_Communication_pair_id, sizeof(__pyx_k_Communication_pair_id), 0, 0, 1, 1},
   {&__pyx_n_s_Communication_runtime, __pyx_k_Communication_runtime, sizeof(__pyx_k_Communication_runtime), 0, 0, 1, 1},
@@ -11251,6 +11400,7 @@ static __Pyx_StringTabEntry __pyx_string_tab[] = {
   {&__pyx_n_s_Task___init, __pyx_k_Task___init, sizeof(__pyx_k_Task___init), 0, 0, 1, 1},
   {&__pyx_n_s_Task___repr, __pyx_k_Task___repr, sizeof(__pyx_k_Task___repr), 0, 0, 1, 1},
   {&__pyx_n_s_Task_demands, __pyx_k_Task_demands, sizeof(__pyx_k_Task_demands), 0, 0, 1, 1},
+  {&__pyx_n_s_Task_id_for_set, __pyx_k_Task_id_for_set, sizeof(__pyx_k_Task_id_for_set), 0, 0, 1, 1},
   {&__pyx_n_s_Task_mean_runtime, __pyx_k_Task_mean_runtime, sizeof(__pyx_k_Task_mean_runtime), 0, 0, 1, 1},
   {&__pyx_n_s_Task_prevs, __pyx_k_Task_prevs, sizeof(__pyx_k_Task_prevs), 0, 0, 1, 1},
   {&__pyx_n_s_Task_runtime, __pyx_k_Task_runtime, sizeof(__pyx_k_Task_runtime), 0, 0, 1, 1},
@@ -11279,6 +11429,7 @@ static __Pyx_StringTabEntry __pyx_string_tab[] = {
   {&__pyx_n_s_genexpr, __pyx_k_genexpr, sizeof(__pyx_k_genexpr), 0, 0, 1, 1},
   {&__pyx_kp_s_home_zhaomengz_Desktop_Dropbox, __pyx_k_home_zhaomengz_Desktop_Dropbox, sizeof(__pyx_k_home_zhaomengz_Desktop_Dropbox), 0, 0, 1, 0},
   {&__pyx_n_s_i, __pyx_k_i, sizeof(__pyx_k_i), 0, 0, 1, 1},
+  {&__pyx_n_s_id_for_set, __pyx_k_id_for_set, sizeof(__pyx_k_id_for_set), 0, 0, 1, 1},
   {&__pyx_n_s_import, __pyx_k_import, sizeof(__pyx_k_import), 0, 0, 1, 1},
   {&__pyx_n_s_in_communications, __pyx_k_in_communications, sizeof(__pyx_k_in_communications), 0, 0, 1, 1},
   {&__pyx_n_s_index, __pyx_k_index, sizeof(__pyx_k_index), 0, 0, 1, 1},
@@ -11351,7 +11502,7 @@ static __Pyx_StringTabEntry __pyx_string_tab[] = {
 };
 static int __Pyx_InitCachedBuiltins(void) {
   __pyx_builtin_object = __Pyx_GetBuiltinName(__pyx_n_s_object); if (!__pyx_builtin_object) __PYX_ERR(0, 35, __pyx_L1_error)
-  __pyx_builtin_property = __Pyx_GetBuiltinName(__pyx_n_s_property); if (!__pyx_builtin_property) __PYX_ERR(0, 75, __pyx_L1_error)
+  __pyx_builtin_property = __Pyx_GetBuiltinName(__pyx_n_s_property); if (!__pyx_builtin_property) __PYX_ERR(0, 60, __pyx_L1_error)
   __pyx_builtin_enumerate = __Pyx_GetBuiltinName(__pyx_n_s_enumerate); if (!__pyx_builtin_enumerate) __PYX_ERR(0, 113, __pyx_L1_error)
   __pyx_builtin_map = __Pyx_GetBuiltinName(__pyx_n_s_map); if (!__pyx_builtin_map) __PYX_ERR(0, 119, __pyx_L1_error)
   __pyx_builtin_range = __Pyx_GetBuiltinName(__pyx_n_s_range); if (!__pyx_builtin_range) __PYX_ERR(0, 123, __pyx_L1_error)
@@ -11414,101 +11565,125 @@ static int __Pyx_InitCachedConstants(void) {
   __Pyx_GIVEREF(__pyx_tuple__8);
   __pyx_codeobj__9 = (PyObject*)__Pyx_PyCode_New(3, 0, 3, 0, 0, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__8, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_home_zhaomengz_Desktop_Dropbox, __pyx_n_s_init, 36, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__9)) __PYX_ERR(0, 36, __pyx_L1_error)
 
-  /* "MrWSI/core/problem.pyx":50
- *     #     return self.problem.task_out_communications(self.task_id)
+  /* "MrWSI/core/problem.pyx":42
+ *         self.out_communications = problem.task_out_communications(task_id)
  * 
  *     def demands(self):             # <<<<<<<<<<<<<<
  *         return self.problem.task_demands(self.task_id)
  * 
  */
-  __pyx_tuple__10 = PyTuple_Pack(1, __pyx_n_s_self); if (unlikely(!__pyx_tuple__10)) __PYX_ERR(0, 50, __pyx_L1_error)
+  __pyx_tuple__10 = PyTuple_Pack(1, __pyx_n_s_self); if (unlikely(!__pyx_tuple__10)) __PYX_ERR(0, 42, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple__10);
   __Pyx_GIVEREF(__pyx_tuple__10);
-  __pyx_codeobj__11 = (PyObject*)__Pyx_PyCode_New(1, 0, 1, 0, 0, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__10, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_home_zhaomengz_Desktop_Dropbox, __pyx_n_s_demands, 50, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__11)) __PYX_ERR(0, 50, __pyx_L1_error)
+  __pyx_codeobj__11 = (PyObject*)__Pyx_PyCode_New(1, 0, 1, 0, 0, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__10, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_home_zhaomengz_Desktop_Dropbox, __pyx_n_s_demands, 42, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__11)) __PYX_ERR(0, 42, __pyx_L1_error)
 
-  /* "MrWSI/core/problem.pyx":53
+  /* "MrWSI/core/problem.pyx":45
  *         return self.problem.task_demands(self.task_id)
  * 
  *     def runtime(self, typ):             # <<<<<<<<<<<<<<
  *         return self.problem.task_runtime(self.task_id, typ.type_id)
  * 
  */
-  __pyx_tuple__12 = PyTuple_Pack(2, __pyx_n_s_self, __pyx_n_s_typ); if (unlikely(!__pyx_tuple__12)) __PYX_ERR(0, 53, __pyx_L1_error)
+  __pyx_tuple__12 = PyTuple_Pack(2, __pyx_n_s_self, __pyx_n_s_typ); if (unlikely(!__pyx_tuple__12)) __PYX_ERR(0, 45, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple__12);
   __Pyx_GIVEREF(__pyx_tuple__12);
-  __pyx_codeobj__13 = (PyObject*)__Pyx_PyCode_New(2, 0, 2, 0, 0, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__12, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_home_zhaomengz_Desktop_Dropbox, __pyx_n_s_runtime, 53, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__13)) __PYX_ERR(0, 53, __pyx_L1_error)
+  __pyx_codeobj__13 = (PyObject*)__Pyx_PyCode_New(2, 0, 2, 0, 0, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__12, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_home_zhaomengz_Desktop_Dropbox, __pyx_n_s_runtime, 45, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__13)) __PYX_ERR(0, 45, __pyx_L1_error)
 
-  /* "MrWSI/core/problem.pyx":56
+  /* "MrWSI/core/problem.pyx":48
  *         return self.problem.task_runtime(self.task_id, typ.type_id)
  * 
  *     def prevs(self):             # <<<<<<<<<<<<<<
  *         return self.problem.task_prevs(self.task_id)
  * 
  */
-  __pyx_tuple__14 = PyTuple_Pack(1, __pyx_n_s_self); if (unlikely(!__pyx_tuple__14)) __PYX_ERR(0, 56, __pyx_L1_error)
+  __pyx_tuple__14 = PyTuple_Pack(1, __pyx_n_s_self); if (unlikely(!__pyx_tuple__14)) __PYX_ERR(0, 48, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple__14);
   __Pyx_GIVEREF(__pyx_tuple__14);
-  __pyx_codeobj__15 = (PyObject*)__Pyx_PyCode_New(1, 0, 1, 0, 0, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__14, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_home_zhaomengz_Desktop_Dropbox, __pyx_n_s_prevs, 56, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__15)) __PYX_ERR(0, 56, __pyx_L1_error)
+  __pyx_codeobj__15 = (PyObject*)__Pyx_PyCode_New(1, 0, 1, 0, 0, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__14, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_home_zhaomengz_Desktop_Dropbox, __pyx_n_s_prevs, 48, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__15)) __PYX_ERR(0, 48, __pyx_L1_error)
 
-  /* "MrWSI/core/problem.pyx":59
+  /* "MrWSI/core/problem.pyx":51
  *         return self.problem.task_prevs(self.task_id)
  * 
  *     def succs(self):             # <<<<<<<<<<<<<<
  *         return self.problem.task_prevs(self.task_id)
  * 
  */
-  __pyx_tuple__16 = PyTuple_Pack(1, __pyx_n_s_self); if (unlikely(!__pyx_tuple__16)) __PYX_ERR(0, 59, __pyx_L1_error)
+  __pyx_tuple__16 = PyTuple_Pack(1, __pyx_n_s_self); if (unlikely(!__pyx_tuple__16)) __PYX_ERR(0, 51, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple__16);
   __Pyx_GIVEREF(__pyx_tuple__16);
-  __pyx_codeobj__17 = (PyObject*)__Pyx_PyCode_New(1, 0, 1, 0, 0, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__16, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_home_zhaomengz_Desktop_Dropbox, __pyx_n_s_succs, 59, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__17)) __PYX_ERR(0, 59, __pyx_L1_error)
+  __pyx_codeobj__17 = (PyObject*)__Pyx_PyCode_New(1, 0, 1, 0, 0, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__16, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_home_zhaomengz_Desktop_Dropbox, __pyx_n_s_succs, 51, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__17)) __PYX_ERR(0, 51, __pyx_L1_error)
 
-  /* "MrWSI/core/problem.pyx":62
+  /* "MrWSI/core/problem.pyx":54
  *         return self.problem.task_prevs(self.task_id)
  * 
  *     def mean_runtime(self):             # <<<<<<<<<<<<<<
  *         return self.problem.task_mean_runtime(self.task_id)
  * 
  */
-  __pyx_tuple__18 = PyTuple_Pack(1, __pyx_n_s_self); if (unlikely(!__pyx_tuple__18)) __PYX_ERR(0, 62, __pyx_L1_error)
+  __pyx_tuple__18 = PyTuple_Pack(1, __pyx_n_s_self); if (unlikely(!__pyx_tuple__18)) __PYX_ERR(0, 54, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple__18);
   __Pyx_GIVEREF(__pyx_tuple__18);
-  __pyx_codeobj__19 = (PyObject*)__Pyx_PyCode_New(1, 0, 1, 0, 0, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__18, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_home_zhaomengz_Desktop_Dropbox, __pyx_n_s_mean_runtime, 62, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__19)) __PYX_ERR(0, 62, __pyx_L1_error)
+  __pyx_codeobj__19 = (PyObject*)__Pyx_PyCode_New(1, 0, 1, 0, 0, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__18, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_home_zhaomengz_Desktop_Dropbox, __pyx_n_s_mean_runtime, 54, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__19)) __PYX_ERR(0, 54, __pyx_L1_error)
 
-  /* "MrWSI/core/problem.pyx":65
+  /* "MrWSI/core/problem.pyx":57
  *         return self.problem.task_mean_runtime(self.task_id)
  * 
  *     def __repr__(self):             # <<<<<<<<<<<<<<
  *         return self.problem.task_str_ids[self.task_id]
  * 
  */
-  __pyx_tuple__20 = PyTuple_Pack(1, __pyx_n_s_self); if (unlikely(!__pyx_tuple__20)) __PYX_ERR(0, 65, __pyx_L1_error)
+  __pyx_tuple__20 = PyTuple_Pack(1, __pyx_n_s_self); if (unlikely(!__pyx_tuple__20)) __PYX_ERR(0, 57, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple__20);
   __Pyx_GIVEREF(__pyx_tuple__20);
-  __pyx_codeobj__21 = (PyObject*)__Pyx_PyCode_New(1, 0, 1, 0, 0, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__20, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_home_zhaomengz_Desktop_Dropbox, __pyx_n_s_repr, 65, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__21)) __PYX_ERR(0, 65, __pyx_L1_error)
+  __pyx_codeobj__21 = (PyObject*)__Pyx_PyCode_New(1, 0, 1, 0, 0, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__20, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_home_zhaomengz_Desktop_Dropbox, __pyx_n_s_repr, 57, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__21)) __PYX_ERR(0, 57, __pyx_L1_error)
 
-  /* "MrWSI/core/problem.pyx":69
+  /* "MrWSI/core/problem.pyx":61
+ * 
+ *     @property
+ *     def id_for_set(self):             # <<<<<<<<<<<<<<
+ *         return self.task_id
+ * 
+ */
+  __pyx_tuple__22 = PyTuple_Pack(1, __pyx_n_s_self); if (unlikely(!__pyx_tuple__22)) __PYX_ERR(0, 61, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_tuple__22);
+  __Pyx_GIVEREF(__pyx_tuple__22);
+  __pyx_codeobj__23 = (PyObject*)__Pyx_PyCode_New(1, 0, 1, 0, 0, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__22, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_home_zhaomengz_Desktop_Dropbox, __pyx_n_s_id_for_set, 61, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__23)) __PYX_ERR(0, 61, __pyx_L1_error)
+
+  /* "MrWSI/core/problem.pyx":65
  * 
  * class Communication(object):
  *     def __init__(self, problem, from_task_id, to_task_id):             # <<<<<<<<<<<<<<
  *         self.problem = problem
  *         self.from_task_id = from_task_id
  */
-  __pyx_tuple__22 = PyTuple_Pack(4, __pyx_n_s_self, __pyx_n_s_problem, __pyx_n_s_from_task_id, __pyx_n_s_to_task_id); if (unlikely(!__pyx_tuple__22)) __PYX_ERR(0, 69, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_tuple__22);
-  __Pyx_GIVEREF(__pyx_tuple__22);
-  __pyx_codeobj__23 = (PyObject*)__Pyx_PyCode_New(4, 0, 4, 0, 0, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__22, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_home_zhaomengz_Desktop_Dropbox, __pyx_n_s_init, 69, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__23)) __PYX_ERR(0, 69, __pyx_L1_error)
+  __pyx_tuple__24 = PyTuple_Pack(4, __pyx_n_s_self, __pyx_n_s_problem, __pyx_n_s_from_task_id, __pyx_n_s_to_task_id); if (unlikely(!__pyx_tuple__24)) __PYX_ERR(0, 65, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_tuple__24);
+  __Pyx_GIVEREF(__pyx_tuple__24);
+  __pyx_codeobj__25 = (PyObject*)__Pyx_PyCode_New(4, 0, 4, 0, 0, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__24, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_home_zhaomengz_Desktop_Dropbox, __pyx_n_s_init, 65, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__25)) __PYX_ERR(0, 65, __pyx_L1_error)
 
-  /* "MrWSI/core/problem.pyx":76
+  /* "MrWSI/core/problem.pyx":72
  * 
  *     @property
  *     def pair_id(self):             # <<<<<<<<<<<<<<
  *         return "{}=>{}".format(self.from_task_id, self.to_task_id)
  * 
  */
-  __pyx_tuple__24 = PyTuple_Pack(1, __pyx_n_s_self); if (unlikely(!__pyx_tuple__24)) __PYX_ERR(0, 76, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_tuple__24);
-  __Pyx_GIVEREF(__pyx_tuple__24);
-  __pyx_codeobj__25 = (PyObject*)__Pyx_PyCode_New(1, 0, 1, 0, 0, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__24, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_home_zhaomengz_Desktop_Dropbox, __pyx_n_s_pair_id, 76, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__25)) __PYX_ERR(0, 76, __pyx_L1_error)
+  __pyx_tuple__26 = PyTuple_Pack(1, __pyx_n_s_self); if (unlikely(!__pyx_tuple__26)) __PYX_ERR(0, 72, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_tuple__26);
+  __Pyx_GIVEREF(__pyx_tuple__26);
+  __pyx_codeobj__27 = (PyObject*)__Pyx_PyCode_New(1, 0, 1, 0, 0, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__26, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_home_zhaomengz_Desktop_Dropbox, __pyx_n_s_pair_id, 72, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__27)) __PYX_ERR(0, 72, __pyx_L1_error)
+
+  /* "MrWSI/core/problem.pyx":76
+ * 
+ *     @property
+ *     def id_for_set(self):             # <<<<<<<<<<<<<<
+ *         return self.from_task_id, self.to_task_id
+ * 
+ */
+  __pyx_tuple__28 = PyTuple_Pack(1, __pyx_n_s_self); if (unlikely(!__pyx_tuple__28)) __PYX_ERR(0, 76, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_tuple__28);
+  __Pyx_GIVEREF(__pyx_tuple__28);
+  __pyx_codeobj__29 = (PyObject*)__Pyx_PyCode_New(1, 0, 1, 0, 0, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__28, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_home_zhaomengz_Desktop_Dropbox, __pyx_n_s_id_for_set, 76, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__29)) __PYX_ERR(0, 76, __pyx_L1_error)
 
   /* "MrWSI/core/problem.pyx":80
  * 
@@ -11517,10 +11692,10 @@ static int __Pyx_InitCachedConstants(void) {
  *         return self.problem.tasks[self.from_task_id]
  * 
  */
-  __pyx_tuple__26 = PyTuple_Pack(1, __pyx_n_s_self); if (unlikely(!__pyx_tuple__26)) __PYX_ERR(0, 80, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_tuple__26);
-  __Pyx_GIVEREF(__pyx_tuple__26);
-  __pyx_codeobj__27 = (PyObject*)__Pyx_PyCode_New(1, 0, 1, 0, 0, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__26, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_home_zhaomengz_Desktop_Dropbox, __pyx_n_s_from_task, 80, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__27)) __PYX_ERR(0, 80, __pyx_L1_error)
+  __pyx_tuple__30 = PyTuple_Pack(1, __pyx_n_s_self); if (unlikely(!__pyx_tuple__30)) __PYX_ERR(0, 80, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_tuple__30);
+  __Pyx_GIVEREF(__pyx_tuple__30);
+  __pyx_codeobj__31 = (PyObject*)__Pyx_PyCode_New(1, 0, 1, 0, 0, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__30, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_home_zhaomengz_Desktop_Dropbox, __pyx_n_s_from_task, 80, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__31)) __PYX_ERR(0, 80, __pyx_L1_error)
 
   /* "MrWSI/core/problem.pyx":84
  * 
@@ -11529,10 +11704,10 @@ static int __Pyx_InitCachedConstants(void) {
  *         return self.problem.tasks[self.to_task_id]
  * 
  */
-  __pyx_tuple__28 = PyTuple_Pack(1, __pyx_n_s_self); if (unlikely(!__pyx_tuple__28)) __PYX_ERR(0, 84, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_tuple__28);
-  __Pyx_GIVEREF(__pyx_tuple__28);
-  __pyx_codeobj__29 = (PyObject*)__Pyx_PyCode_New(1, 0, 1, 0, 0, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__28, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_home_zhaomengz_Desktop_Dropbox, __pyx_n_s_to_task, 84, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__29)) __PYX_ERR(0, 84, __pyx_L1_error)
+  __pyx_tuple__32 = PyTuple_Pack(1, __pyx_n_s_self); if (unlikely(!__pyx_tuple__32)) __PYX_ERR(0, 84, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_tuple__32);
+  __Pyx_GIVEREF(__pyx_tuple__32);
+  __pyx_codeobj__33 = (PyObject*)__Pyx_PyCode_New(1, 0, 1, 0, 0, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__32, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_home_zhaomengz_Desktop_Dropbox, __pyx_n_s_to_task, 84, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__33)) __PYX_ERR(0, 84, __pyx_L1_error)
 
   /* "MrWSI/core/problem.pyx":87
  *         return self.problem.tasks[self.to_task_id]
@@ -11541,10 +11716,10 @@ static int __Pyx_InitCachedConstants(void) {
  *         if bandwidth == float("inf"):
  *             return 0
  */
-  __pyx_tuple__30 = PyTuple_Pack(2, __pyx_n_s_self, __pyx_n_s_bandwidth); if (unlikely(!__pyx_tuple__30)) __PYX_ERR(0, 87, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_tuple__30);
-  __Pyx_GIVEREF(__pyx_tuple__30);
-  __pyx_codeobj__31 = (PyObject*)__Pyx_PyCode_New(2, 0, 2, 0, 0, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__30, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_home_zhaomengz_Desktop_Dropbox, __pyx_n_s_runtime, 87, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__31)) __PYX_ERR(0, 87, __pyx_L1_error)
+  __pyx_tuple__34 = PyTuple_Pack(2, __pyx_n_s_self, __pyx_n_s_bandwidth); if (unlikely(!__pyx_tuple__34)) __PYX_ERR(0, 87, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_tuple__34);
+  __Pyx_GIVEREF(__pyx_tuple__34);
+  __pyx_codeobj__35 = (PyObject*)__Pyx_PyCode_New(2, 0, 2, 0, 0, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__34, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_home_zhaomengz_Desktop_Dropbox, __pyx_n_s_runtime, 87, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__35)) __PYX_ERR(0, 87, __pyx_L1_error)
 
   /* "MrWSI/core/problem.pyx":93
  *             return ceil(self.data_size / bandwidth)
@@ -11553,10 +11728,10 @@ static int __Pyx_InitCachedConstants(void) {
  *         return self.runtime(self.problem.type_mean_bandwidth())
  * 
  */
-  __pyx_tuple__32 = PyTuple_Pack(1, __pyx_n_s_self); if (unlikely(!__pyx_tuple__32)) __PYX_ERR(0, 93, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_tuple__32);
-  __Pyx_GIVEREF(__pyx_tuple__32);
-  __pyx_codeobj__33 = (PyObject*)__Pyx_PyCode_New(1, 0, 1, 0, 0, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__32, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_home_zhaomengz_Desktop_Dropbox, __pyx_n_s_mean_runtime, 93, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__33)) __PYX_ERR(0, 93, __pyx_L1_error)
+  __pyx_tuple__36 = PyTuple_Pack(1, __pyx_n_s_self); if (unlikely(!__pyx_tuple__36)) __PYX_ERR(0, 93, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_tuple__36);
+  __Pyx_GIVEREF(__pyx_tuple__36);
+  __pyx_codeobj__37 = (PyObject*)__Pyx_PyCode_New(1, 0, 1, 0, 0, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__36, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_home_zhaomengz_Desktop_Dropbox, __pyx_n_s_mean_runtime, 93, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__37)) __PYX_ERR(0, 93, __pyx_L1_error)
 
   /* "MrWSI/core/problem.pyx":96
  *         return self.runtime(self.problem.type_mean_bandwidth())
@@ -11565,10 +11740,10 @@ static int __Pyx_InitCachedConstants(void) {
  *         return "({}=>{})".format(self.problem.task_str_ids[self.from_task_id],
  *                                  self.problem.task_str_ids[self.to_task_id])
  */
-  __pyx_tuple__34 = PyTuple_Pack(1, __pyx_n_s_self); if (unlikely(!__pyx_tuple__34)) __PYX_ERR(0, 96, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_tuple__34);
-  __Pyx_GIVEREF(__pyx_tuple__34);
-  __pyx_codeobj__35 = (PyObject*)__Pyx_PyCode_New(1, 0, 1, 0, 0, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__34, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_home_zhaomengz_Desktop_Dropbox, __pyx_n_s_repr, 96, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__35)) __PYX_ERR(0, 96, __pyx_L1_error)
+  __pyx_tuple__38 = PyTuple_Pack(1, __pyx_n_s_self); if (unlikely(!__pyx_tuple__38)) __PYX_ERR(0, 96, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_tuple__38);
+  __Pyx_GIVEREF(__pyx_tuple__38);
+  __pyx_codeobj__39 = (PyObject*)__Pyx_PyCode_New(1, 0, 1, 0, 0, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__38, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_home_zhaomengz_Desktop_Dropbox, __pyx_n_s_repr, 96, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__39)) __PYX_ERR(0, 96, __pyx_L1_error)
   __Pyx_RefNannyFinishContext();
   return 0;
   __pyx_L1_error:;
@@ -11825,76 +12000,104 @@ PyMODINIT_FUNC PyInit_problem(void)
   if (PyObject_SetItem(__pyx_t_4, __pyx_n_s_init, __pyx_t_5) < 0) __PYX_ERR(0, 36, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
 
-  /* "MrWSI/core/problem.pyx":50
- *     #     return self.problem.task_out_communications(self.task_id)
+  /* "MrWSI/core/problem.pyx":42
+ *         self.out_communications = problem.task_out_communications(task_id)
  * 
  *     def demands(self):             # <<<<<<<<<<<<<<
  *         return self.problem.task_demands(self.task_id)
  * 
  */
-  __pyx_t_5 = __Pyx_CyFunction_NewEx(&__pyx_mdef_5MrWSI_4core_7problem_4Task_3demands, 0, __pyx_n_s_Task_demands, NULL, __pyx_n_s_MrWSI_core_problem, __pyx_d, ((PyObject *)__pyx_codeobj__11)); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 50, __pyx_L1_error)
+  __pyx_t_5 = __Pyx_CyFunction_NewEx(&__pyx_mdef_5MrWSI_4core_7problem_4Task_3demands, 0, __pyx_n_s_Task_demands, NULL, __pyx_n_s_MrWSI_core_problem, __pyx_d, ((PyObject *)__pyx_codeobj__11)); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 42, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_5);
-  if (PyObject_SetItem(__pyx_t_4, __pyx_n_s_demands, __pyx_t_5) < 0) __PYX_ERR(0, 50, __pyx_L1_error)
+  if (PyObject_SetItem(__pyx_t_4, __pyx_n_s_demands, __pyx_t_5) < 0) __PYX_ERR(0, 42, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
 
-  /* "MrWSI/core/problem.pyx":53
+  /* "MrWSI/core/problem.pyx":45
  *         return self.problem.task_demands(self.task_id)
  * 
  *     def runtime(self, typ):             # <<<<<<<<<<<<<<
  *         return self.problem.task_runtime(self.task_id, typ.type_id)
  * 
  */
-  __pyx_t_5 = __Pyx_CyFunction_NewEx(&__pyx_mdef_5MrWSI_4core_7problem_4Task_5runtime, 0, __pyx_n_s_Task_runtime, NULL, __pyx_n_s_MrWSI_core_problem, __pyx_d, ((PyObject *)__pyx_codeobj__13)); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 53, __pyx_L1_error)
+  __pyx_t_5 = __Pyx_CyFunction_NewEx(&__pyx_mdef_5MrWSI_4core_7problem_4Task_5runtime, 0, __pyx_n_s_Task_runtime, NULL, __pyx_n_s_MrWSI_core_problem, __pyx_d, ((PyObject *)__pyx_codeobj__13)); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 45, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_5);
-  if (PyObject_SetItem(__pyx_t_4, __pyx_n_s_runtime, __pyx_t_5) < 0) __PYX_ERR(0, 53, __pyx_L1_error)
+  if (PyObject_SetItem(__pyx_t_4, __pyx_n_s_runtime, __pyx_t_5) < 0) __PYX_ERR(0, 45, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
 
-  /* "MrWSI/core/problem.pyx":56
+  /* "MrWSI/core/problem.pyx":48
  *         return self.problem.task_runtime(self.task_id, typ.type_id)
  * 
  *     def prevs(self):             # <<<<<<<<<<<<<<
  *         return self.problem.task_prevs(self.task_id)
  * 
  */
-  __pyx_t_5 = __Pyx_CyFunction_NewEx(&__pyx_mdef_5MrWSI_4core_7problem_4Task_7prevs, 0, __pyx_n_s_Task_prevs, NULL, __pyx_n_s_MrWSI_core_problem, __pyx_d, ((PyObject *)__pyx_codeobj__15)); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 56, __pyx_L1_error)
+  __pyx_t_5 = __Pyx_CyFunction_NewEx(&__pyx_mdef_5MrWSI_4core_7problem_4Task_7prevs, 0, __pyx_n_s_Task_prevs, NULL, __pyx_n_s_MrWSI_core_problem, __pyx_d, ((PyObject *)__pyx_codeobj__15)); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 48, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_5);
-  if (PyObject_SetItem(__pyx_t_4, __pyx_n_s_prevs, __pyx_t_5) < 0) __PYX_ERR(0, 56, __pyx_L1_error)
+  if (PyObject_SetItem(__pyx_t_4, __pyx_n_s_prevs, __pyx_t_5) < 0) __PYX_ERR(0, 48, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
 
-  /* "MrWSI/core/problem.pyx":59
+  /* "MrWSI/core/problem.pyx":51
  *         return self.problem.task_prevs(self.task_id)
  * 
  *     def succs(self):             # <<<<<<<<<<<<<<
  *         return self.problem.task_prevs(self.task_id)
  * 
  */
-  __pyx_t_5 = __Pyx_CyFunction_NewEx(&__pyx_mdef_5MrWSI_4core_7problem_4Task_9succs, 0, __pyx_n_s_Task_succs, NULL, __pyx_n_s_MrWSI_core_problem, __pyx_d, ((PyObject *)__pyx_codeobj__17)); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 59, __pyx_L1_error)
+  __pyx_t_5 = __Pyx_CyFunction_NewEx(&__pyx_mdef_5MrWSI_4core_7problem_4Task_9succs, 0, __pyx_n_s_Task_succs, NULL, __pyx_n_s_MrWSI_core_problem, __pyx_d, ((PyObject *)__pyx_codeobj__17)); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 51, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_5);
-  if (PyObject_SetItem(__pyx_t_4, __pyx_n_s_succs, __pyx_t_5) < 0) __PYX_ERR(0, 59, __pyx_L1_error)
+  if (PyObject_SetItem(__pyx_t_4, __pyx_n_s_succs, __pyx_t_5) < 0) __PYX_ERR(0, 51, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
 
-  /* "MrWSI/core/problem.pyx":62
+  /* "MrWSI/core/problem.pyx":54
  *         return self.problem.task_prevs(self.task_id)
  * 
  *     def mean_runtime(self):             # <<<<<<<<<<<<<<
  *         return self.problem.task_mean_runtime(self.task_id)
  * 
  */
-  __pyx_t_5 = __Pyx_CyFunction_NewEx(&__pyx_mdef_5MrWSI_4core_7problem_4Task_11mean_runtime, 0, __pyx_n_s_Task_mean_runtime, NULL, __pyx_n_s_MrWSI_core_problem, __pyx_d, ((PyObject *)__pyx_codeobj__19)); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 62, __pyx_L1_error)
+  __pyx_t_5 = __Pyx_CyFunction_NewEx(&__pyx_mdef_5MrWSI_4core_7problem_4Task_11mean_runtime, 0, __pyx_n_s_Task_mean_runtime, NULL, __pyx_n_s_MrWSI_core_problem, __pyx_d, ((PyObject *)__pyx_codeobj__19)); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 54, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_5);
-  if (PyObject_SetItem(__pyx_t_4, __pyx_n_s_mean_runtime, __pyx_t_5) < 0) __PYX_ERR(0, 62, __pyx_L1_error)
+  if (PyObject_SetItem(__pyx_t_4, __pyx_n_s_mean_runtime, __pyx_t_5) < 0) __PYX_ERR(0, 54, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
 
-  /* "MrWSI/core/problem.pyx":65
+  /* "MrWSI/core/problem.pyx":57
  *         return self.problem.task_mean_runtime(self.task_id)
  * 
  *     def __repr__(self):             # <<<<<<<<<<<<<<
  *         return self.problem.task_str_ids[self.task_id]
  * 
  */
-  __pyx_t_5 = __Pyx_CyFunction_NewEx(&__pyx_mdef_5MrWSI_4core_7problem_4Task_13__repr__, 0, __pyx_n_s_Task___repr, NULL, __pyx_n_s_MrWSI_core_problem, __pyx_d, ((PyObject *)__pyx_codeobj__21)); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 65, __pyx_L1_error)
+  __pyx_t_5 = __Pyx_CyFunction_NewEx(&__pyx_mdef_5MrWSI_4core_7problem_4Task_13__repr__, 0, __pyx_n_s_Task___repr, NULL, __pyx_n_s_MrWSI_core_problem, __pyx_d, ((PyObject *)__pyx_codeobj__21)); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 57, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_5);
-  if (PyObject_SetItem(__pyx_t_4, __pyx_n_s_repr, __pyx_t_5) < 0) __PYX_ERR(0, 65, __pyx_L1_error)
+  if (PyObject_SetItem(__pyx_t_4, __pyx_n_s_repr, __pyx_t_5) < 0) __PYX_ERR(0, 57, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
+
+  /* "MrWSI/core/problem.pyx":61
+ * 
+ *     @property
+ *     def id_for_set(self):             # <<<<<<<<<<<<<<
+ *         return self.task_id
+ * 
+ */
+  __pyx_t_5 = __Pyx_CyFunction_NewEx(&__pyx_mdef_5MrWSI_4core_7problem_4Task_15id_for_set, 0, __pyx_n_s_Task_id_for_set, NULL, __pyx_n_s_MrWSI_core_problem, __pyx_d, ((PyObject *)__pyx_codeobj__23)); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 61, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_5);
+
+  /* "MrWSI/core/problem.pyx":60
+ *         return self.problem.task_str_ids[self.task_id]
+ * 
+ *     @property             # <<<<<<<<<<<<<<
+ *     def id_for_set(self):
+ *         return self.task_id
+ */
+  __pyx_t_6 = PyTuple_New(1); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 60, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_6);
+  __Pyx_GIVEREF(__pyx_t_5);
+  PyTuple_SET_ITEM(__pyx_t_6, 0, __pyx_t_5);
+  __pyx_t_5 = 0;
+  __pyx_t_5 = __Pyx_PyObject_Call(__pyx_builtin_property, __pyx_t_6, NULL); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 60, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_5);
+  __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
+  if (PyObject_SetItem(__pyx_t_4, __pyx_n_s_id_for_set, __pyx_t_5) < 0) __PYX_ERR(0, 61, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
 
   /* "MrWSI/core/problem.pyx":35
@@ -11912,51 +12115,79 @@ PyMODINIT_FUNC PyInit_problem(void)
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
-  /* "MrWSI/core/problem.pyx":68
- *         return self.problem.task_str_ids[self.task_id]
+  /* "MrWSI/core/problem.pyx":64
+ *         return self.task_id
  * 
  * class Communication(object):             # <<<<<<<<<<<<<<
  *     def __init__(self, problem, from_task_id, to_task_id):
  *         self.problem = problem
  */
-  __pyx_t_2 = PyTuple_New(1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 68, __pyx_L1_error)
+  __pyx_t_2 = PyTuple_New(1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 64, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_INCREF(__pyx_builtin_object);
   __Pyx_GIVEREF(__pyx_builtin_object);
   PyTuple_SET_ITEM(__pyx_t_2, 0, __pyx_builtin_object);
-  __pyx_t_3 = __Pyx_CalculateMetaclass(NULL, __pyx_t_2); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 68, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_CalculateMetaclass(NULL, __pyx_t_2); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 64, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
-  __pyx_t_4 = __Pyx_Py3MetaclassPrepare(__pyx_t_3, __pyx_t_2, __pyx_n_s_Communication, __pyx_n_s_Communication, (PyObject *) NULL, __pyx_n_s_MrWSI_core_problem, (PyObject *) NULL); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 68, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_Py3MetaclassPrepare(__pyx_t_3, __pyx_t_2, __pyx_n_s_Communication, __pyx_n_s_Communication, (PyObject *) NULL, __pyx_n_s_MrWSI_core_problem, (PyObject *) NULL); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 64, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
 
-  /* "MrWSI/core/problem.pyx":69
+  /* "MrWSI/core/problem.pyx":65
  * 
  * class Communication(object):
  *     def __init__(self, problem, from_task_id, to_task_id):             # <<<<<<<<<<<<<<
  *         self.problem = problem
  *         self.from_task_id = from_task_id
  */
-  __pyx_t_5 = __Pyx_CyFunction_NewEx(&__pyx_mdef_5MrWSI_4core_7problem_13Communication_1__init__, 0, __pyx_n_s_Communication___init, NULL, __pyx_n_s_MrWSI_core_problem, __pyx_d, ((PyObject *)__pyx_codeobj__23)); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 69, __pyx_L1_error)
+  __pyx_t_5 = __Pyx_CyFunction_NewEx(&__pyx_mdef_5MrWSI_4core_7problem_13Communication_1__init__, 0, __pyx_n_s_Communication___init, NULL, __pyx_n_s_MrWSI_core_problem, __pyx_d, ((PyObject *)__pyx_codeobj__25)); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 65, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_5);
-  if (PyObject_SetItem(__pyx_t_4, __pyx_n_s_init, __pyx_t_5) < 0) __PYX_ERR(0, 69, __pyx_L1_error)
+  if (PyObject_SetItem(__pyx_t_4, __pyx_n_s_init, __pyx_t_5) < 0) __PYX_ERR(0, 65, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
 
-  /* "MrWSI/core/problem.pyx":76
+  /* "MrWSI/core/problem.pyx":72
  * 
  *     @property
  *     def pair_id(self):             # <<<<<<<<<<<<<<
  *         return "{}=>{}".format(self.from_task_id, self.to_task_id)
  * 
  */
-  __pyx_t_5 = __Pyx_CyFunction_NewEx(&__pyx_mdef_5MrWSI_4core_7problem_13Communication_3pair_id, 0, __pyx_n_s_Communication_pair_id, NULL, __pyx_n_s_MrWSI_core_problem, __pyx_d, ((PyObject *)__pyx_codeobj__25)); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 76, __pyx_L1_error)
+  __pyx_t_5 = __Pyx_CyFunction_NewEx(&__pyx_mdef_5MrWSI_4core_7problem_13Communication_3pair_id, 0, __pyx_n_s_Communication_pair_id, NULL, __pyx_n_s_MrWSI_core_problem, __pyx_d, ((PyObject *)__pyx_codeobj__27)); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 72, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_5);
 
-  /* "MrWSI/core/problem.pyx":75
+  /* "MrWSI/core/problem.pyx":71
  *         self.data_size = self.problem.communication_data_size(from_task_id, to_task_id)
  * 
  *     @property             # <<<<<<<<<<<<<<
  *     def pair_id(self):
  *         return "{}=>{}".format(self.from_task_id, self.to_task_id)
+ */
+  __pyx_t_6 = PyTuple_New(1); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 71, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_6);
+  __Pyx_GIVEREF(__pyx_t_5);
+  PyTuple_SET_ITEM(__pyx_t_6, 0, __pyx_t_5);
+  __pyx_t_5 = 0;
+  __pyx_t_5 = __Pyx_PyObject_Call(__pyx_builtin_property, __pyx_t_6, NULL); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 71, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_5);
+  __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
+  if (PyObject_SetItem(__pyx_t_4, __pyx_n_s_pair_id, __pyx_t_5) < 0) __PYX_ERR(0, 72, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
+
+  /* "MrWSI/core/problem.pyx":76
+ * 
+ *     @property
+ *     def id_for_set(self):             # <<<<<<<<<<<<<<
+ *         return self.from_task_id, self.to_task_id
+ * 
+ */
+  __pyx_t_5 = __Pyx_CyFunction_NewEx(&__pyx_mdef_5MrWSI_4core_7problem_13Communication_5id_for_set, 0, __pyx_n_s_Communication_id_for_set, NULL, __pyx_n_s_MrWSI_core_problem, __pyx_d, ((PyObject *)__pyx_codeobj__29)); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 76, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_5);
+
+  /* "MrWSI/core/problem.pyx":75
+ *         return "{}=>{}".format(self.from_task_id, self.to_task_id)
+ * 
+ *     @property             # <<<<<<<<<<<<<<
+ *     def id_for_set(self):
+ *         return self.from_task_id, self.to_task_id
  */
   __pyx_t_6 = PyTuple_New(1); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 75, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_6);
@@ -11966,7 +12197,7 @@ PyMODINIT_FUNC PyInit_problem(void)
   __pyx_t_5 = __Pyx_PyObject_Call(__pyx_builtin_property, __pyx_t_6, NULL); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 75, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_5);
   __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
-  if (PyObject_SetItem(__pyx_t_4, __pyx_n_s_pair_id, __pyx_t_5) < 0) __PYX_ERR(0, 76, __pyx_L1_error)
+  if (PyObject_SetItem(__pyx_t_4, __pyx_n_s_id_for_set, __pyx_t_5) < 0) __PYX_ERR(0, 76, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
 
   /* "MrWSI/core/problem.pyx":80
@@ -11976,11 +12207,11 @@ PyMODINIT_FUNC PyInit_problem(void)
  *         return self.problem.tasks[self.from_task_id]
  * 
  */
-  __pyx_t_5 = __Pyx_CyFunction_NewEx(&__pyx_mdef_5MrWSI_4core_7problem_13Communication_5from_task, 0, __pyx_n_s_Communication_from_task, NULL, __pyx_n_s_MrWSI_core_problem, __pyx_d, ((PyObject *)__pyx_codeobj__27)); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 80, __pyx_L1_error)
+  __pyx_t_5 = __Pyx_CyFunction_NewEx(&__pyx_mdef_5MrWSI_4core_7problem_13Communication_7from_task, 0, __pyx_n_s_Communication_from_task, NULL, __pyx_n_s_MrWSI_core_problem, __pyx_d, ((PyObject *)__pyx_codeobj__31)); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 80, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_5);
 
   /* "MrWSI/core/problem.pyx":79
- *         return "{}=>{}".format(self.from_task_id, self.to_task_id)
+ *         return self.from_task_id, self.to_task_id
  * 
  *     @property             # <<<<<<<<<<<<<<
  *     def from_task(self):
@@ -12004,7 +12235,7 @@ PyMODINIT_FUNC PyInit_problem(void)
  *         return self.problem.tasks[self.to_task_id]
  * 
  */
-  __pyx_t_5 = __Pyx_CyFunction_NewEx(&__pyx_mdef_5MrWSI_4core_7problem_13Communication_7to_task, 0, __pyx_n_s_Communication_to_task, NULL, __pyx_n_s_MrWSI_core_problem, __pyx_d, ((PyObject *)__pyx_codeobj__29)); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 84, __pyx_L1_error)
+  __pyx_t_5 = __Pyx_CyFunction_NewEx(&__pyx_mdef_5MrWSI_4core_7problem_13Communication_9to_task, 0, __pyx_n_s_Communication_to_task, NULL, __pyx_n_s_MrWSI_core_problem, __pyx_d, ((PyObject *)__pyx_codeobj__33)); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 84, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_5);
 
   /* "MrWSI/core/problem.pyx":83
@@ -12032,7 +12263,7 @@ PyMODINIT_FUNC PyInit_problem(void)
  *         if bandwidth == float("inf"):
  *             return 0
  */
-  __pyx_t_5 = __Pyx_CyFunction_NewEx(&__pyx_mdef_5MrWSI_4core_7problem_13Communication_9runtime, 0, __pyx_n_s_Communication_runtime, NULL, __pyx_n_s_MrWSI_core_problem, __pyx_d, ((PyObject *)__pyx_codeobj__31)); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 87, __pyx_L1_error)
+  __pyx_t_5 = __Pyx_CyFunction_NewEx(&__pyx_mdef_5MrWSI_4core_7problem_13Communication_11runtime, 0, __pyx_n_s_Communication_runtime, NULL, __pyx_n_s_MrWSI_core_problem, __pyx_d, ((PyObject *)__pyx_codeobj__35)); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 87, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_5);
   if (PyObject_SetItem(__pyx_t_4, __pyx_n_s_runtime, __pyx_t_5) < 0) __PYX_ERR(0, 87, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
@@ -12044,7 +12275,7 @@ PyMODINIT_FUNC PyInit_problem(void)
  *         return self.runtime(self.problem.type_mean_bandwidth())
  * 
  */
-  __pyx_t_5 = __Pyx_CyFunction_NewEx(&__pyx_mdef_5MrWSI_4core_7problem_13Communication_11mean_runtime, 0, __pyx_n_s_Communication_mean_runtime, NULL, __pyx_n_s_MrWSI_core_problem, __pyx_d, ((PyObject *)__pyx_codeobj__33)); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 93, __pyx_L1_error)
+  __pyx_t_5 = __Pyx_CyFunction_NewEx(&__pyx_mdef_5MrWSI_4core_7problem_13Communication_13mean_runtime, 0, __pyx_n_s_Communication_mean_runtime, NULL, __pyx_n_s_MrWSI_core_problem, __pyx_d, ((PyObject *)__pyx_codeobj__37)); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 93, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_5);
   if (PyObject_SetItem(__pyx_t_4, __pyx_n_s_mean_runtime, __pyx_t_5) < 0) __PYX_ERR(0, 93, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
@@ -12056,21 +12287,21 @@ PyMODINIT_FUNC PyInit_problem(void)
  *         return "({}=>{})".format(self.problem.task_str_ids[self.from_task_id],
  *                                  self.problem.task_str_ids[self.to_task_id])
  */
-  __pyx_t_5 = __Pyx_CyFunction_NewEx(&__pyx_mdef_5MrWSI_4core_7problem_13Communication_13__repr__, 0, __pyx_n_s_Communication___repr, NULL, __pyx_n_s_MrWSI_core_problem, __pyx_d, ((PyObject *)__pyx_codeobj__35)); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 96, __pyx_L1_error)
+  __pyx_t_5 = __Pyx_CyFunction_NewEx(&__pyx_mdef_5MrWSI_4core_7problem_13Communication_15__repr__, 0, __pyx_n_s_Communication___repr, NULL, __pyx_n_s_MrWSI_core_problem, __pyx_d, ((PyObject *)__pyx_codeobj__39)); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 96, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_5);
   if (PyObject_SetItem(__pyx_t_4, __pyx_n_s_repr, __pyx_t_5) < 0) __PYX_ERR(0, 96, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
 
-  /* "MrWSI/core/problem.pyx":68
- *         return self.problem.task_str_ids[self.task_id]
+  /* "MrWSI/core/problem.pyx":64
+ *         return self.task_id
  * 
  * class Communication(object):             # <<<<<<<<<<<<<<
  *     def __init__(self, problem, from_task_id, to_task_id):
  *         self.problem = problem
  */
-  __pyx_t_5 = __Pyx_Py3ClassCreate(__pyx_t_3, __pyx_n_s_Communication, __pyx_t_2, __pyx_t_4, NULL, 0, 1); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 68, __pyx_L1_error)
+  __pyx_t_5 = __Pyx_Py3ClassCreate(__pyx_t_3, __pyx_n_s_Communication, __pyx_t_2, __pyx_t_4, NULL, 0, 1); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 64, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_5);
-  if (PyDict_SetItem(__pyx_d, __pyx_n_s_Communication, __pyx_t_5) < 0) __PYX_ERR(0, 68, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_d, __pyx_n_s_Communication, __pyx_t_5) < 0) __PYX_ERR(0, 64, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;

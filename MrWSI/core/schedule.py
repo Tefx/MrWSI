@@ -14,7 +14,7 @@ class Schedule(object):
                    if callable(typs) else lambda x: typs[x], sts
                    if callable(sts) else lambda x: sts[x.task_id], csts
                    if callable(csts) else
-                   lambda x, y: csts[(x.task_id, y.task_id)], len(typs))
+                   lambda comm: csts[(comm.from_task_id, comm.to_task_id)], len(typs))
 
     def FT(self, task):
         return self.ST(task) + task.runtime(self.TYP_PL(task))
@@ -25,3 +25,6 @@ class Schedule(object):
     def span(self):
         return max(self.FT(task) for task in self.problem.tasks) - min(
             self.ST(task) for task in self.problem.tasks)
+
+    def is_inter_comm(self, comm):
+        return self.PL(comm.from_task) != self.PL(comm.to_task)

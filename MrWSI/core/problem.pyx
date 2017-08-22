@@ -39,14 +39,6 @@ class Task(object):
         self.in_communications = problem.task_in_communications(task_id)
         self.out_communications = problem.task_out_communications(task_id)
 
-    # @property
-    # def in_communications(self):
-    #     return self.problem.task_in_communications(self.task_id)
-    #
-    # @property
-    # def out_communications(self):
-    #     return self.problem.task_out_communications(self.task_id)
-
     def demands(self):
         return self.problem.task_demands(self.task_id)
 
@@ -65,6 +57,10 @@ class Task(object):
     def __repr__(self):
         return self.problem.task_str_ids[self.task_id]
 
+    @property
+    def id_for_set(self):
+        return self.task_id
+
 class Communication(object):
     def __init__(self, problem, from_task_id, to_task_id):
         self.problem = problem
@@ -75,6 +71,10 @@ class Communication(object):
     @property
     def pair_id(self):
         return "{}=>{}".format(self.from_task_id, self.to_task_id)
+
+    @property
+    def id_for_set(self):
+        return self.from_task_id, self.to_task_id
 
     @property
     def from_task(self):

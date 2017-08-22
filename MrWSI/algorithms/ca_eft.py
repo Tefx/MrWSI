@@ -144,9 +144,9 @@ class CA_EFT(object):
     def solve(self):
         for task in sort_by_rank_u(self.problem):
             self.plan_task(task)
-        plot_usage(self.platform, 0, "{}.test".format(self.__class__.__name__))
-        plot_usage(self.platform, 2, "{}.test".format(self.__class__.__name__))
-        plot_usage(self.platform, 3, "{}.test".format(self.__class__.__name__))
+        # plot_usage(self.platform, 0, "{}.test".format(self.__class__.__name__))
+        # plot_usage(self.platform, 2, "{}.test".format(self.__class__.__name__))
+        # plot_usage(self.platform, 3, "{}.test".format(self.__class__.__name__))
         return self.platform.span(), self.platform.cost()
 
 

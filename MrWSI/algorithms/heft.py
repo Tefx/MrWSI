@@ -106,7 +106,7 @@ def heft(problem, limit=1000):
             pls[task.task_id] = i
         typs.append(machine.vm_type)
         schedule = Schedule.from_arrays(problem, pls, typs, start_times,
-                                        lambda x, y: finish_times[x.task_id])
+                                        lambda comm: finish_times[comm.from_task_id])
     cost = sum(
         machine_info(machine, schedule)[2] for machine in platform.machines)
     return schedule, cost
