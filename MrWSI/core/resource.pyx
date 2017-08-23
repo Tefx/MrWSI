@@ -27,6 +27,11 @@ cdef class MultiRes:
         mr += other
         return mr
 
+    def __sub__(MultiRes self, MultiRes other):
+        mr = mr_wrap_c(self.c, self.dimension)
+        mr -= other
+        return mr
+
     def imax(MultiRes self, MultiRes other):
         mr_imax(self.c, other.c, self.dimension)
 

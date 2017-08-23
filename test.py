@@ -19,21 +19,21 @@ if __name__ == "__main__":
     wrk_dir = "./resources/workflows/"
     for wrk in sorted(
             os.listdir(wrk_dir), key=lambda x: int(x[:-4].split("_")[1])):
-    # for wrk in ["CyberShake_1000.wrk"]:
+    # for wrk in ["Sipht_100.wrk"]:
         if wrk.endswith(".wrk"):
             problem = Problem.load(
                 os.path.join(wrk_dir, wrk),
                 ec2_file,
-                type_family="t2.large",
-                charge_unit=60)
+                type_family="t2",
+                charge_unit=1)
             schedule, scheduled_cost = heft(problem)
             scheduled_span = schedule.span()
             results = [
-                ("Schedule", (scheduled_span, scheduled_cost)),
-                ("CA_EFT", (CA_EFT(problem).solve())),
-                ("CA_EFT2", CA_EFT2(problem).solve()),
-                ("FCFS", FCFSEnv(problem, schedule).run()),
-                ("FAIR", FairEnv(problem, schedule).run()),
+                ("HEFT (scheduled)", (scheduled_span, scheduled_cost)),
+                ("HEFT (fcfs)", FCFSEnv(problem, schedule).run()),
+                ("HEFT (fair)", FairEnv(problem, schedule).run()),
+                ("CA_EFT(C)", (CA_EFT(problem).solve())),
+                ("CA_EFT(V)", CA_EFT2(problem).solve()),
             ]
             print("{:<16} ".format(wrk[:-4]) + " ".join(
                 str_result(*res) for res in results))

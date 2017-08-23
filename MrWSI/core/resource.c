@@ -923,13 +923,14 @@ static PyObject *__pyx_pf_5MrWSI_4core_8resource_8MultiRes_4zero(CYTHON_UNUSED P
 static PyObject *__pyx_pf_5MrWSI_4core_8resource_8MultiRes_6__iadd__(struct __pyx_obj_5MrWSI_4core_8resource_MultiRes *__pyx_v_self, struct __pyx_obj_5MrWSI_4core_8resource_MultiRes *__pyx_v_other); /* proto */
 static PyObject *__pyx_pf_5MrWSI_4core_8resource_8MultiRes_8__isub__(struct __pyx_obj_5MrWSI_4core_8resource_MultiRes *__pyx_v_self, struct __pyx_obj_5MrWSI_4core_8resource_MultiRes *__pyx_v_other); /* proto */
 static PyObject *__pyx_pf_5MrWSI_4core_8resource_8MultiRes_10__add__(struct __pyx_obj_5MrWSI_4core_8resource_MultiRes *__pyx_v_self, struct __pyx_obj_5MrWSI_4core_8resource_MultiRes *__pyx_v_other); /* proto */
-static PyObject *__pyx_pf_5MrWSI_4core_8resource_8MultiRes_12imax(struct __pyx_obj_5MrWSI_4core_8resource_MultiRes *__pyx_v_self, struct __pyx_obj_5MrWSI_4core_8resource_MultiRes *__pyx_v_other); /* proto */
-static PyObject *__pyx_pf_5MrWSI_4core_8resource_8MultiRes_14max(CYTHON_UNUSED PyTypeObject *__pyx_v_cls, struct __pyx_obj_5MrWSI_4core_8resource_MultiRes *__pyx_v_mr_0, struct __pyx_obj_5MrWSI_4core_8resource_MultiRes *__pyx_v_mr_1); /* proto */
-static PyObject *__pyx_pf_5MrWSI_4core_8resource_8MultiRes_16__copy__(struct __pyx_obj_5MrWSI_4core_8resource_MultiRes *__pyx_v_self); /* proto */
-static PyObject *__pyx_pf_5MrWSI_4core_8resource_8MultiRes_18__richcmp__(struct __pyx_obj_5MrWSI_4core_8resource_MultiRes *__pyx_v_self, struct __pyx_obj_5MrWSI_4core_8resource_MultiRes *__pyx_v_other, int __pyx_v_op); /* proto */
-static PyObject *__pyx_pf_5MrWSI_4core_8resource_8MultiRes_20__getitem__(struct __pyx_obj_5MrWSI_4core_8resource_MultiRes *__pyx_v_self, int __pyx_v_index); /* proto */
-static int __pyx_pf_5MrWSI_4core_8resource_8MultiRes_22__setitem__(struct __pyx_obj_5MrWSI_4core_8resource_MultiRes *__pyx_v_self, int __pyx_v_index, res_t __pyx_v_value); /* proto */
-static PyObject *__pyx_pf_5MrWSI_4core_8resource_8MultiRes_24__repr__(struct __pyx_obj_5MrWSI_4core_8resource_MultiRes *__pyx_v_self); /* proto */
+static PyObject *__pyx_pf_5MrWSI_4core_8resource_8MultiRes_12__sub__(struct __pyx_obj_5MrWSI_4core_8resource_MultiRes *__pyx_v_self, struct __pyx_obj_5MrWSI_4core_8resource_MultiRes *__pyx_v_other); /* proto */
+static PyObject *__pyx_pf_5MrWSI_4core_8resource_8MultiRes_14imax(struct __pyx_obj_5MrWSI_4core_8resource_MultiRes *__pyx_v_self, struct __pyx_obj_5MrWSI_4core_8resource_MultiRes *__pyx_v_other); /* proto */
+static PyObject *__pyx_pf_5MrWSI_4core_8resource_8MultiRes_16max(CYTHON_UNUSED PyTypeObject *__pyx_v_cls, struct __pyx_obj_5MrWSI_4core_8resource_MultiRes *__pyx_v_mr_0, struct __pyx_obj_5MrWSI_4core_8resource_MultiRes *__pyx_v_mr_1); /* proto */
+static PyObject *__pyx_pf_5MrWSI_4core_8resource_8MultiRes_18__copy__(struct __pyx_obj_5MrWSI_4core_8resource_MultiRes *__pyx_v_self); /* proto */
+static PyObject *__pyx_pf_5MrWSI_4core_8resource_8MultiRes_20__richcmp__(struct __pyx_obj_5MrWSI_4core_8resource_MultiRes *__pyx_v_self, struct __pyx_obj_5MrWSI_4core_8resource_MultiRes *__pyx_v_other, int __pyx_v_op); /* proto */
+static PyObject *__pyx_pf_5MrWSI_4core_8resource_8MultiRes_22__getitem__(struct __pyx_obj_5MrWSI_4core_8resource_MultiRes *__pyx_v_self, int __pyx_v_index); /* proto */
+static int __pyx_pf_5MrWSI_4core_8resource_8MultiRes_24__setitem__(struct __pyx_obj_5MrWSI_4core_8resource_MultiRes *__pyx_v_self, int __pyx_v_index, res_t __pyx_v_value); /* proto */
+static PyObject *__pyx_pf_5MrWSI_4core_8resource_8MultiRes_26__repr__(struct __pyx_obj_5MrWSI_4core_8resource_MultiRes *__pyx_v_self); /* proto */
 static PyObject *__pyx_tp_new_5MrWSI_4core_8resource_MultiRes(PyTypeObject *t, PyObject *a, PyObject *k); /*proto*/
 
 /* "MrWSI/core/resource.pyx":4
@@ -1366,7 +1367,7 @@ static PyObject *__pyx_pf_5MrWSI_4core_8resource_8MultiRes_10__add__(struct __py
  *         mr += other
  *         return mr             # <<<<<<<<<<<<<<
  * 
- *     def imax(MultiRes self, MultiRes other):
+ *     def __sub__(MultiRes self, MultiRes other):
  */
   __Pyx_XDECREF(__pyx_r);
   __Pyx_INCREF(__pyx_v_mr);
@@ -1396,19 +1397,20 @@ static PyObject *__pyx_pf_5MrWSI_4core_8resource_8MultiRes_10__add__(struct __py
 /* "MrWSI/core/resource.pyx":30
  *         return mr
  * 
- *     def imax(MultiRes self, MultiRes other):             # <<<<<<<<<<<<<<
- *         mr_imax(self.c, other.c, self.dimension)
- * 
+ *     def __sub__(MultiRes self, MultiRes other):             # <<<<<<<<<<<<<<
+ *         mr = mr_wrap_c(self.c, self.dimension)
+ *         mr -= other
  */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_5MrWSI_4core_8resource_8MultiRes_13imax(PyObject *__pyx_v_self, PyObject *__pyx_v_other); /*proto*/
-static PyObject *__pyx_pw_5MrWSI_4core_8resource_8MultiRes_13imax(PyObject *__pyx_v_self, PyObject *__pyx_v_other) {
+static PyObject *__pyx_pw_5MrWSI_4core_8resource_8MultiRes_13__sub__(PyObject *__pyx_v_self, PyObject *__pyx_v_other); /*proto*/
+static PyObject *__pyx_pw_5MrWSI_4core_8resource_8MultiRes_13__sub__(PyObject *__pyx_v_self, PyObject *__pyx_v_other) {
   PyObject *__pyx_r = 0;
   __Pyx_RefNannyDeclarations
-  __Pyx_RefNannySetupContext("imax (wrapper)", 0);
+  __Pyx_RefNannySetupContext("__sub__ (wrapper)", 0);
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_self), __pyx_ptype_5MrWSI_4core_8resource_MultiRes, 1, "self", 0))) __PYX_ERR(0, 30, __pyx_L1_error)
   if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_other), __pyx_ptype_5MrWSI_4core_8resource_MultiRes, 1, "other", 0))) __PYX_ERR(0, 30, __pyx_L1_error)
-  __pyx_r = __pyx_pf_5MrWSI_4core_8resource_8MultiRes_12imax(((struct __pyx_obj_5MrWSI_4core_8resource_MultiRes *)__pyx_v_self), ((struct __pyx_obj_5MrWSI_4core_8resource_MultiRes *)__pyx_v_other));
+  __pyx_r = __pyx_pf_5MrWSI_4core_8resource_8MultiRes_12__sub__(((struct __pyx_obj_5MrWSI_4core_8resource_MultiRes *)__pyx_v_self), ((struct __pyx_obj_5MrWSI_4core_8resource_MultiRes *)__pyx_v_other));
 
   /* function exit code */
   goto __pyx_L0;
@@ -1419,12 +1421,101 @@ static PyObject *__pyx_pw_5MrWSI_4core_8resource_8MultiRes_13imax(PyObject *__py
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_5MrWSI_4core_8resource_8MultiRes_12imax(struct __pyx_obj_5MrWSI_4core_8resource_MultiRes *__pyx_v_self, struct __pyx_obj_5MrWSI_4core_8resource_MultiRes *__pyx_v_other) {
+static PyObject *__pyx_pf_5MrWSI_4core_8resource_8MultiRes_12__sub__(struct __pyx_obj_5MrWSI_4core_8resource_MultiRes *__pyx_v_self, struct __pyx_obj_5MrWSI_4core_8resource_MultiRes *__pyx_v_other) {
+  PyObject *__pyx_v_mr = NULL;
+  PyObject *__pyx_r = NULL;
+  __Pyx_RefNannyDeclarations
+  PyObject *__pyx_t_1 = NULL;
+  __Pyx_RefNannySetupContext("__sub__", 0);
+
+  /* "MrWSI/core/resource.pyx":31
+ * 
+ *     def __sub__(MultiRes self, MultiRes other):
+ *         mr = mr_wrap_c(self.c, self.dimension)             # <<<<<<<<<<<<<<
+ *         mr -= other
+ *         return mr
+ */
+  __pyx_t_1 = __pyx_f_5MrWSI_4core_8resource_mr_wrap_c(__pyx_v_self->c, __pyx_v_self->dimension); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 31, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_1);
+  __pyx_v_mr = __pyx_t_1;
+  __pyx_t_1 = 0;
+
+  /* "MrWSI/core/resource.pyx":32
+ *     def __sub__(MultiRes self, MultiRes other):
+ *         mr = mr_wrap_c(self.c, self.dimension)
+ *         mr -= other             # <<<<<<<<<<<<<<
+ *         return mr
+ * 
+ */
+  __pyx_t_1 = PyNumber_InPlaceSubtract(__pyx_v_mr, ((PyObject *)__pyx_v_other)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 32, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_1);
+  __Pyx_DECREF_SET(__pyx_v_mr, __pyx_t_1);
+  __pyx_t_1 = 0;
+
+  /* "MrWSI/core/resource.pyx":33
+ *         mr = mr_wrap_c(self.c, self.dimension)
+ *         mr -= other
+ *         return mr             # <<<<<<<<<<<<<<
+ * 
+ *     def imax(MultiRes self, MultiRes other):
+ */
+  __Pyx_XDECREF(__pyx_r);
+  __Pyx_INCREF(__pyx_v_mr);
+  __pyx_r = __pyx_v_mr;
+  goto __pyx_L0;
+
+  /* "MrWSI/core/resource.pyx":30
+ *         return mr
+ * 
+ *     def __sub__(MultiRes self, MultiRes other):             # <<<<<<<<<<<<<<
+ *         mr = mr_wrap_c(self.c, self.dimension)
+ *         mr -= other
+ */
+
+  /* function exit code */
+  __pyx_L1_error:;
+  __Pyx_XDECREF(__pyx_t_1);
+  __Pyx_AddTraceback("MrWSI.core.resource.MultiRes.__sub__", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __pyx_r = NULL;
+  __pyx_L0:;
+  __Pyx_XDECREF(__pyx_v_mr);
+  __Pyx_XGIVEREF(__pyx_r);
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
+/* "MrWSI/core/resource.pyx":35
+ *         return mr
+ * 
+ *     def imax(MultiRes self, MultiRes other):             # <<<<<<<<<<<<<<
+ *         mr_imax(self.c, other.c, self.dimension)
+ * 
+ */
+
+/* Python wrapper */
+static PyObject *__pyx_pw_5MrWSI_4core_8resource_8MultiRes_15imax(PyObject *__pyx_v_self, PyObject *__pyx_v_other); /*proto*/
+static PyObject *__pyx_pw_5MrWSI_4core_8resource_8MultiRes_15imax(PyObject *__pyx_v_self, PyObject *__pyx_v_other) {
+  PyObject *__pyx_r = 0;
+  __Pyx_RefNannyDeclarations
+  __Pyx_RefNannySetupContext("imax (wrapper)", 0);
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_other), __pyx_ptype_5MrWSI_4core_8resource_MultiRes, 1, "other", 0))) __PYX_ERR(0, 35, __pyx_L1_error)
+  __pyx_r = __pyx_pf_5MrWSI_4core_8resource_8MultiRes_14imax(((struct __pyx_obj_5MrWSI_4core_8resource_MultiRes *)__pyx_v_self), ((struct __pyx_obj_5MrWSI_4core_8resource_MultiRes *)__pyx_v_other));
+
+  /* function exit code */
+  goto __pyx_L0;
+  __pyx_L1_error:;
+  __pyx_r = NULL;
+  __pyx_L0:;
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
+static PyObject *__pyx_pf_5MrWSI_4core_8resource_8MultiRes_14imax(struct __pyx_obj_5MrWSI_4core_8resource_MultiRes *__pyx_v_self, struct __pyx_obj_5MrWSI_4core_8resource_MultiRes *__pyx_v_other) {
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("imax", 0);
 
-  /* "MrWSI/core/resource.pyx":31
+  /* "MrWSI/core/resource.pyx":36
  * 
  *     def imax(MultiRes self, MultiRes other):
  *         mr_imax(self.c, other.c, self.dimension)             # <<<<<<<<<<<<<<
@@ -1433,7 +1524,7 @@ static PyObject *__pyx_pf_5MrWSI_4core_8resource_8MultiRes_12imax(struct __pyx_o
  */
   mr_imax(__pyx_v_self->c, __pyx_v_other->c, __pyx_v_self->dimension);
 
-  /* "MrWSI/core/resource.pyx":30
+  /* "MrWSI/core/resource.pyx":35
  *         return mr
  * 
  *     def imax(MultiRes self, MultiRes other):             # <<<<<<<<<<<<<<
@@ -1448,7 +1539,7 @@ static PyObject *__pyx_pf_5MrWSI_4core_8resource_8MultiRes_12imax(struct __pyx_o
   return __pyx_r;
 }
 
-/* "MrWSI/core/resource.pyx":34
+/* "MrWSI/core/resource.pyx":39
  * 
  *     @classmethod
  *     def max(cls, MultiRes mr_0, MultiRes mr_1):             # <<<<<<<<<<<<<<
@@ -1457,8 +1548,8 @@ static PyObject *__pyx_pf_5MrWSI_4core_8resource_8MultiRes_12imax(struct __pyx_o
  */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_5MrWSI_4core_8resource_8MultiRes_15max(PyObject *__pyx_v_cls, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
-static PyObject *__pyx_pw_5MrWSI_4core_8resource_8MultiRes_15max(PyObject *__pyx_v_cls, PyObject *__pyx_args, PyObject *__pyx_kwds) {
+static PyObject *__pyx_pw_5MrWSI_4core_8resource_8MultiRes_17max(PyObject *__pyx_v_cls, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
+static PyObject *__pyx_pw_5MrWSI_4core_8resource_8MultiRes_17max(PyObject *__pyx_v_cls, PyObject *__pyx_args, PyObject *__pyx_kwds) {
   struct __pyx_obj_5MrWSI_4core_8resource_MultiRes *__pyx_v_mr_0 = 0;
   struct __pyx_obj_5MrWSI_4core_8resource_MultiRes *__pyx_v_mr_1 = 0;
   PyObject *__pyx_r = 0;
@@ -1484,11 +1575,11 @@ static PyObject *__pyx_pw_5MrWSI_4core_8resource_8MultiRes_15max(PyObject *__pyx
         case  1:
         if (likely((values[1] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_mr_1)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("max", 1, 2, 2, 1); __PYX_ERR(0, 34, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("max", 1, 2, 2, 1); __PYX_ERR(0, 39, __pyx_L3_error)
         }
       }
       if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "max") < 0)) __PYX_ERR(0, 34, __pyx_L3_error)
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "max") < 0)) __PYX_ERR(0, 39, __pyx_L3_error)
       }
     } else if (PyTuple_GET_SIZE(__pyx_args) != 2) {
       goto __pyx_L5_argtuple_error;
@@ -1501,15 +1592,15 @@ static PyObject *__pyx_pw_5MrWSI_4core_8resource_8MultiRes_15max(PyObject *__pyx
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("max", 1, 2, 2, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 34, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("max", 1, 2, 2, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 39, __pyx_L3_error)
   __pyx_L3_error:;
   __Pyx_AddTraceback("MrWSI.core.resource.MultiRes.max", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
   return NULL;
   __pyx_L4_argument_unpacking_done:;
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_mr_0), __pyx_ptype_5MrWSI_4core_8resource_MultiRes, 1, "mr_0", 0))) __PYX_ERR(0, 34, __pyx_L1_error)
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_mr_1), __pyx_ptype_5MrWSI_4core_8resource_MultiRes, 1, "mr_1", 0))) __PYX_ERR(0, 34, __pyx_L1_error)
-  __pyx_r = __pyx_pf_5MrWSI_4core_8resource_8MultiRes_14max(((PyTypeObject*)__pyx_v_cls), __pyx_v_mr_0, __pyx_v_mr_1);
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_mr_0), __pyx_ptype_5MrWSI_4core_8resource_MultiRes, 1, "mr_0", 0))) __PYX_ERR(0, 39, __pyx_L1_error)
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_mr_1), __pyx_ptype_5MrWSI_4core_8resource_MultiRes, 1, "mr_1", 0))) __PYX_ERR(0, 39, __pyx_L1_error)
+  __pyx_r = __pyx_pf_5MrWSI_4core_8resource_8MultiRes_16max(((PyTypeObject*)__pyx_v_cls), __pyx_v_mr_0, __pyx_v_mr_1);
 
   /* function exit code */
   goto __pyx_L0;
@@ -1520,7 +1611,7 @@ static PyObject *__pyx_pw_5MrWSI_4core_8resource_8MultiRes_15max(PyObject *__pyx
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_5MrWSI_4core_8resource_8MultiRes_14max(CYTHON_UNUSED PyTypeObject *__pyx_v_cls, struct __pyx_obj_5MrWSI_4core_8resource_MultiRes *__pyx_v_mr_0, struct __pyx_obj_5MrWSI_4core_8resource_MultiRes *__pyx_v_mr_1) {
+static PyObject *__pyx_pf_5MrWSI_4core_8resource_8MultiRes_16max(CYTHON_UNUSED PyTypeObject *__pyx_v_cls, struct __pyx_obj_5MrWSI_4core_8resource_MultiRes *__pyx_v_mr_0, struct __pyx_obj_5MrWSI_4core_8resource_MultiRes *__pyx_v_mr_1) {
   PyObject *__pyx_v_result = NULL;
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
@@ -1530,14 +1621,14 @@ static PyObject *__pyx_pf_5MrWSI_4core_8resource_8MultiRes_14max(CYTHON_UNUSED P
   PyObject *__pyx_t_4 = NULL;
   __Pyx_RefNannySetupContext("max", 0);
 
-  /* "MrWSI/core/resource.pyx":35
+  /* "MrWSI/core/resource.pyx":40
  *     @classmethod
  *     def max(cls, MultiRes mr_0, MultiRes mr_1):
  *         result = mr_0.__copy__()             # <<<<<<<<<<<<<<
  *         result.imax(mr_1)
  *         return result
  */
-  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_mr_0), __pyx_n_s_copy); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 35, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_mr_0), __pyx_n_s_copy); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 40, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __pyx_t_3 = NULL;
   if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_2))) {
@@ -1550,24 +1641,24 @@ static PyObject *__pyx_pf_5MrWSI_4core_8resource_8MultiRes_14max(CYTHON_UNUSED P
     }
   }
   if (__pyx_t_3) {
-    __pyx_t_1 = __Pyx_PyObject_CallOneArg(__pyx_t_2, __pyx_t_3); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 35, __pyx_L1_error)
+    __pyx_t_1 = __Pyx_PyObject_CallOneArg(__pyx_t_2, __pyx_t_3); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 40, __pyx_L1_error)
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
   } else {
-    __pyx_t_1 = __Pyx_PyObject_CallNoArg(__pyx_t_2); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 35, __pyx_L1_error)
+    __pyx_t_1 = __Pyx_PyObject_CallNoArg(__pyx_t_2); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 40, __pyx_L1_error)
   }
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   __pyx_v_result = __pyx_t_1;
   __pyx_t_1 = 0;
 
-  /* "MrWSI/core/resource.pyx":36
+  /* "MrWSI/core/resource.pyx":41
  *     def max(cls, MultiRes mr_0, MultiRes mr_1):
  *         result = mr_0.__copy__()
  *         result.imax(mr_1)             # <<<<<<<<<<<<<<
  *         return result
  * 
  */
-  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_v_result, __pyx_n_s_imax); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 36, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_v_result, __pyx_n_s_imax); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 41, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __pyx_t_3 = NULL;
   if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_2))) {
@@ -1580,13 +1671,13 @@ static PyObject *__pyx_pf_5MrWSI_4core_8resource_8MultiRes_14max(CYTHON_UNUSED P
     }
   }
   if (!__pyx_t_3) {
-    __pyx_t_1 = __Pyx_PyObject_CallOneArg(__pyx_t_2, ((PyObject *)__pyx_v_mr_1)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 36, __pyx_L1_error)
+    __pyx_t_1 = __Pyx_PyObject_CallOneArg(__pyx_t_2, ((PyObject *)__pyx_v_mr_1)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 41, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
   } else {
     #if CYTHON_FAST_PYCALL
     if (PyFunction_Check(__pyx_t_2)) {
       PyObject *__pyx_temp[2] = {__pyx_t_3, ((PyObject *)__pyx_v_mr_1)};
-      __pyx_t_1 = __Pyx_PyFunction_FastCall(__pyx_t_2, __pyx_temp+1-1, 1+1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 36, __pyx_L1_error)
+      __pyx_t_1 = __Pyx_PyFunction_FastCall(__pyx_t_2, __pyx_temp+1-1, 1+1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 41, __pyx_L1_error)
       __Pyx_XDECREF(__pyx_t_3); __pyx_t_3 = 0;
       __Pyx_GOTREF(__pyx_t_1);
     } else
@@ -1594,19 +1685,19 @@ static PyObject *__pyx_pf_5MrWSI_4core_8resource_8MultiRes_14max(CYTHON_UNUSED P
     #if CYTHON_FAST_PYCCALL
     if (__Pyx_PyFastCFunction_Check(__pyx_t_2)) {
       PyObject *__pyx_temp[2] = {__pyx_t_3, ((PyObject *)__pyx_v_mr_1)};
-      __pyx_t_1 = __Pyx_PyCFunction_FastCall(__pyx_t_2, __pyx_temp+1-1, 1+1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 36, __pyx_L1_error)
+      __pyx_t_1 = __Pyx_PyCFunction_FastCall(__pyx_t_2, __pyx_temp+1-1, 1+1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 41, __pyx_L1_error)
       __Pyx_XDECREF(__pyx_t_3); __pyx_t_3 = 0;
       __Pyx_GOTREF(__pyx_t_1);
     } else
     #endif
     {
-      __pyx_t_4 = PyTuple_New(1+1); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 36, __pyx_L1_error)
+      __pyx_t_4 = PyTuple_New(1+1); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 41, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_4);
       __Pyx_GIVEREF(__pyx_t_3); PyTuple_SET_ITEM(__pyx_t_4, 0, __pyx_t_3); __pyx_t_3 = NULL;
       __Pyx_INCREF(((PyObject *)__pyx_v_mr_1));
       __Pyx_GIVEREF(((PyObject *)__pyx_v_mr_1));
       PyTuple_SET_ITEM(__pyx_t_4, 0+1, ((PyObject *)__pyx_v_mr_1));
-      __pyx_t_1 = __Pyx_PyObject_Call(__pyx_t_2, __pyx_t_4, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 36, __pyx_L1_error)
+      __pyx_t_1 = __Pyx_PyObject_Call(__pyx_t_2, __pyx_t_4, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 41, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_1);
       __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
     }
@@ -1614,7 +1705,7 @@ static PyObject *__pyx_pf_5MrWSI_4core_8resource_8MultiRes_14max(CYTHON_UNUSED P
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-  /* "MrWSI/core/resource.pyx":37
+  /* "MrWSI/core/resource.pyx":42
  *         result = mr_0.__copy__()
  *         result.imax(mr_1)
  *         return result             # <<<<<<<<<<<<<<
@@ -1626,7 +1717,7 @@ static PyObject *__pyx_pf_5MrWSI_4core_8resource_8MultiRes_14max(CYTHON_UNUSED P
   __pyx_r = __pyx_v_result;
   goto __pyx_L0;
 
-  /* "MrWSI/core/resource.pyx":34
+  /* "MrWSI/core/resource.pyx":39
  * 
  *     @classmethod
  *     def max(cls, MultiRes mr_0, MultiRes mr_1):             # <<<<<<<<<<<<<<
@@ -1649,7 +1740,7 @@ static PyObject *__pyx_pf_5MrWSI_4core_8resource_8MultiRes_14max(CYTHON_UNUSED P
   return __pyx_r;
 }
 
-/* "MrWSI/core/resource.pyx":39
+/* "MrWSI/core/resource.pyx":44
  *         return result
  * 
  *     def __copy__(MultiRes self):             # <<<<<<<<<<<<<<
@@ -1658,25 +1749,25 @@ static PyObject *__pyx_pf_5MrWSI_4core_8resource_8MultiRes_14max(CYTHON_UNUSED P
  */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_5MrWSI_4core_8resource_8MultiRes_17__copy__(PyObject *__pyx_v_self, CYTHON_UNUSED PyObject *unused); /*proto*/
-static PyObject *__pyx_pw_5MrWSI_4core_8resource_8MultiRes_17__copy__(PyObject *__pyx_v_self, CYTHON_UNUSED PyObject *unused) {
+static PyObject *__pyx_pw_5MrWSI_4core_8resource_8MultiRes_19__copy__(PyObject *__pyx_v_self, CYTHON_UNUSED PyObject *unused); /*proto*/
+static PyObject *__pyx_pw_5MrWSI_4core_8resource_8MultiRes_19__copy__(PyObject *__pyx_v_self, CYTHON_UNUSED PyObject *unused) {
   PyObject *__pyx_r = 0;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("__copy__ (wrapper)", 0);
-  __pyx_r = __pyx_pf_5MrWSI_4core_8resource_8MultiRes_16__copy__(((struct __pyx_obj_5MrWSI_4core_8resource_MultiRes *)__pyx_v_self));
+  __pyx_r = __pyx_pf_5MrWSI_4core_8resource_8MultiRes_18__copy__(((struct __pyx_obj_5MrWSI_4core_8resource_MultiRes *)__pyx_v_self));
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_5MrWSI_4core_8resource_8MultiRes_16__copy__(struct __pyx_obj_5MrWSI_4core_8resource_MultiRes *__pyx_v_self) {
+static PyObject *__pyx_pf_5MrWSI_4core_8resource_8MultiRes_18__copy__(struct __pyx_obj_5MrWSI_4core_8resource_MultiRes *__pyx_v_self) {
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
   __Pyx_RefNannySetupContext("__copy__", 0);
 
-  /* "MrWSI/core/resource.pyx":40
+  /* "MrWSI/core/resource.pyx":45
  * 
  *     def __copy__(MultiRes self):
  *         return mr_wrap_c(self.c, self.dimension)             # <<<<<<<<<<<<<<
@@ -1684,13 +1775,13 @@ static PyObject *__pyx_pf_5MrWSI_4core_8resource_8MultiRes_16__copy__(struct __p
  *     def __richcmp__(MultiRes self, MultiRes other, int op):
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_1 = __pyx_f_5MrWSI_4core_8resource_mr_wrap_c(__pyx_v_self->c, __pyx_v_self->dimension); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 40, __pyx_L1_error)
+  __pyx_t_1 = __pyx_f_5MrWSI_4core_8resource_mr_wrap_c(__pyx_v_self->c, __pyx_v_self->dimension); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 45, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
   goto __pyx_L0;
 
-  /* "MrWSI/core/resource.pyx":39
+  /* "MrWSI/core/resource.pyx":44
  *         return result
  * 
  *     def __copy__(MultiRes self):             # <<<<<<<<<<<<<<
@@ -1709,7 +1800,7 @@ static PyObject *__pyx_pf_5MrWSI_4core_8resource_8MultiRes_16__copy__(struct __p
   return __pyx_r;
 }
 
-/* "MrWSI/core/resource.pyx":42
+/* "MrWSI/core/resource.pyx":47
  *         return mr_wrap_c(self.c, self.dimension)
  * 
  *     def __richcmp__(MultiRes self, MultiRes other, int op):             # <<<<<<<<<<<<<<
@@ -1718,14 +1809,14 @@ static PyObject *__pyx_pf_5MrWSI_4core_8resource_8MultiRes_16__copy__(struct __p
  */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_5MrWSI_4core_8resource_8MultiRes_19__richcmp__(PyObject *__pyx_v_self, PyObject *__pyx_v_other, int __pyx_v_op); /*proto*/
-static PyObject *__pyx_pw_5MrWSI_4core_8resource_8MultiRes_19__richcmp__(PyObject *__pyx_v_self, PyObject *__pyx_v_other, int __pyx_v_op) {
+static PyObject *__pyx_pw_5MrWSI_4core_8resource_8MultiRes_21__richcmp__(PyObject *__pyx_v_self, PyObject *__pyx_v_other, int __pyx_v_op); /*proto*/
+static PyObject *__pyx_pw_5MrWSI_4core_8resource_8MultiRes_21__richcmp__(PyObject *__pyx_v_self, PyObject *__pyx_v_other, int __pyx_v_op) {
   PyObject *__pyx_r = 0;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("__richcmp__ (wrapper)", 0);
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_self), __pyx_ptype_5MrWSI_4core_8resource_MultiRes, 1, "self", 0))) __PYX_ERR(0, 42, __pyx_L1_error)
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_other), __pyx_ptype_5MrWSI_4core_8resource_MultiRes, 1, "other", 0))) __PYX_ERR(0, 42, __pyx_L1_error)
-  __pyx_r = __pyx_pf_5MrWSI_4core_8resource_8MultiRes_18__richcmp__(((struct __pyx_obj_5MrWSI_4core_8resource_MultiRes *)__pyx_v_self), ((struct __pyx_obj_5MrWSI_4core_8resource_MultiRes *)__pyx_v_other), ((int)__pyx_v_op));
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_self), __pyx_ptype_5MrWSI_4core_8resource_MultiRes, 1, "self", 0))) __PYX_ERR(0, 47, __pyx_L1_error)
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_other), __pyx_ptype_5MrWSI_4core_8resource_MultiRes, 1, "other", 0))) __PYX_ERR(0, 47, __pyx_L1_error)
+  __pyx_r = __pyx_pf_5MrWSI_4core_8resource_8MultiRes_20__richcmp__(((struct __pyx_obj_5MrWSI_4core_8resource_MultiRes *)__pyx_v_self), ((struct __pyx_obj_5MrWSI_4core_8resource_MultiRes *)__pyx_v_other), ((int)__pyx_v_op));
 
   /* function exit code */
   goto __pyx_L0;
@@ -1736,13 +1827,13 @@ static PyObject *__pyx_pw_5MrWSI_4core_8resource_8MultiRes_19__richcmp__(PyObjec
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_5MrWSI_4core_8resource_8MultiRes_18__richcmp__(struct __pyx_obj_5MrWSI_4core_8resource_MultiRes *__pyx_v_self, struct __pyx_obj_5MrWSI_4core_8resource_MultiRes *__pyx_v_other, int __pyx_v_op) {
+static PyObject *__pyx_pf_5MrWSI_4core_8resource_8MultiRes_20__richcmp__(struct __pyx_obj_5MrWSI_4core_8resource_MultiRes *__pyx_v_self, struct __pyx_obj_5MrWSI_4core_8resource_MultiRes *__pyx_v_other, int __pyx_v_op) {
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
   __Pyx_RefNannySetupContext("__richcmp__", 0);
 
-  /* "MrWSI/core/resource.pyx":43
+  /* "MrWSI/core/resource.pyx":48
  * 
  *     def __richcmp__(MultiRes self, MultiRes other, int op):
  *         return mr_richcmp(self.c, other.c, op, self.dimension)             # <<<<<<<<<<<<<<
@@ -1750,13 +1841,13 @@ static PyObject *__pyx_pf_5MrWSI_4core_8resource_8MultiRes_18__richcmp__(struct 
  *     def __getitem__(self, int index):
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_1 = __Pyx_PyBool_FromLong(mr_richcmp(__pyx_v_self->c, __pyx_v_other->c, __pyx_v_op, __pyx_v_self->dimension)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 43, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyBool_FromLong(mr_richcmp(__pyx_v_self->c, __pyx_v_other->c, __pyx_v_op, __pyx_v_self->dimension)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 48, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
   goto __pyx_L0;
 
-  /* "MrWSI/core/resource.pyx":42
+  /* "MrWSI/core/resource.pyx":47
  *         return mr_wrap_c(self.c, self.dimension)
  * 
  *     def __richcmp__(MultiRes self, MultiRes other, int op):             # <<<<<<<<<<<<<<
@@ -1775,7 +1866,7 @@ static PyObject *__pyx_pf_5MrWSI_4core_8resource_8MultiRes_18__richcmp__(struct 
   return __pyx_r;
 }
 
-/* "MrWSI/core/resource.pyx":45
+/* "MrWSI/core/resource.pyx":50
  *         return mr_richcmp(self.c, other.c, op, self.dimension)
  * 
  *     def __getitem__(self, int index):             # <<<<<<<<<<<<<<
@@ -1784,14 +1875,14 @@ static PyObject *__pyx_pf_5MrWSI_4core_8resource_8MultiRes_18__richcmp__(struct 
  */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_5MrWSI_4core_8resource_8MultiRes_21__getitem__(PyObject *__pyx_v_self, PyObject *__pyx_arg_index); /*proto*/
-static PyObject *__pyx_pw_5MrWSI_4core_8resource_8MultiRes_21__getitem__(PyObject *__pyx_v_self, PyObject *__pyx_arg_index) {
+static PyObject *__pyx_pw_5MrWSI_4core_8resource_8MultiRes_23__getitem__(PyObject *__pyx_v_self, PyObject *__pyx_arg_index); /*proto*/
+static PyObject *__pyx_pw_5MrWSI_4core_8resource_8MultiRes_23__getitem__(PyObject *__pyx_v_self, PyObject *__pyx_arg_index) {
   int __pyx_v_index;
   PyObject *__pyx_r = 0;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("__getitem__ (wrapper)", 0);
   assert(__pyx_arg_index); {
-    __pyx_v_index = __Pyx_PyInt_As_int(__pyx_arg_index); if (unlikely((__pyx_v_index == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 45, __pyx_L3_error)
+    __pyx_v_index = __Pyx_PyInt_As_int(__pyx_arg_index); if (unlikely((__pyx_v_index == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 50, __pyx_L3_error)
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L3_error:;
@@ -1799,20 +1890,20 @@ static PyObject *__pyx_pw_5MrWSI_4core_8resource_8MultiRes_21__getitem__(PyObjec
   __Pyx_RefNannyFinishContext();
   return NULL;
   __pyx_L4_argument_unpacking_done:;
-  __pyx_r = __pyx_pf_5MrWSI_4core_8resource_8MultiRes_20__getitem__(((struct __pyx_obj_5MrWSI_4core_8resource_MultiRes *)__pyx_v_self), ((int)__pyx_v_index));
+  __pyx_r = __pyx_pf_5MrWSI_4core_8resource_8MultiRes_22__getitem__(((struct __pyx_obj_5MrWSI_4core_8resource_MultiRes *)__pyx_v_self), ((int)__pyx_v_index));
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_5MrWSI_4core_8resource_8MultiRes_20__getitem__(struct __pyx_obj_5MrWSI_4core_8resource_MultiRes *__pyx_v_self, int __pyx_v_index) {
+static PyObject *__pyx_pf_5MrWSI_4core_8resource_8MultiRes_22__getitem__(struct __pyx_obj_5MrWSI_4core_8resource_MultiRes *__pyx_v_self, int __pyx_v_index) {
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
   __Pyx_RefNannySetupContext("__getitem__", 0);
 
-  /* "MrWSI/core/resource.pyx":46
+  /* "MrWSI/core/resource.pyx":51
  * 
  *     def __getitem__(self, int index):
  *         return self.c[index]             # <<<<<<<<<<<<<<
@@ -1820,13 +1911,13 @@ static PyObject *__pyx_pf_5MrWSI_4core_8resource_8MultiRes_20__getitem__(struct 
  *     def __setitem__(self, int index, res_t value):
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_1 = __Pyx_PyInt_From_res_t((__pyx_v_self->c[__pyx_v_index])); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 46, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyInt_From_res_t((__pyx_v_self->c[__pyx_v_index])); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 51, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
   goto __pyx_L0;
 
-  /* "MrWSI/core/resource.pyx":45
+  /* "MrWSI/core/resource.pyx":50
  *         return mr_richcmp(self.c, other.c, op, self.dimension)
  * 
  *     def __getitem__(self, int index):             # <<<<<<<<<<<<<<
@@ -1845,7 +1936,7 @@ static PyObject *__pyx_pf_5MrWSI_4core_8resource_8MultiRes_20__getitem__(struct 
   return __pyx_r;
 }
 
-/* "MrWSI/core/resource.pyx":48
+/* "MrWSI/core/resource.pyx":53
  *         return self.c[index]
  * 
  *     def __setitem__(self, int index, res_t value):             # <<<<<<<<<<<<<<
@@ -1854,18 +1945,18 @@ static PyObject *__pyx_pf_5MrWSI_4core_8resource_8MultiRes_20__getitem__(struct 
  */
 
 /* Python wrapper */
-static int __pyx_pw_5MrWSI_4core_8resource_8MultiRes_23__setitem__(PyObject *__pyx_v_self, PyObject *__pyx_arg_index, PyObject *__pyx_arg_value); /*proto*/
-static int __pyx_pw_5MrWSI_4core_8resource_8MultiRes_23__setitem__(PyObject *__pyx_v_self, PyObject *__pyx_arg_index, PyObject *__pyx_arg_value) {
+static int __pyx_pw_5MrWSI_4core_8resource_8MultiRes_25__setitem__(PyObject *__pyx_v_self, PyObject *__pyx_arg_index, PyObject *__pyx_arg_value); /*proto*/
+static int __pyx_pw_5MrWSI_4core_8resource_8MultiRes_25__setitem__(PyObject *__pyx_v_self, PyObject *__pyx_arg_index, PyObject *__pyx_arg_value) {
   int __pyx_v_index;
   res_t __pyx_v_value;
   int __pyx_r;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("__setitem__ (wrapper)", 0);
   assert(__pyx_arg_index); {
-    __pyx_v_index = __Pyx_PyInt_As_int(__pyx_arg_index); if (unlikely((__pyx_v_index == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 48, __pyx_L3_error)
+    __pyx_v_index = __Pyx_PyInt_As_int(__pyx_arg_index); if (unlikely((__pyx_v_index == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 53, __pyx_L3_error)
   }
   assert(__pyx_arg_value); {
-    __pyx_v_value = __Pyx_PyInt_As_res_t(__pyx_arg_value); if (unlikely((__pyx_v_value == ((res_t)-1)) && PyErr_Occurred())) __PYX_ERR(0, 48, __pyx_L3_error)
+    __pyx_v_value = __Pyx_PyInt_As_res_t(__pyx_arg_value); if (unlikely((__pyx_v_value == ((res_t)-1)) && PyErr_Occurred())) __PYX_ERR(0, 53, __pyx_L3_error)
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L3_error:;
@@ -1873,19 +1964,19 @@ static int __pyx_pw_5MrWSI_4core_8resource_8MultiRes_23__setitem__(PyObject *__p
   __Pyx_RefNannyFinishContext();
   return -1;
   __pyx_L4_argument_unpacking_done:;
-  __pyx_r = __pyx_pf_5MrWSI_4core_8resource_8MultiRes_22__setitem__(((struct __pyx_obj_5MrWSI_4core_8resource_MultiRes *)__pyx_v_self), ((int)__pyx_v_index), ((res_t)__pyx_v_value));
+  __pyx_r = __pyx_pf_5MrWSI_4core_8resource_8MultiRes_24__setitem__(((struct __pyx_obj_5MrWSI_4core_8resource_MultiRes *)__pyx_v_self), ((int)__pyx_v_index), ((res_t)__pyx_v_value));
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static int __pyx_pf_5MrWSI_4core_8resource_8MultiRes_22__setitem__(struct __pyx_obj_5MrWSI_4core_8resource_MultiRes *__pyx_v_self, int __pyx_v_index, res_t __pyx_v_value) {
+static int __pyx_pf_5MrWSI_4core_8resource_8MultiRes_24__setitem__(struct __pyx_obj_5MrWSI_4core_8resource_MultiRes *__pyx_v_self, int __pyx_v_index, res_t __pyx_v_value) {
   int __pyx_r;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("__setitem__", 0);
 
-  /* "MrWSI/core/resource.pyx":49
+  /* "MrWSI/core/resource.pyx":54
  * 
  *     def __setitem__(self, int index, res_t value):
  *         self.c[index] = value             # <<<<<<<<<<<<<<
@@ -1894,7 +1985,7 @@ static int __pyx_pf_5MrWSI_4core_8resource_8MultiRes_22__setitem__(struct __pyx_
  */
   (__pyx_v_self->c[__pyx_v_index]) = __pyx_v_value;
 
-  /* "MrWSI/core/resource.pyx":48
+  /* "MrWSI/core/resource.pyx":53
  *         return self.c[index]
  * 
  *     def __setitem__(self, int index, res_t value):             # <<<<<<<<<<<<<<
@@ -1908,7 +1999,7 @@ static int __pyx_pf_5MrWSI_4core_8resource_8MultiRes_22__setitem__(struct __pyx_
   return __pyx_r;
 }
 
-/* "MrWSI/core/resource.pyx":51
+/* "MrWSI/core/resource.pyx":56
  *         self.c[index] = value
  * 
  *     def __repr__(self):             # <<<<<<<<<<<<<<
@@ -1917,19 +2008,19 @@ static int __pyx_pf_5MrWSI_4core_8resource_8MultiRes_22__setitem__(struct __pyx_
  */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_5MrWSI_4core_8resource_8MultiRes_25__repr__(PyObject *__pyx_v_self); /*proto*/
-static PyObject *__pyx_pw_5MrWSI_4core_8resource_8MultiRes_25__repr__(PyObject *__pyx_v_self) {
+static PyObject *__pyx_pw_5MrWSI_4core_8resource_8MultiRes_27__repr__(PyObject *__pyx_v_self); /*proto*/
+static PyObject *__pyx_pw_5MrWSI_4core_8resource_8MultiRes_27__repr__(PyObject *__pyx_v_self) {
   PyObject *__pyx_r = 0;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("__repr__ (wrapper)", 0);
-  __pyx_r = __pyx_pf_5MrWSI_4core_8resource_8MultiRes_24__repr__(((struct __pyx_obj_5MrWSI_4core_8resource_MultiRes *)__pyx_v_self));
+  __pyx_r = __pyx_pf_5MrWSI_4core_8resource_8MultiRes_26__repr__(((struct __pyx_obj_5MrWSI_4core_8resource_MultiRes *)__pyx_v_self));
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_5MrWSI_4core_8resource_8MultiRes_24__repr__(struct __pyx_obj_5MrWSI_4core_8resource_MultiRes *__pyx_v_self) {
+static PyObject *__pyx_pf_5MrWSI_4core_8resource_8MultiRes_26__repr__(struct __pyx_obj_5MrWSI_4core_8resource_MultiRes *__pyx_v_self) {
   int __pyx_v_i;
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
@@ -1939,7 +2030,7 @@ static PyObject *__pyx_pf_5MrWSI_4core_8resource_8MultiRes_24__repr__(struct __p
   PyObject *__pyx_t_4 = NULL;
   __Pyx_RefNannySetupContext("__repr__", 0);
 
-  /* "MrWSI/core/resource.pyx":52
+  /* "MrWSI/core/resource.pyx":57
  * 
  *     def __repr__(self):
  *         return str([self.c[i] for i in range(self.dimension)])             # <<<<<<<<<<<<<<
@@ -1947,29 +2038,29 @@ static PyObject *__pyx_pf_5MrWSI_4core_8resource_8MultiRes_24__repr__(struct __p
  * cdef mr_wrap_c(res_t* c, int dimension):
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_1 = PyList_New(0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 52, __pyx_L1_error)
+  __pyx_t_1 = PyList_New(0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 57, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_t_2 = __pyx_v_self->dimension;
   for (__pyx_t_3 = 0; __pyx_t_3 < __pyx_t_2; __pyx_t_3+=1) {
     __pyx_v_i = __pyx_t_3;
-    __pyx_t_4 = __Pyx_PyInt_From_res_t((__pyx_v_self->c[__pyx_v_i])); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 52, __pyx_L1_error)
+    __pyx_t_4 = __Pyx_PyInt_From_res_t((__pyx_v_self->c[__pyx_v_i])); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 57, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_4);
-    if (unlikely(__Pyx_ListComp_Append(__pyx_t_1, (PyObject*)__pyx_t_4))) __PYX_ERR(0, 52, __pyx_L1_error)
+    if (unlikely(__Pyx_ListComp_Append(__pyx_t_1, (PyObject*)__pyx_t_4))) __PYX_ERR(0, 57, __pyx_L1_error)
     __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
   }
-  __pyx_t_4 = PyTuple_New(1); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 52, __pyx_L1_error)
+  __pyx_t_4 = PyTuple_New(1); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 57, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
   __Pyx_GIVEREF(__pyx_t_1);
   PyTuple_SET_ITEM(__pyx_t_4, 0, __pyx_t_1);
   __pyx_t_1 = 0;
-  __pyx_t_1 = __Pyx_PyObject_Call(((PyObject *)(&PyString_Type)), __pyx_t_4, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 52, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_Call(((PyObject *)(&PyString_Type)), __pyx_t_4, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 57, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
   goto __pyx_L0;
 
-  /* "MrWSI/core/resource.pyx":51
+  /* "MrWSI/core/resource.pyx":56
  *         self.c[index] = value
  * 
  *     def __repr__(self):             # <<<<<<<<<<<<<<
@@ -1989,7 +2080,7 @@ static PyObject *__pyx_pf_5MrWSI_4core_8resource_8MultiRes_24__repr__(struct __p
   return __pyx_r;
 }
 
-/* "MrWSI/core/resource.pyx":54
+/* "MrWSI/core/resource.pyx":59
  *         return str([self.c[i] for i in range(self.dimension)])
  * 
  * cdef mr_wrap_c(res_t* c, int dimension):             # <<<<<<<<<<<<<<
@@ -2005,27 +2096,27 @@ static PyObject *__pyx_f_5MrWSI_4core_8resource_mr_wrap_c(res_t *__pyx_v_c, int 
   PyObject *__pyx_t_2 = NULL;
   __Pyx_RefNannySetupContext("mr_wrap_c", 0);
 
-  /* "MrWSI/core/resource.pyx":55
+  /* "MrWSI/core/resource.pyx":60
  * 
  * cdef mr_wrap_c(res_t* c, int dimension):
  *     mr = MultiRes(dimension)             # <<<<<<<<<<<<<<
  *     mr_copy(mr.c, c, dimension)
  *     return mr
  */
-  __pyx_t_1 = __Pyx_PyInt_From_int(__pyx_v_dimension); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 55, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyInt_From_int(__pyx_v_dimension); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 60, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_2 = PyTuple_New(1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 55, __pyx_L1_error)
+  __pyx_t_2 = PyTuple_New(1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 60, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_GIVEREF(__pyx_t_1);
   PyTuple_SET_ITEM(__pyx_t_2, 0, __pyx_t_1);
   __pyx_t_1 = 0;
-  __pyx_t_1 = __Pyx_PyObject_Call(((PyObject *)__pyx_ptype_5MrWSI_4core_8resource_MultiRes), __pyx_t_2, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 55, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_Call(((PyObject *)__pyx_ptype_5MrWSI_4core_8resource_MultiRes), __pyx_t_2, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 60, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   __pyx_v_mr = ((struct __pyx_obj_5MrWSI_4core_8resource_MultiRes *)__pyx_t_1);
   __pyx_t_1 = 0;
 
-  /* "MrWSI/core/resource.pyx":56
+  /* "MrWSI/core/resource.pyx":61
  * cdef mr_wrap_c(res_t* c, int dimension):
  *     mr = MultiRes(dimension)
  *     mr_copy(mr.c, c, dimension)             # <<<<<<<<<<<<<<
@@ -2034,7 +2125,7 @@ static PyObject *__pyx_f_5MrWSI_4core_8resource_mr_wrap_c(res_t *__pyx_v_c, int 
  */
   mr_copy(__pyx_v_mr->c, __pyx_v_c, __pyx_v_dimension);
 
-  /* "MrWSI/core/resource.pyx":57
+  /* "MrWSI/core/resource.pyx":62
  *     mr = MultiRes(dimension)
  *     mr_copy(mr.c, c, dimension)
  *     return mr             # <<<<<<<<<<<<<<
@@ -2045,7 +2136,7 @@ static PyObject *__pyx_f_5MrWSI_4core_8resource_mr_wrap_c(res_t *__pyx_v_c, int 
   __pyx_r = ((PyObject *)__pyx_v_mr);
   goto __pyx_L0;
 
-  /* "MrWSI/core/resource.pyx":54
+  /* "MrWSI/core/resource.pyx":59
  *         return str([self.c[i] for i in range(self.dimension)])
  * 
  * cdef mr_wrap_c(res_t* c, int dimension):             # <<<<<<<<<<<<<<
@@ -2107,7 +2198,7 @@ static PyObject *__pyx_sq_item_5MrWSI_4core_8resource_MultiRes(PyObject *o, Py_s
 
 static int __pyx_mp_ass_subscript_5MrWSI_4core_8resource_MultiRes(PyObject *o, PyObject *i, PyObject *v) {
   if (v) {
-    return __pyx_pw_5MrWSI_4core_8resource_8MultiRes_23__setitem__(o, i, v);
+    return __pyx_pw_5MrWSI_4core_8resource_8MultiRes_25__setitem__(o, i, v);
   }
   else {
     PyErr_Format(PyExc_NotImplementedError,
@@ -2118,15 +2209,15 @@ static int __pyx_mp_ass_subscript_5MrWSI_4core_8resource_MultiRes(PyObject *o, P
 
 static PyMethodDef __pyx_methods_5MrWSI_4core_8resource_MultiRes[] = {
   {"zero", (PyCFunction)__pyx_pw_5MrWSI_4core_8resource_8MultiRes_5zero, METH_O, 0},
-  {"imax", (PyCFunction)__pyx_pw_5MrWSI_4core_8resource_8MultiRes_13imax, METH_O, 0},
-  {"max", (PyCFunction)__pyx_pw_5MrWSI_4core_8resource_8MultiRes_15max, METH_VARARGS|METH_KEYWORDS, 0},
-  {"__copy__", (PyCFunction)__pyx_pw_5MrWSI_4core_8resource_8MultiRes_17__copy__, METH_NOARGS, 0},
+  {"imax", (PyCFunction)__pyx_pw_5MrWSI_4core_8resource_8MultiRes_15imax, METH_O, 0},
+  {"max", (PyCFunction)__pyx_pw_5MrWSI_4core_8resource_8MultiRes_17max, METH_VARARGS|METH_KEYWORDS, 0},
+  {"__copy__", (PyCFunction)__pyx_pw_5MrWSI_4core_8resource_8MultiRes_19__copy__, METH_NOARGS, 0},
   {0, 0, 0, 0}
 };
 
 static PyNumberMethods __pyx_tp_as_number_MultiRes = {
   __pyx_pw_5MrWSI_4core_8resource_8MultiRes_11__add__, /*nb_add*/
-  0, /*nb_subtract*/
+  __pyx_pw_5MrWSI_4core_8resource_8MultiRes_13__sub__, /*nb_subtract*/
   0, /*nb_multiply*/
   #if PY_MAJOR_VERSION < 3 || CYTHON_COMPILING_IN_PYPY
   0, /*nb_divide*/
@@ -2201,7 +2292,7 @@ static PySequenceMethods __pyx_tp_as_sequence_MultiRes = {
 
 static PyMappingMethods __pyx_tp_as_mapping_MultiRes = {
   0, /*mp_length*/
-  __pyx_pw_5MrWSI_4core_8resource_8MultiRes_21__getitem__, /*mp_subscript*/
+  __pyx_pw_5MrWSI_4core_8resource_8MultiRes_23__getitem__, /*mp_subscript*/
   __pyx_mp_ass_subscript_5MrWSI_4core_8resource_MultiRes, /*mp_ass_subscript*/
 };
 
@@ -2220,7 +2311,7 @@ static PyTypeObject __pyx_type_5MrWSI_4core_8resource_MultiRes = {
   #if PY_MAJOR_VERSION >= 3
   0, /*tp_as_async*/
   #endif
-  __pyx_pw_5MrWSI_4core_8resource_8MultiRes_25__repr__, /*tp_repr*/
+  __pyx_pw_5MrWSI_4core_8resource_8MultiRes_27__repr__, /*tp_repr*/
   &__pyx_tp_as_number_MultiRes, /*tp_as_number*/
   &__pyx_tp_as_sequence_MultiRes, /*tp_as_sequence*/
   &__pyx_tp_as_mapping_MultiRes, /*tp_as_mapping*/
@@ -2234,7 +2325,7 @@ static PyTypeObject __pyx_type_5MrWSI_4core_8resource_MultiRes = {
   0, /*tp_doc*/
   0, /*tp_traverse*/
   0, /*tp_clear*/
-  __pyx_pw_5MrWSI_4core_8resource_8MultiRes_19__richcmp__, /*tp_richcompare*/
+  __pyx_pw_5MrWSI_4core_8resource_8MultiRes_21__richcmp__, /*tp_richcompare*/
   0, /*tp_weaklistoffset*/
   0, /*tp_iter*/
   0, /*tp_iternext*/
@@ -2299,7 +2390,7 @@ static __Pyx_StringTabEntry __pyx_string_tab[] = {
   {0, 0, 0, 0, 0, 0, 0}
 };
 static int __Pyx_InitCachedBuiltins(void) {
-  __pyx_builtin_range = __Pyx_GetBuiltinName(__pyx_n_s_range); if (!__pyx_builtin_range) __PYX_ERR(0, 52, __pyx_L1_error)
+  __pyx_builtin_range = __Pyx_GetBuiltinName(__pyx_n_s_range); if (!__pyx_builtin_range) __PYX_ERR(0, 57, __pyx_L1_error)
   return 0;
   __pyx_L1_error:;
   return -1;
@@ -2441,27 +2532,27 @@ PyMODINIT_FUNC PyInit_resource(void)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   PyType_Modified(__pyx_ptype_5MrWSI_4core_8resource_MultiRes);
 
-  /* "MrWSI/core/resource.pyx":34
+  /* "MrWSI/core/resource.pyx":39
  * 
  *     @classmethod
  *     def max(cls, MultiRes mr_0, MultiRes mr_1):             # <<<<<<<<<<<<<<
  *         result = mr_0.__copy__()
  *         result.imax(mr_1)
  */
-  __pyx_t_2 = __Pyx_GetNameInClass((PyObject *)__pyx_ptype_5MrWSI_4core_8resource_MultiRes, __pyx_n_s_max); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 34, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_GetNameInClass((PyObject *)__pyx_ptype_5MrWSI_4core_8resource_MultiRes, __pyx_n_s_max); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 39, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
 
-  /* "MrWSI/core/resource.pyx":33
+  /* "MrWSI/core/resource.pyx":38
  *         mr_imax(self.c, other.c, self.dimension)
  * 
  *     @classmethod             # <<<<<<<<<<<<<<
  *     def max(cls, MultiRes mr_0, MultiRes mr_1):
  *         result = mr_0.__copy__()
  */
-  __pyx_t_1 = __Pyx_Method_ClassMethod(__pyx_t_2); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 33, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_Method_ClassMethod(__pyx_t_2); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 38, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  if (PyDict_SetItem((PyObject *)__pyx_ptype_5MrWSI_4core_8resource_MultiRes->tp_dict, __pyx_n_s_max, __pyx_t_1) < 0) __PYX_ERR(0, 34, __pyx_L1_error)
+  if (PyDict_SetItem((PyObject *)__pyx_ptype_5MrWSI_4core_8resource_MultiRes->tp_dict, __pyx_n_s_max, __pyx_t_1) < 0) __PYX_ERR(0, 39, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   PyType_Modified(__pyx_ptype_5MrWSI_4core_8resource_MultiRes);
 

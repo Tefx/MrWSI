@@ -55,7 +55,8 @@ class FairMachine(SimMachine):
                 if bandwidth_delta > 0:
                     e.adjust_bandwidth(bandwidth_delta, current_time)
                     has_adjustment = True
-        self.record(current_time)
+        if has_adjustment:
+            self.record(current_time)
         return has_adjustment
 
 

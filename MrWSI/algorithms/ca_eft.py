@@ -41,6 +41,25 @@ class CA_EFT(object):
                                        prev_machine.cost(), [])
         return state
 
+    def comm_by_ranks(self, task, task_machine):
+        est = 0
+        for comm in task.in_communications:
+            if self.placements[comm.from_task_id] == task_machine:
+                est = max(est, self.finish_times[comm.from_task_id])
+            else:
+                est = max(
+                    est,
+                    self.finish_times[comm.from_task_id] + comm.mean_runtime())
+        ranks = []
+        for comm in task.in_communications:
+            if self.placements[comm.from_task_id] != task_machine \
+               and est != self.finish_times[comm.from_task_id]:
+                ranks.append([
+                    float(comm.mean_runtime()) /
+                    (est - self.finish_times[comm.from_task_id]), comm
+                ])
+        return ranks
+
     def best_comm_pls_on(self, comm, est, from_machine, from_type, to_machine,
                          to_type):
         cr = min(from_type.bandwidth, to_type.bandwidth)
@@ -58,10 +77,10 @@ class CA_EFT(object):
         comm_pls = {}
         latest_comm_finish_time = 0
         earliest_comm_start_time = float("inf")
-        for comm in sorted(
-                task.in_communications,
-                key=lambda comm: comm.data_size,
-                reverse=False):
+        # comm_n_ranks = [(c.mean_runtime() + self.finish_times[c.from_task_id],
+        # c) for c in task.in_communications]
+        comm_n_ranks = self.comm_by_ranks(task, task_machine)
+        for _, comm in sorted(comm_n_ranks, key=lambda x: x[0], reverse=True):
             from_machine = self.placements[comm.from_task_id]
             if not comm.data_size or from_machine == task_machine: continue
             st_bst, ft_bst, ci_bst, crs_bst, fm_type_bst = (float("inf"),
@@ -121,7 +140,8 @@ class CA_EFT(object):
                 st, _ = machine.earliest_slot_for_task(vm_type, task, real_est)
                 ft = st + task.runtime(vm_type)
                 comm_n_task_length = ft - min(st, comm_est)
-                ci += machine.cost_increase(st, comm_n_task_length, vm_type)
+                ci += machine.cost_increase(
+                    min(st, comm_est), comm_n_task_length, vm_type)
                 if (ft, ci) < (ft_bst, ci_bst):
                     st_bst, ft_bst, ci_bst, comm_pls_bst, comm_mtc_bst, machine_bst, type_bst = (
                         st, ft, ci, comm_pls, comm_mtc, machine, vm_type)
