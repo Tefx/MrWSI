@@ -16,6 +16,7 @@ def generate_task_demand(chars):
         memory = 0
 
     return round(cores, 2), ceil(memory), 0
+    # return ceil(cores), ceil(memory), 0
 
 
 def read_dax(dax_path):

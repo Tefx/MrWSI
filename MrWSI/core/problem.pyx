@@ -113,8 +113,8 @@ cdef class Problem:
         for task_id, task_str_id in enumerate(self.task_str_ids):
             task_info = self._ctask_info(task_id)
             raw_task = tasks[task_str_id]
-            raw_task["demands"][0] = ceil(raw_task["demands"][0]) * 1000
-            # raw_task["demands"][0] *= 1000
+            # raw_task["demands"][0] = ceil(raw_task["demands"][0]) * 1000
+            raw_task["demands"][0] *= 1000
             raw_task["demands"].append(raw_task["demands"][-1])
             demands = array.array("l", map(int, raw_task["demands"]))
             prevs = array.array("i", [self.task_str_ids.index(t) for t in raw_task["prevs"].keys()])
@@ -122,7 +122,7 @@ cdef class Problem:
             runtimes = array.array("i", [ceil(raw_task["runtime"]/types[p]["speed"]) for p in self.type_str_ids])
             data_sizes = array.array("i", [0 for _ in range(len(tasks))])
             for prev_id, data in raw_task["prevs"].items():
-                data_sizes[self.task_str_ids.index(prev_id)] = data
+                data_sizes[self.task_str_ids.index(prev_id)] = int(data / 1024.0)
             task_info_init(task_info, demands.data.as_longs, 
                            prevs.data.as_ints, len(prevs),
                            succs.data.as_ints, len(succs),
@@ -133,6 +133,7 @@ cdef class Problem:
             type_info = self._ctype_info(type_id)
             raw_type = types[type_str_id]
             raw_type["capacities"][0] *= 1000
+            raw_type["capacities"][2] = int(raw_type["capacities"][2] / 1024.0)
             raw_type["capacities"].append(raw_type["capacities"][-1])
             capacities = array.array("l", raw_type["capacities"])
             type_demands = array.array("l", [1 for _ in range(platform_limit_dim)])
@@ -182,6 +183,11 @@ cdef class Problem:
             raw_types = json.load(f)
         if type_family != "all":
             raw_types = {name:info for name,info in raw_types.items() if type_family in name}
+        for task in raw_tasks.values():
+            task["runtime"] *= 100
+            for prev_id in task["prevs"].keys():
+                task["prevs"][prev_id] *= 100
+
         problem = cls(raw_tasks, raw_types, 1)
         problem.charge_unit = charge_unit
         problem.platform_limits = platform_limits if isinstance(platform_limits, list) else [platform_limits]
@@ -238,7 +244,8 @@ cdef class Problem:
         return problem_type_price(&self.c, type_id)
 
     def vm_cost(Problem self, int type_id, int runtime):
-        return problem_charge(&self.c, type_id, runtime)
+        # return problem_charge(&self.c, type_id, runtime)
+        return problem_charge(&self.c, type_id, int(runtime/100))
 
     def task_mean_runtime(Problem self, int task_id):
         return problem_task_average_runtime(&self.c, task_id)

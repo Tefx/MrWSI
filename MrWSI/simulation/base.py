@@ -57,7 +57,7 @@ class TaskEvent(Event):
         self.machine = env.machine_for_task(task)
 
     def object_rank(self):
-        return self.env.schedule.ST(self.task)
+        return self.env.schedule.ST(self.task), self.task.id_for_set
 
 
 class CommEvent(Event):
@@ -68,7 +68,7 @@ class CommEvent(Event):
         self.to_machine = env.machine_for_task(self.comm.to_task)
 
     def object_rank(self):
-        return self.env.schedule.CST(self.comm)
+        return self.env.schedule.CST(self.comm), self.comm.from_task.id_for_set
 
 
 class TaskStartEvent(TaskEvent, StartEvent):
@@ -76,6 +76,8 @@ class TaskStartEvent(TaskEvent, StartEvent):
         finish_event = self.env.task_finish_event_cls(self.env, self.task,
                                                       current_time)
         self.machine.add_task(finish_event, current_time)
+        # print(current_time, self,
+              # self.env.machines.index(self.machine), self.task.mean_runtime())
         return finish_event
 
     def is_ready(self):
@@ -99,6 +101,7 @@ class TaskFinishEvent(TaskEvent, FinishEvent):
         if not self.cancelled:
             self.machine.remove_task(self, current_time)
             self.env.mark_finished(self.task)
+            # print(current_time, self, self.env.machines.index(self.machine))
 
     def finish_time(self):
         return self.start_time + self.task.runtime(self.machine.vm_type)
@@ -114,6 +117,9 @@ class CommStartEvent(CommEvent, StartEvent):
             self.possible_bandwidth(), self.comm.data_size)
         self.from_machine.add_comm(finish_event, current_time, COMM_OUTPUT)
         self.to_machine.add_comm(finish_event, current_time, COMM_INPUT)
+        # print(current_time, self,
+              # self.env.machines.index(self.from_machine),
+              # self.env.machines.index(self.to_machine))
         return finish_event
 
     def is_ready(self):
@@ -137,6 +143,9 @@ class CommFinishEvent(CommEvent, FinishEvent):
 
     def finish(self, current_time):
         if not self.cancelled:
+            # print(current_time, self,
+                  # self.env.machines.index(self.from_machine),
+                  # self.env.machines.index(self.to_machine))
             self.from_machine.remove_comm(self, current_time, COMM_OUTPUT)
             self.to_machine.remove_comm(self, current_time, COMM_INPUT)
             self.env.mark_finished(self.comm)
@@ -145,7 +154,8 @@ class CommFinishEvent(CommEvent, FinishEvent):
         return self.start_time + ceil(self.data_size / self.bandwidth)
 
     def __repr__(self):
-        return "[CommFinish:{}]<{}|{}>".format(self.comm, self.bandwidth, self.cancelled)
+        return "[CommFinish:{}]<{}|{}>".format(self.comm, self.bandwidth,
+                                               self.cancelled)
 
 
 class SimMachine(object):
@@ -191,6 +201,8 @@ class SimMachine(object):
 
     def remove_comm(self, event, current_time, comm_type):
         self.links[comm_type].remove(event)
+        if not self.remaining_bandwidth(comm_type) >= 0:
+            print(event, self.remaining_resources, comm_type, self.remaining_bandwidth(comm_type))
         assert self.remaining_bandwidth(comm_type) >= 0
         self.remaining_resources += bandwidth2capacities(
             event.bandwidth, RES_DIM, comm_type)

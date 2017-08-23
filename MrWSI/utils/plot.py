@@ -1,4 +1,5 @@
 import os.path
+import pygraphviz as pgv
 
 
 def plot_usage(platform, dim, name):
@@ -7,7 +8,9 @@ def plot_usage(platform, dim, name):
     import matplotlib.pyplot as plt
 
     fig, axes = plt.subplots(
-        len(platform.machines), sharex=True, figsize=(20, 3 * len(platform.machines)))
+        len(platform.machines),
+        sharex=True,
+        figsize=(20, 3 * len(platform.machines)))
     if len(platform.machines) == 1:
         axes = [axes]
 
@@ -32,3 +35,17 @@ def plot_usage(platform, dim, name):
     axes[-1].set_xlabel("Times (s)")
     fig.tight_layout()
     plt.savefig(os.path.join(".", "{}.{}.png".format(name, dim)))
+
+
+def draw_dag(problem, path):
+    graph = pgv.AGraph(directed=True)
+    for task in problem.tasks:
+        task_id = task.task_id
+        runtime = task.mean_runtime()
+        graph.add_node(task.task_id, label="{} <{}>".format(task_id, runtime))
+        for comm in task.in_communications:
+            graph.add_edge(
+                comm.from_task_id,
+                comm.to_task_id,
+                label="{} <{}>".format(comm.mean_runtime(), comm.data_size))
+    graph.draw(path, prog="dot")
