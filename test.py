@@ -2,43 +2,81 @@
 
 from MrWSI.core.problem import Problem
 from MrWSI.core.platform import Context
-from MrWSI.algorithms.heft import heft
-from MrWSI.algorithms.ca_eft import CA_EFT, CA_EFT2
 from MrWSI.simulation.base import FCFSEnv
 from MrWSI.simulation.fair import FairEnv
+from MrWSI.algorithms.homogeneous import *
 
 from math import ceil
 
 
 def str_result(alg_name, res):
-    return "{}: {:6}s/${:<6.2f}".format(alg_name, ceil(res[0]/100), res[1])
+    return "{}:<{:<2}> {:6}s/${:<6.2f}".format(alg_name, res.machine_number,
+                                               res.span / 100, res.cost)
+
+
+def pegasus_wrks(wrk_dir, start=""):
+    for wrk in sorted(
+            os.listdir(wrk_dir), key=lambda x: int(x[:-4].split("_")[1])):
+        if wrk.endswith(".wrk") and wrk.startswith(start):
+            yield os.path.join(wrk_dir, wrk), wrk[:-4]
+
+
+def random_wrks(wrk_dir, start=""):
+    for wrk in sorted(os.listdir(wrk_dir), key=lambda x: int(x.split("_")[0])):
+        if wrk.endswith(".wrk") and wrk.startswith(start):
+            yield os.path.join(wrk_dir, wrk), wrk[:-4]
+
+
+def log_record(log, results):
+    if not log:
+        for alg, _ in results:
+            log[alg] = {"span": [], "cost": []}
+
+    for field in ["span", "cost"]:
+        res = [getattr(res, field) for _, res in results]
+        v_min = min(res)
+        v_max = max(res)
+
+        for alg, res in results:
+            value = (getattr(res, field) - v_min) / (
+                v_max - v_min) if v_max != v_min else 0
+            log[alg][field].append(value)
 
 
 if __name__ == "__main__":
     import os
-    from MrWSI.utils.plot import draw_dag
+    from MrWSI.utils.plot import plot_cmp_results
+
+    pegasus_wrk_path = "./resources/workflows/pegasus"
+    random_wrk_path = "./resources/workflows/random_tiny"
 
     ec2_file = "./resources/platforms/EC2_small.plt"
-    wrk_dir = "./resources/workflows/"
-    for wrk in sorted(
-            os.listdir(wrk_dir), key=lambda x: int(x[:-4].split("_")[1])):
-    # for wrk in ["Montage_25.wrk"]:
-        if wrk.endswith(".wrk"):
-            problem = Problem.load(
-                os.path.join(wrk_dir, wrk),
-                ec2_file,
-                type_family="t2.large",
-                charge_unit=60)
-            schedule, scheduled_cost = heft(problem)
-            scheduled_span = schedule.span()
-            results = [
-                ("HEFT (s)", (scheduled_span, scheduled_cost)),
-                ("HEFT (fcfs)", FCFSEnv(problem, schedule).run()),
-                ("HEFT (fair)", FairEnv(problem, schedule).run()),
-                ("CA_EFT(C)", (CA_EFT(problem).solve())),
-                ("CA_EFT(V)", CA_EFT2(problem).solve()),
-            ]
-            print("{:<16} ".format(wrk[:-4]) + " ".join(
+    result_log = {}
+    for wrk_path, wrk_name in random_wrks(random_wrk_path, ""):
+    # for wrk_path, wrk_name in pegasus_wrks(pegasus_wrk_path):
+        problem = HomoProblem.load(wrk_path, ec2_file, "t2.xlarge", 3600, 1000)
+        # if problem.num_tasks > 90: continue
+        eft = EFT(problem)
+        results = [
+            # ("EFT(s)", eft),
+            # ("EFT(fcfs)", FCFSEnv(eft)),
+            # ("EFT(fair)", FairEnv(eft)),
+            # ("CA_EFT(U)", CA_EFT_U(problem)),
+            # ("CA_EFT(S)", CA_EFT_S(problem)),
+            # ("CA_EFT(2)", CA_EFT_2(problem)),
+            ("CA_EFT(PU)", CA_EFT_PU(problem)),
+            # ("CA_EFT(PS)", CA_EFT_PS(problem)),
+            # ("CA_EFT(P2)", CA_EFT_P2(problem)),
+            # ("CA_EFT(PF)", CA_EFT_PF(problem)),
+            ("CA_EFT(PE)", CA_EFT_PE(problem)),
+            # ("CA_EFT(PW)", CA_EFT_PW(problem)),
+            # ("CA_EFT(PM)", CA_EFT_MIX(problem)),
+        ]
+        log_record(result_log, results)
+        if results[-1][1].span != min(x.span for _, x in results):
+            print("{:<16} ".format(wrk_name) + " ".join(
                 str_result(*res) for res in results))
-
-            # draw_dag(problem, "test.png")
+    for alg, res in result_log.items():
+        rs = res["span"]
+        print(alg, sum(rs) / len(rs))
+    plot_cmp_results(result_log, "span")

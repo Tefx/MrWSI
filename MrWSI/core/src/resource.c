@@ -20,10 +20,10 @@ bool mr_richcmp(res_t* r0, res_t* r1, int op, int dim) {
             res = !mr_eq(r0, r1, dim);
             break;
         case 4:
-            res = mr_le(r1, r0, dim);
+            res = mr_ge(r0, r1, dim) && ! mr_eq(r0, r1, dim);
             break;
         case 5:
-            res = mr_le(r1, r0, dim) && ! mr_eq(r0, r1, dim);
+            res = mr_ge(r0, r1, dim);
             break;
         default:
             res = false;

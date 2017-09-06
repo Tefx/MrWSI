@@ -27,13 +27,13 @@ static inline bin_node_t* _clone_node(bin_t* bin, bin_node_t* prev_node,
     bin_node_t* node = _alloc_node(bin);
     _node_init(node, time, _node_usage(prev_node), bin);
     list_insert_after(&prev_node->list, &node->list);
-    bin->num ++;
+    bin->num++;
     return node;
 }
 
 static inline void _delete_node(bin_t* bin, bin_node_t* node) {
     list_delete(&(node)->list);
-    bin->num --;
+    bin->num--;
     _node_destory(bin, node);
     mp_free(bin->_node_pool, node);
 }
@@ -122,12 +122,12 @@ int bin_close_time(bin_t* bin) {
     return node->time;
 }
 
-int bin_length(bin_t* bin) {return bin->num;}
+int bin_length(bin_t* bin) { return bin->num; }
 
 void bin_to_array(bin_t* bin, int* sts, res_t* usages, int dim) {
     bin_node_t* node = _node_next(bin->head);
     int i = 0;
-    while (node != bin->head){
+    while (node != bin->head) {
         sts[i] = node->time;
         usages[i] = _node_usage(node)[dim];
         i++;
@@ -156,12 +156,22 @@ bin_node_t* _bin_search(bin_t* bin, int time) {
     return node;
 }
 
-int bin_current_block(bin_t* bin, int time, res_t* volumn) {
-    bin_node_t* current_node = _bin_search(bin, time);
-    bin_node_t* next_node = _node_next(current_node);
+bin_node_t* _bin_search_after(bin_t* bin, bin_node_t* node, int time) {
+    if (!node) node = bin->head;
+    while (node->time <= time) {
+        node = _node_next(node);
+        if (node == bin->head) return _node_prev(node);
+    }
+    return _node_prev(node);
+}
+
+int bin_current_block(bin_t* bin, int time, res_t* volumn,
+                      bin_node_t* start_node, bin_node_t** current_node) {
+    *current_node = _bin_search_after(bin, start_node, time);
+    bin_node_t* next_node = _node_next(*current_node);
     int finish_time = next_node->time < 0 ? INT_MAX : next_node->time;
-    mr_copy(volumn, _node_usage(current_node), bin->dimension);
-    return finish_time - fmax(time, current_node->time);
+    mr_copy(volumn, _node_usage(*current_node), bin->dimension);
+    return finish_time - fmax(time, (*current_node)->time);
 }
 
 bin_node_t* _earliest_slot(bin_node_t* node, res_t* vol, int length, int est,

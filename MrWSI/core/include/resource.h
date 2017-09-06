@@ -51,6 +51,18 @@ inline bool mr_lt(res_t* a, res_t* b, int dim) {
     return true;
 }
 
+inline bool mr_ge(res_t* a, res_t* b, int dim) {
+    for (int i = 0; i < dim; ++i)
+        if (r_lt(a[i], b[i])) return false;
+    return true;
+}
+
+inline bool mr_gt(res_t* a, res_t* b, int dim) {
+    for (int i = 0; i < dim; ++i)
+        if (r_le(a[i], b[i])) return false;
+    return true;
+}
+
 inline bool mr_eq(res_t* a, res_t* b, int dim) {
     for (int i = 0; i < dim; ++i)
         if (!r_eq(a[i], b[i])) return false;

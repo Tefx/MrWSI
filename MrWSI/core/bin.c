@@ -675,7 +675,6 @@ typedef struct arrayobject arrayobject;
 #endif
 struct __pyx_obj_5MrWSI_4core_8resource_MultiRes;
 struct __pyx_obj_5MrWSI_4core_7problem_Problem;
-struct __pyx_obj_5MrWSI_4core_7problem_VMType;
 struct __pyx_obj_5MrWSI_4core_3bin_MemPool;
 struct __pyx_obj_5MrWSI_4core_3bin_BinNode;
 struct __pyx_obj_5MrWSI_4core_3bin_Item;
@@ -714,22 +713,7 @@ struct __pyx_obj_5MrWSI_4core_7problem_Problem {
 };
 
 
-/* "MrWSI/core/problem.pxd":60
- *     cdef type_info_t* _ctype_info(self, int type_id)
- * 
- * cdef class VMType:             # <<<<<<<<<<<<<<
- *     cdef Problem problem
- *     cdef public int type_id
- */
-struct __pyx_obj_5MrWSI_4core_7problem_VMType {
-  PyObject_HEAD
-  struct __pyx_obj_5MrWSI_4core_7problem_Problem *problem;
-  int type_id;
-  int bandwidth;
-};
-
-
-/* "MrWSI/core/bin.pxd":41
+/* "MrWSI/core/bin.pxd":43
  *     item_t* bin_extend_item(bin_t* bin, item_t* item, int st, int ft)
  * 
  * cdef class MemPool:             # <<<<<<<<<<<<<<
@@ -742,7 +726,7 @@ struct __pyx_obj_5MrWSI_4core_3bin_MemPool {
 };
 
 
-/* "MrWSI/core/bin.pxd":44
+/* "MrWSI/core/bin.pxd":46
  *     cdef mempool_t* c_ptr
  * 
  * cdef class BinNode:             # <<<<<<<<<<<<<<
@@ -755,7 +739,7 @@ struct __pyx_obj_5MrWSI_4core_3bin_BinNode {
 };
 
 
-/* "MrWSI/core/bin.pxd":47
+/* "MrWSI/core/bin.pxd":49
  *     cdef bin_node_t* c_ptr
  * 
  * cdef class Item:             # <<<<<<<<<<<<<<
@@ -768,7 +752,7 @@ struct __pyx_obj_5MrWSI_4core_3bin_Item {
 };
 
 
-/* "MrWSI/core/bin.pxd":50
+/* "MrWSI/core/bin.pxd":52
  *     cdef item_t* c_ptr
  * 
  * cdef class Bin:             # <<<<<<<<<<<<<<
@@ -1098,7 +1082,6 @@ static PyObject *(*__pyx_f_5MrWSI_4core_8resource_mr_wrap_c)(res_t *, int); /*pr
 
 /* Module declarations from 'MrWSI.core.problem' */
 static PyTypeObject *__pyx_ptype_5MrWSI_4core_7problem_Problem = 0;
-static PyTypeObject *__pyx_ptype_5MrWSI_4core_7problem_VMType = 0;
 
 /* Module declarations from 'cpython.version' */
 
@@ -1212,6 +1195,7 @@ static const char __pyx_k_item[] = "item";
 static const char __pyx_k_main[] = "__main__";
 static const char __pyx_k_node[] = "node";
 static const char __pyx_k_test[] = "__test__";
+static const char __pyx_k_time[] = "time";
 static const char __pyx_k_array[] = "array";
 static const char __pyx_k_force[] = "force";
 static const char __pyx_k_other[] = "other";
@@ -1261,6 +1245,7 @@ static PyObject *__pyx_n_s_st;
 static PyObject *__pyx_n_s_start_node;
 static PyObject *__pyx_n_s_start_time;
 static PyObject *__pyx_n_s_test;
+static PyObject *__pyx_n_s_time;
 static PyObject *__pyx_n_s_zip;
 static int __pyx_pf_5MrWSI_4core_3bin_7MemPool___cinit__(struct __pyx_obj_5MrWSI_4core_3bin_MemPool *__pyx_v_self, int __pyx_v_dimension, int __pyx_v_buffer_size, PyObject *__pyx_v_content); /* proto */
 static void __pyx_pf_5MrWSI_4core_3bin_7MemPool_2__dealloc__(struct __pyx_obj_5MrWSI_4core_3bin_MemPool *__pyx_v_self); /* proto */
@@ -1272,7 +1257,7 @@ static PyObject *__pyx_pf_5MrWSI_4core_3bin_3Bin_8open_time(struct __pyx_obj_5Mr
 static PyObject *__pyx_pf_5MrWSI_4core_3bin_3Bin_10close_time(struct __pyx_obj_5MrWSI_4core_3bin_Bin *__pyx_v_self); /* proto */
 static PyObject *__pyx_pf_5MrWSI_4core_3bin_3Bin_12span(struct __pyx_obj_5MrWSI_4core_3bin_Bin *__pyx_v_self); /* proto */
 static PyObject *__pyx_pf_5MrWSI_4core_3bin_3Bin_14peak_usage(struct __pyx_obj_5MrWSI_4core_3bin_Bin *__pyx_v_self, PyObject *__pyx_v_force); /* proto */
-static PyObject *__pyx_pf_5MrWSI_4core_3bin_3Bin_16current_block(struct __pyx_obj_5MrWSI_4core_3bin_Bin *__pyx_v_self, int __pyx_v_time); /* proto */
+static PyObject *__pyx_pf_5MrWSI_4core_3bin_3Bin_16current_block(struct __pyx_obj_5MrWSI_4core_3bin_Bin *__pyx_v_self, int __pyx_v_time, struct __pyx_obj_5MrWSI_4core_3bin_BinNode *__pyx_v_node); /* proto */
 static PyObject *__pyx_pf_5MrWSI_4core_3bin_3Bin_18earliest_slot(struct __pyx_obj_5MrWSI_4core_3bin_Bin *__pyx_v_self, struct __pyx_obj_5MrWSI_4core_8resource_MultiRes *__pyx_v_capacities, struct __pyx_obj_5MrWSI_4core_8resource_MultiRes *__pyx_v_demands, int __pyx_v_length, int __pyx_v_est, bool __pyx_v_only_forward); /* proto */
 static PyObject *__pyx_pf_5MrWSI_4core_3bin_3Bin_20earliest_slot_2(struct __pyx_obj_5MrWSI_4core_3bin_Bin *__pyx_v_self, struct __pyx_obj_5MrWSI_4core_3bin_Bin *__pyx_v_other, struct __pyx_obj_5MrWSI_4core_8resource_MultiRes *__pyx_v_capacities, struct __pyx_obj_5MrWSI_4core_8resource_MultiRes *__pyx_v_capacities_other, struct __pyx_obj_5MrWSI_4core_8resource_MultiRes *__pyx_v_demands_x, struct __pyx_obj_5MrWSI_4core_8resource_MultiRes *__pyx_v_demands_y, int __pyx_v_length, int __pyx_v_est); /* proto */
 static PyObject *__pyx_pf_5MrWSI_4core_3bin_3Bin_22alloc_item(struct __pyx_obj_5MrWSI_4core_3bin_Bin *__pyx_v_self, int __pyx_v_start_time, struct __pyx_obj_5MrWSI_4core_8resource_MultiRes *__pyx_v_demands, int __pyx_v_length, struct __pyx_obj_5MrWSI_4core_3bin_BinNode *__pyx_v_start_node); /* proto */
@@ -2128,7 +2113,7 @@ static PyObject *__pyx_pf_5MrWSI_4core_3bin_3Bin_14peak_usage(struct __pyx_obj_5
  *     def peak_usage(self, force=False):
  *         return mr_wrap_c(bin_peak_usage(self.c_ptr, force), bin_dimension(self.c_ptr))             # <<<<<<<<<<<<<<
  * 
- *     def current_block(self, int time):
+ *     def current_block(self, int time, BinNode node=None):
  */
   __Pyx_XDECREF(__pyx_r);
   __pyx_t_1 = __Pyx_PyObject_IsTrue(__pyx_v_force); if (unlikely((__pyx_t_1 == ((bool)-1)) && PyErr_Occurred())) __PYX_ERR(0, 49, __pyx_L1_error)
@@ -2160,49 +2145,95 @@ static PyObject *__pyx_pf_5MrWSI_4core_3bin_3Bin_14peak_usage(struct __pyx_obj_5
 /* "MrWSI/core/bin.pyx":51
  *         return mr_wrap_c(bin_peak_usage(self.c_ptr, force), bin_dimension(self.c_ptr))
  * 
- *     def current_block(self, int time):             # <<<<<<<<<<<<<<
+ *     def current_block(self, int time, BinNode node=None):             # <<<<<<<<<<<<<<
  *         cdef MultiRes mr = MultiRes(bin_dimension(self.c_ptr))
- *         cdef int length = bin_current_block(self.c_ptr, time, mr.c)
+ *         cdef BinNode bn = BinNode()
  */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_5MrWSI_4core_3bin_3Bin_17current_block(PyObject *__pyx_v_self, PyObject *__pyx_arg_time); /*proto*/
-static PyObject *__pyx_pw_5MrWSI_4core_3bin_3Bin_17current_block(PyObject *__pyx_v_self, PyObject *__pyx_arg_time) {
+static PyObject *__pyx_pw_5MrWSI_4core_3bin_3Bin_17current_block(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
+static PyObject *__pyx_pw_5MrWSI_4core_3bin_3Bin_17current_block(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
   int __pyx_v_time;
+  struct __pyx_obj_5MrWSI_4core_3bin_BinNode *__pyx_v_node = 0;
   PyObject *__pyx_r = 0;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("current_block (wrapper)", 0);
-  assert(__pyx_arg_time); {
-    __pyx_v_time = __Pyx_PyInt_As_int(__pyx_arg_time); if (unlikely((__pyx_v_time == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 51, __pyx_L3_error)
+  {
+    static PyObject **__pyx_pyargnames[] = {&__pyx_n_s_time,&__pyx_n_s_node,0};
+    PyObject* values[2] = {0,0};
+    values[1] = (PyObject *)((struct __pyx_obj_5MrWSI_4core_3bin_BinNode *)Py_None);
+    if (unlikely(__pyx_kwds)) {
+      Py_ssize_t kw_args;
+      const Py_ssize_t pos_args = PyTuple_GET_SIZE(__pyx_args);
+      switch (pos_args) {
+        case  2: values[1] = PyTuple_GET_ITEM(__pyx_args, 1);
+        case  1: values[0] = PyTuple_GET_ITEM(__pyx_args, 0);
+        case  0: break;
+        default: goto __pyx_L5_argtuple_error;
+      }
+      kw_args = PyDict_Size(__pyx_kwds);
+      switch (pos_args) {
+        case  0:
+        if (likely((values[0] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_time)) != 0)) kw_args--;
+        else goto __pyx_L5_argtuple_error;
+        case  1:
+        if (kw_args > 0) {
+          PyObject* value = PyDict_GetItem(__pyx_kwds, __pyx_n_s_node);
+          if (value) { values[1] = value; kw_args--; }
+        }
+      }
+      if (unlikely(kw_args > 0)) {
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "current_block") < 0)) __PYX_ERR(0, 51, __pyx_L3_error)
+      }
+    } else {
+      switch (PyTuple_GET_SIZE(__pyx_args)) {
+        case  2: values[1] = PyTuple_GET_ITEM(__pyx_args, 1);
+        case  1: values[0] = PyTuple_GET_ITEM(__pyx_args, 0);
+        break;
+        default: goto __pyx_L5_argtuple_error;
+      }
+    }
+    __pyx_v_time = __Pyx_PyInt_As_int(values[0]); if (unlikely((__pyx_v_time == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 51, __pyx_L3_error)
+    __pyx_v_node = ((struct __pyx_obj_5MrWSI_4core_3bin_BinNode *)values[1]);
   }
   goto __pyx_L4_argument_unpacking_done;
+  __pyx_L5_argtuple_error:;
+  __Pyx_RaiseArgtupleInvalid("current_block", 0, 1, 2, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 51, __pyx_L3_error)
   __pyx_L3_error:;
   __Pyx_AddTraceback("MrWSI.core.bin.Bin.current_block", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
   return NULL;
   __pyx_L4_argument_unpacking_done:;
-  __pyx_r = __pyx_pf_5MrWSI_4core_3bin_3Bin_16current_block(((struct __pyx_obj_5MrWSI_4core_3bin_Bin *)__pyx_v_self), ((int)__pyx_v_time));
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_node), __pyx_ptype_5MrWSI_4core_3bin_BinNode, 1, "node", 0))) __PYX_ERR(0, 51, __pyx_L1_error)
+  __pyx_r = __pyx_pf_5MrWSI_4core_3bin_3Bin_16current_block(((struct __pyx_obj_5MrWSI_4core_3bin_Bin *)__pyx_v_self), __pyx_v_time, __pyx_v_node);
 
   /* function exit code */
+  goto __pyx_L0;
+  __pyx_L1_error:;
+  __pyx_r = NULL;
+  __pyx_L0:;
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_5MrWSI_4core_3bin_3Bin_16current_block(struct __pyx_obj_5MrWSI_4core_3bin_Bin *__pyx_v_self, int __pyx_v_time) {
+static PyObject *__pyx_pf_5MrWSI_4core_3bin_3Bin_16current_block(struct __pyx_obj_5MrWSI_4core_3bin_Bin *__pyx_v_self, int __pyx_v_time, struct __pyx_obj_5MrWSI_4core_3bin_BinNode *__pyx_v_node) {
   struct __pyx_obj_5MrWSI_4core_8resource_MultiRes *__pyx_v_mr = 0;
+  struct __pyx_obj_5MrWSI_4core_3bin_BinNode *__pyx_v_bn = 0;
   int __pyx_v_length;
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
   PyObject *__pyx_t_2 = NULL;
+  struct bin_node_t *__pyx_t_3;
+  int __pyx_t_4;
   __Pyx_RefNannySetupContext("current_block", 0);
 
   /* "MrWSI/core/bin.pyx":52
  * 
- *     def current_block(self, int time):
+ *     def current_block(self, int time, BinNode node=None):
  *         cdef MultiRes mr = MultiRes(bin_dimension(self.c_ptr))             # <<<<<<<<<<<<<<
- *         cdef int length = bin_current_block(self.c_ptr, time, mr.c)
- *         return mr, length
+ *         cdef BinNode bn = BinNode()
+ *         cdef int length = bin_current_block(self.c_ptr, time, mr.c, node.c_ptr if node else NULL, &(bn.c_ptr))
  */
   __pyx_t_1 = __Pyx_PyInt_From_int(bin_dimension(__pyx_v_self->c_ptr)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 52, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
@@ -2218,31 +2249,52 @@ static PyObject *__pyx_pf_5MrWSI_4core_3bin_3Bin_16current_block(struct __pyx_ob
   __pyx_t_1 = 0;
 
   /* "MrWSI/core/bin.pyx":53
- *     def current_block(self, int time):
+ *     def current_block(self, int time, BinNode node=None):
  *         cdef MultiRes mr = MultiRes(bin_dimension(self.c_ptr))
- *         cdef int length = bin_current_block(self.c_ptr, time, mr.c)             # <<<<<<<<<<<<<<
- *         return mr, length
- * 
+ *         cdef BinNode bn = BinNode()             # <<<<<<<<<<<<<<
+ *         cdef int length = bin_current_block(self.c_ptr, time, mr.c, node.c_ptr if node else NULL, &(bn.c_ptr))
+ *         return mr, length, bn
  */
-  __pyx_v_length = bin_current_block(__pyx_v_self->c_ptr, __pyx_v_time, __pyx_v_mr->c);
+  __pyx_t_1 = __Pyx_PyObject_Call(((PyObject *)__pyx_ptype_5MrWSI_4core_3bin_BinNode), __pyx_empty_tuple, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 53, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_1);
+  __pyx_v_bn = ((struct __pyx_obj_5MrWSI_4core_3bin_BinNode *)__pyx_t_1);
+  __pyx_t_1 = 0;
 
   /* "MrWSI/core/bin.pyx":54
  *         cdef MultiRes mr = MultiRes(bin_dimension(self.c_ptr))
- *         cdef int length = bin_current_block(self.c_ptr, time, mr.c)
- *         return mr, length             # <<<<<<<<<<<<<<
+ *         cdef BinNode bn = BinNode()
+ *         cdef int length = bin_current_block(self.c_ptr, time, mr.c, node.c_ptr if node else NULL, &(bn.c_ptr))             # <<<<<<<<<<<<<<
+ *         return mr, length, bn
+ * 
+ */
+  __pyx_t_4 = __Pyx_PyObject_IsTrue(((PyObject *)__pyx_v_node)); if (unlikely(__pyx_t_4 < 0)) __PYX_ERR(0, 54, __pyx_L1_error)
+  if (__pyx_t_4) {
+    __pyx_t_3 = __pyx_v_node->c_ptr;
+  } else {
+    __pyx_t_3 = NULL;
+  }
+  __pyx_v_length = bin_current_block(__pyx_v_self->c_ptr, __pyx_v_time, __pyx_v_mr->c, __pyx_t_3, (&__pyx_v_bn->c_ptr));
+
+  /* "MrWSI/core/bin.pyx":55
+ *         cdef BinNode bn = BinNode()
+ *         cdef int length = bin_current_block(self.c_ptr, time, mr.c, node.c_ptr if node else NULL, &(bn.c_ptr))
+ *         return mr, length, bn             # <<<<<<<<<<<<<<
  * 
  *     def earliest_slot(self, MultiRes capacities, MultiRes demands, int length,
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_1 = __Pyx_PyInt_From_int(__pyx_v_length); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 54, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyInt_From_int(__pyx_v_length); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 55, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_2 = PyTuple_New(2); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 54, __pyx_L1_error)
+  __pyx_t_2 = PyTuple_New(3); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 55, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_INCREF(((PyObject *)__pyx_v_mr));
   __Pyx_GIVEREF(((PyObject *)__pyx_v_mr));
   PyTuple_SET_ITEM(__pyx_t_2, 0, ((PyObject *)__pyx_v_mr));
   __Pyx_GIVEREF(__pyx_t_1);
   PyTuple_SET_ITEM(__pyx_t_2, 1, __pyx_t_1);
+  __Pyx_INCREF(((PyObject *)__pyx_v_bn));
+  __Pyx_GIVEREF(((PyObject *)__pyx_v_bn));
+  PyTuple_SET_ITEM(__pyx_t_2, 2, ((PyObject *)__pyx_v_bn));
   __pyx_t_1 = 0;
   __pyx_r = __pyx_t_2;
   __pyx_t_2 = 0;
@@ -2251,9 +2303,9 @@ static PyObject *__pyx_pf_5MrWSI_4core_3bin_3Bin_16current_block(struct __pyx_ob
   /* "MrWSI/core/bin.pyx":51
  *         return mr_wrap_c(bin_peak_usage(self.c_ptr, force), bin_dimension(self.c_ptr))
  * 
- *     def current_block(self, int time):             # <<<<<<<<<<<<<<
+ *     def current_block(self, int time, BinNode node=None):             # <<<<<<<<<<<<<<
  *         cdef MultiRes mr = MultiRes(bin_dimension(self.c_ptr))
- *         cdef int length = bin_current_block(self.c_ptr, time, mr.c)
+ *         cdef BinNode bn = BinNode()
  */
 
   /* function exit code */
@@ -2264,13 +2316,14 @@ static PyObject *__pyx_pf_5MrWSI_4core_3bin_3Bin_16current_block(struct __pyx_ob
   __pyx_r = NULL;
   __pyx_L0:;
   __Pyx_XDECREF((PyObject *)__pyx_v_mr);
+  __Pyx_XDECREF((PyObject *)__pyx_v_bn);
   __Pyx_XGIVEREF(__pyx_r);
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-/* "MrWSI/core/bin.pyx":56
- *         return mr, length
+/* "MrWSI/core/bin.pyx":57
+ *         return mr, length, bn
  * 
  *     def earliest_slot(self, MultiRes capacities, MultiRes demands, int length,             # <<<<<<<<<<<<<<
  *                       int est, bool only_forward=False):
@@ -2311,17 +2364,17 @@ static PyObject *__pyx_pw_5MrWSI_4core_3bin_3Bin_19earliest_slot(PyObject *__pyx
         case  1:
         if (likely((values[1] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_demands)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("earliest_slot", 0, 4, 5, 1); __PYX_ERR(0, 56, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("earliest_slot", 0, 4, 5, 1); __PYX_ERR(0, 57, __pyx_L3_error)
         }
         case  2:
         if (likely((values[2] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_length)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("earliest_slot", 0, 4, 5, 2); __PYX_ERR(0, 56, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("earliest_slot", 0, 4, 5, 2); __PYX_ERR(0, 57, __pyx_L3_error)
         }
         case  3:
         if (likely((values[3] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_est)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("earliest_slot", 0, 4, 5, 3); __PYX_ERR(0, 56, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("earliest_slot", 0, 4, 5, 3); __PYX_ERR(0, 57, __pyx_L3_error)
         }
         case  4:
         if (kw_args > 0) {
@@ -2330,7 +2383,7 @@ static PyObject *__pyx_pw_5MrWSI_4core_3bin_3Bin_19earliest_slot(PyObject *__pyx
         }
       }
       if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "earliest_slot") < 0)) __PYX_ERR(0, 56, __pyx_L3_error)
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "earliest_slot") < 0)) __PYX_ERR(0, 57, __pyx_L3_error)
       }
     } else {
       switch (PyTuple_GET_SIZE(__pyx_args)) {
@@ -2345,13 +2398,13 @@ static PyObject *__pyx_pw_5MrWSI_4core_3bin_3Bin_19earliest_slot(PyObject *__pyx
     }
     __pyx_v_capacities = ((struct __pyx_obj_5MrWSI_4core_8resource_MultiRes *)values[0]);
     __pyx_v_demands = ((struct __pyx_obj_5MrWSI_4core_8resource_MultiRes *)values[1]);
-    __pyx_v_length = __Pyx_PyInt_As_int(values[2]); if (unlikely((__pyx_v_length == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 56, __pyx_L3_error)
-    __pyx_v_est = __Pyx_PyInt_As_int(values[3]); if (unlikely((__pyx_v_est == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 57, __pyx_L3_error)
+    __pyx_v_length = __Pyx_PyInt_As_int(values[2]); if (unlikely((__pyx_v_length == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 57, __pyx_L3_error)
+    __pyx_v_est = __Pyx_PyInt_As_int(values[3]); if (unlikely((__pyx_v_est == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 58, __pyx_L3_error)
     if (values[4]) {
-      __pyx_v_only_forward = __Pyx_PyObject_IsTrue(values[4]); if (unlikely((__pyx_v_only_forward == ((bool)-1)) && PyErr_Occurred())) __PYX_ERR(0, 57, __pyx_L3_error)
+      __pyx_v_only_forward = __Pyx_PyObject_IsTrue(values[4]); if (unlikely((__pyx_v_only_forward == ((bool)-1)) && PyErr_Occurred())) __PYX_ERR(0, 58, __pyx_L3_error)
     } else {
 
-      /* "MrWSI/core/bin.pyx":57
+      /* "MrWSI/core/bin.pyx":58
  * 
  *     def earliest_slot(self, MultiRes capacities, MultiRes demands, int length,
  *                       int est, bool only_forward=False):             # <<<<<<<<<<<<<<
@@ -2363,18 +2416,18 @@ static PyObject *__pyx_pw_5MrWSI_4core_3bin_3Bin_19earliest_slot(PyObject *__pyx
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("earliest_slot", 0, 4, 5, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 56, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("earliest_slot", 0, 4, 5, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 57, __pyx_L3_error)
   __pyx_L3_error:;
   __Pyx_AddTraceback("MrWSI.core.bin.Bin.earliest_slot", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
   return NULL;
   __pyx_L4_argument_unpacking_done:;
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_capacities), __pyx_ptype_5MrWSI_4core_8resource_MultiRes, 1, "capacities", 0))) __PYX_ERR(0, 56, __pyx_L1_error)
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_demands), __pyx_ptype_5MrWSI_4core_8resource_MultiRes, 1, "demands", 0))) __PYX_ERR(0, 56, __pyx_L1_error)
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_capacities), __pyx_ptype_5MrWSI_4core_8resource_MultiRes, 1, "capacities", 0))) __PYX_ERR(0, 57, __pyx_L1_error)
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_demands), __pyx_ptype_5MrWSI_4core_8resource_MultiRes, 1, "demands", 0))) __PYX_ERR(0, 57, __pyx_L1_error)
   __pyx_r = __pyx_pf_5MrWSI_4core_3bin_3Bin_18earliest_slot(((struct __pyx_obj_5MrWSI_4core_3bin_Bin *)__pyx_v_self), __pyx_v_capacities, __pyx_v_demands, __pyx_v_length, __pyx_v_est, __pyx_v_only_forward);
 
-  /* "MrWSI/core/bin.pyx":56
- *         return mr, length
+  /* "MrWSI/core/bin.pyx":57
+ *         return mr, length, bn
  * 
  *     def earliest_slot(self, MultiRes capacities, MultiRes demands, int length,             # <<<<<<<<<<<<<<
  *                       int est, bool only_forward=False):
@@ -2399,19 +2452,19 @@ static PyObject *__pyx_pf_5MrWSI_4core_3bin_3Bin_18earliest_slot(struct __pyx_ob
   PyObject *__pyx_t_2 = NULL;
   __Pyx_RefNannySetupContext("earliest_slot", 0);
 
-  /* "MrWSI/core/bin.pyx":59
+  /* "MrWSI/core/bin.pyx":60
  *                       int est, bool only_forward=False):
  *         cdef bin_node_t*start_node;
  *         cdef st = bin_earliest_slot(self.c_ptr, capacities.c, demands.c, length,             # <<<<<<<<<<<<<<
  *                                     est, &start_node, only_forward)
  *         return st, bn_wrap_c(start_node)
  */
-  __pyx_t_1 = __Pyx_PyInt_From_int(bin_earliest_slot(__pyx_v_self->c_ptr, __pyx_v_capacities->c, __pyx_v_demands->c, __pyx_v_length, __pyx_v_est, (&__pyx_v_start_node), __pyx_v_only_forward)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 59, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyInt_From_int(bin_earliest_slot(__pyx_v_self->c_ptr, __pyx_v_capacities->c, __pyx_v_demands->c, __pyx_v_length, __pyx_v_est, (&__pyx_v_start_node), __pyx_v_only_forward)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 60, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_v_st = __pyx_t_1;
   __pyx_t_1 = 0;
 
-  /* "MrWSI/core/bin.pyx":61
+  /* "MrWSI/core/bin.pyx":62
  *         cdef st = bin_earliest_slot(self.c_ptr, capacities.c, demands.c, length,
  *                                     est, &start_node, only_forward)
  *         return st, bn_wrap_c(start_node)             # <<<<<<<<<<<<<<
@@ -2419,9 +2472,9 @@ static PyObject *__pyx_pf_5MrWSI_4core_3bin_3Bin_18earliest_slot(struct __pyx_ob
  *     def earliest_slot_2(self, Bin other,
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_1 = __pyx_f_5MrWSI_4core_3bin_bn_wrap_c(__pyx_v_start_node); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 61, __pyx_L1_error)
+  __pyx_t_1 = __pyx_f_5MrWSI_4core_3bin_bn_wrap_c(__pyx_v_start_node); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 62, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_2 = PyTuple_New(2); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 61, __pyx_L1_error)
+  __pyx_t_2 = PyTuple_New(2); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 62, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_INCREF(__pyx_v_st);
   __Pyx_GIVEREF(__pyx_v_st);
@@ -2433,8 +2486,8 @@ static PyObject *__pyx_pf_5MrWSI_4core_3bin_3Bin_18earliest_slot(struct __pyx_ob
   __pyx_t_2 = 0;
   goto __pyx_L0;
 
-  /* "MrWSI/core/bin.pyx":56
- *         return mr, length
+  /* "MrWSI/core/bin.pyx":57
+ *         return mr, length, bn
  * 
  *     def earliest_slot(self, MultiRes capacities, MultiRes demands, int length,             # <<<<<<<<<<<<<<
  *                       int est, bool only_forward=False):
@@ -2454,7 +2507,7 @@ static PyObject *__pyx_pf_5MrWSI_4core_3bin_3Bin_18earliest_slot(struct __pyx_ob
   return __pyx_r;
 }
 
-/* "MrWSI/core/bin.pyx":63
+/* "MrWSI/core/bin.pyx":64
  *         return st, bn_wrap_c(start_node)
  * 
  *     def earliest_slot_2(self, Bin other,             # <<<<<<<<<<<<<<
@@ -2500,36 +2553,36 @@ static PyObject *__pyx_pw_5MrWSI_4core_3bin_3Bin_21earliest_slot_2(PyObject *__p
         case  1:
         if (likely((values[1] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_capacities)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("earliest_slot_2", 1, 7, 7, 1); __PYX_ERR(0, 63, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("earliest_slot_2", 1, 7, 7, 1); __PYX_ERR(0, 64, __pyx_L3_error)
         }
         case  2:
         if (likely((values[2] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_capacities_other)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("earliest_slot_2", 1, 7, 7, 2); __PYX_ERR(0, 63, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("earliest_slot_2", 1, 7, 7, 2); __PYX_ERR(0, 64, __pyx_L3_error)
         }
         case  3:
         if (likely((values[3] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_demands_x)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("earliest_slot_2", 1, 7, 7, 3); __PYX_ERR(0, 63, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("earliest_slot_2", 1, 7, 7, 3); __PYX_ERR(0, 64, __pyx_L3_error)
         }
         case  4:
         if (likely((values[4] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_demands_y)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("earliest_slot_2", 1, 7, 7, 4); __PYX_ERR(0, 63, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("earliest_slot_2", 1, 7, 7, 4); __PYX_ERR(0, 64, __pyx_L3_error)
         }
         case  5:
         if (likely((values[5] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_length)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("earliest_slot_2", 1, 7, 7, 5); __PYX_ERR(0, 63, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("earliest_slot_2", 1, 7, 7, 5); __PYX_ERR(0, 64, __pyx_L3_error)
         }
         case  6:
         if (likely((values[6] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_est)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("earliest_slot_2", 1, 7, 7, 6); __PYX_ERR(0, 63, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("earliest_slot_2", 1, 7, 7, 6); __PYX_ERR(0, 64, __pyx_L3_error)
         }
       }
       if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "earliest_slot_2") < 0)) __PYX_ERR(0, 63, __pyx_L3_error)
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "earliest_slot_2") < 0)) __PYX_ERR(0, 64, __pyx_L3_error)
       }
     } else if (PyTuple_GET_SIZE(__pyx_args) != 7) {
       goto __pyx_L5_argtuple_error;
@@ -2547,22 +2600,22 @@ static PyObject *__pyx_pw_5MrWSI_4core_3bin_3Bin_21earliest_slot_2(PyObject *__p
     __pyx_v_capacities_other = ((struct __pyx_obj_5MrWSI_4core_8resource_MultiRes *)values[2]);
     __pyx_v_demands_x = ((struct __pyx_obj_5MrWSI_4core_8resource_MultiRes *)values[3]);
     __pyx_v_demands_y = ((struct __pyx_obj_5MrWSI_4core_8resource_MultiRes *)values[4]);
-    __pyx_v_length = __Pyx_PyInt_As_int(values[5]); if (unlikely((__pyx_v_length == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 65, __pyx_L3_error)
-    __pyx_v_est = __Pyx_PyInt_As_int(values[6]); if (unlikely((__pyx_v_est == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 65, __pyx_L3_error)
+    __pyx_v_length = __Pyx_PyInt_As_int(values[5]); if (unlikely((__pyx_v_length == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 66, __pyx_L3_error)
+    __pyx_v_est = __Pyx_PyInt_As_int(values[6]); if (unlikely((__pyx_v_est == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 66, __pyx_L3_error)
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("earliest_slot_2", 1, 7, 7, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 63, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("earliest_slot_2", 1, 7, 7, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 64, __pyx_L3_error)
   __pyx_L3_error:;
   __Pyx_AddTraceback("MrWSI.core.bin.Bin.earliest_slot_2", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
   return NULL;
   __pyx_L4_argument_unpacking_done:;
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_other), __pyx_ptype_5MrWSI_4core_3bin_Bin, 1, "other", 0))) __PYX_ERR(0, 63, __pyx_L1_error)
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_capacities), __pyx_ptype_5MrWSI_4core_8resource_MultiRes, 1, "capacities", 0))) __PYX_ERR(0, 64, __pyx_L1_error)
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_capacities_other), __pyx_ptype_5MrWSI_4core_8resource_MultiRes, 1, "capacities_other", 0))) __PYX_ERR(0, 64, __pyx_L1_error)
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_demands_x), __pyx_ptype_5MrWSI_4core_8resource_MultiRes, 1, "demands_x", 0))) __PYX_ERR(0, 65, __pyx_L1_error)
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_demands_y), __pyx_ptype_5MrWSI_4core_8resource_MultiRes, 1, "demands_y", 0))) __PYX_ERR(0, 65, __pyx_L1_error)
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_other), __pyx_ptype_5MrWSI_4core_3bin_Bin, 1, "other", 0))) __PYX_ERR(0, 64, __pyx_L1_error)
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_capacities), __pyx_ptype_5MrWSI_4core_8resource_MultiRes, 1, "capacities", 0))) __PYX_ERR(0, 65, __pyx_L1_error)
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_capacities_other), __pyx_ptype_5MrWSI_4core_8resource_MultiRes, 1, "capacities_other", 0))) __PYX_ERR(0, 65, __pyx_L1_error)
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_demands_x), __pyx_ptype_5MrWSI_4core_8resource_MultiRes, 1, "demands_x", 0))) __PYX_ERR(0, 66, __pyx_L1_error)
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_demands_y), __pyx_ptype_5MrWSI_4core_8resource_MultiRes, 1, "demands_y", 0))) __PYX_ERR(0, 66, __pyx_L1_error)
   __pyx_r = __pyx_pf_5MrWSI_4core_3bin_3Bin_20earliest_slot_2(((struct __pyx_obj_5MrWSI_4core_3bin_Bin *)__pyx_v_self), __pyx_v_other, __pyx_v_capacities, __pyx_v_capacities_other, __pyx_v_demands_x, __pyx_v_demands_y, __pyx_v_length, __pyx_v_est);
 
   /* function exit code */
@@ -2585,19 +2638,19 @@ static PyObject *__pyx_pf_5MrWSI_4core_3bin_3Bin_20earliest_slot_2(struct __pyx_
   PyObject *__pyx_t_3 = NULL;
   __Pyx_RefNannySetupContext("earliest_slot_2", 0);
 
-  /* "MrWSI/core/bin.pyx":68
+  /* "MrWSI/core/bin.pyx":69
  *         cdef bin_node_t* start_node_x
  *         cdef bin_node_t* start_node_y
  *         cdef st = bin_earliest_slot_2(self.c_ptr, other.c_ptr,             # <<<<<<<<<<<<<<
  *                                       capacities.c, capacities_other.c,
  *                                       demands_x.c, demands_y.c, length, est,
  */
-  __pyx_t_1 = __Pyx_PyInt_From_int(bin_earliest_slot_2(__pyx_v_self->c_ptr, __pyx_v_other->c_ptr, __pyx_v_capacities->c, __pyx_v_capacities_other->c, __pyx_v_demands_x->c, __pyx_v_demands_y->c, __pyx_v_length, __pyx_v_est, (&__pyx_v_start_node_x), (&__pyx_v_start_node_y))); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 68, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyInt_From_int(bin_earliest_slot_2(__pyx_v_self->c_ptr, __pyx_v_other->c_ptr, __pyx_v_capacities->c, __pyx_v_capacities_other->c, __pyx_v_demands_x->c, __pyx_v_demands_y->c, __pyx_v_length, __pyx_v_est, (&__pyx_v_start_node_x), (&__pyx_v_start_node_y))); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 69, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_v_st = __pyx_t_1;
   __pyx_t_1 = 0;
 
-  /* "MrWSI/core/bin.pyx":72
+  /* "MrWSI/core/bin.pyx":73
  *                                       demands_x.c, demands_y.c, length, est,
  *                                       &start_node_x, &start_node_y)
  *         return st, bn_wrap_c(start_node_x), bn_wrap_c(start_node_y)             # <<<<<<<<<<<<<<
@@ -2605,11 +2658,11 @@ static PyObject *__pyx_pf_5MrWSI_4core_3bin_3Bin_20earliest_slot_2(struct __pyx_
  *     def alloc_item(self, int start_time, MultiRes demands, int length,
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_1 = __pyx_f_5MrWSI_4core_3bin_bn_wrap_c(__pyx_v_start_node_x); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 72, __pyx_L1_error)
+  __pyx_t_1 = __pyx_f_5MrWSI_4core_3bin_bn_wrap_c(__pyx_v_start_node_x); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 73, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_2 = __pyx_f_5MrWSI_4core_3bin_bn_wrap_c(__pyx_v_start_node_y); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 72, __pyx_L1_error)
+  __pyx_t_2 = __pyx_f_5MrWSI_4core_3bin_bn_wrap_c(__pyx_v_start_node_y); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 73, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
-  __pyx_t_3 = PyTuple_New(3); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 72, __pyx_L1_error)
+  __pyx_t_3 = PyTuple_New(3); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 73, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
   __Pyx_INCREF(__pyx_v_st);
   __Pyx_GIVEREF(__pyx_v_st);
@@ -2624,7 +2677,7 @@ static PyObject *__pyx_pf_5MrWSI_4core_3bin_3Bin_20earliest_slot_2(struct __pyx_
   __pyx_t_3 = 0;
   goto __pyx_L0;
 
-  /* "MrWSI/core/bin.pyx":63
+  /* "MrWSI/core/bin.pyx":64
  *         return st, bn_wrap_c(start_node)
  * 
  *     def earliest_slot_2(self, Bin other,             # <<<<<<<<<<<<<<
@@ -2646,7 +2699,7 @@ static PyObject *__pyx_pf_5MrWSI_4core_3bin_3Bin_20earliest_slot_2(struct __pyx_
   return __pyx_r;
 }
 
-/* "MrWSI/core/bin.pyx":74
+/* "MrWSI/core/bin.pyx":75
  *         return st, bn_wrap_c(start_node_x), bn_wrap_c(start_node_y)
  * 
  *     def alloc_item(self, int start_time, MultiRes demands, int length,             # <<<<<<<<<<<<<<
@@ -2668,7 +2721,7 @@ static PyObject *__pyx_pw_5MrWSI_4core_3bin_3Bin_23alloc_item(PyObject *__pyx_v_
     static PyObject **__pyx_pyargnames[] = {&__pyx_n_s_start_time,&__pyx_n_s_demands,&__pyx_n_s_length,&__pyx_n_s_start_node,0};
     PyObject* values[4] = {0,0,0,0};
 
-    /* "MrWSI/core/bin.pyx":75
+    /* "MrWSI/core/bin.pyx":76
  * 
  *     def alloc_item(self, int start_time, MultiRes demands, int length,
  *                    BinNode start_node=None):             # <<<<<<<<<<<<<<
@@ -2695,12 +2748,12 @@ static PyObject *__pyx_pw_5MrWSI_4core_3bin_3Bin_23alloc_item(PyObject *__pyx_v_
         case  1:
         if (likely((values[1] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_demands)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("alloc_item", 0, 3, 4, 1); __PYX_ERR(0, 74, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("alloc_item", 0, 3, 4, 1); __PYX_ERR(0, 75, __pyx_L3_error)
         }
         case  2:
         if (likely((values[2] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_length)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("alloc_item", 0, 3, 4, 2); __PYX_ERR(0, 74, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("alloc_item", 0, 3, 4, 2); __PYX_ERR(0, 75, __pyx_L3_error)
         }
         case  3:
         if (kw_args > 0) {
@@ -2709,7 +2762,7 @@ static PyObject *__pyx_pw_5MrWSI_4core_3bin_3Bin_23alloc_item(PyObject *__pyx_v_
         }
       }
       if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "alloc_item") < 0)) __PYX_ERR(0, 74, __pyx_L3_error)
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "alloc_item") < 0)) __PYX_ERR(0, 75, __pyx_L3_error)
       }
     } else {
       switch (PyTuple_GET_SIZE(__pyx_args)) {
@@ -2721,24 +2774,24 @@ static PyObject *__pyx_pw_5MrWSI_4core_3bin_3Bin_23alloc_item(PyObject *__pyx_v_
         default: goto __pyx_L5_argtuple_error;
       }
     }
-    __pyx_v_start_time = __Pyx_PyInt_As_int(values[0]); if (unlikely((__pyx_v_start_time == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 74, __pyx_L3_error)
+    __pyx_v_start_time = __Pyx_PyInt_As_int(values[0]); if (unlikely((__pyx_v_start_time == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 75, __pyx_L3_error)
     __pyx_v_demands = ((struct __pyx_obj_5MrWSI_4core_8resource_MultiRes *)values[1]);
-    __pyx_v_length = __Pyx_PyInt_As_int(values[2]); if (unlikely((__pyx_v_length == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 74, __pyx_L3_error)
+    __pyx_v_length = __Pyx_PyInt_As_int(values[2]); if (unlikely((__pyx_v_length == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 75, __pyx_L3_error)
     __pyx_v_start_node = ((struct __pyx_obj_5MrWSI_4core_3bin_BinNode *)values[3]);
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("alloc_item", 0, 3, 4, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 74, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("alloc_item", 0, 3, 4, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 75, __pyx_L3_error)
   __pyx_L3_error:;
   __Pyx_AddTraceback("MrWSI.core.bin.Bin.alloc_item", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
   return NULL;
   __pyx_L4_argument_unpacking_done:;
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_demands), __pyx_ptype_5MrWSI_4core_8resource_MultiRes, 1, "demands", 0))) __PYX_ERR(0, 74, __pyx_L1_error)
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_start_node), __pyx_ptype_5MrWSI_4core_3bin_BinNode, 1, "start_node", 0))) __PYX_ERR(0, 75, __pyx_L1_error)
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_demands), __pyx_ptype_5MrWSI_4core_8resource_MultiRes, 1, "demands", 0))) __PYX_ERR(0, 75, __pyx_L1_error)
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_start_node), __pyx_ptype_5MrWSI_4core_3bin_BinNode, 1, "start_node", 0))) __PYX_ERR(0, 76, __pyx_L1_error)
   __pyx_r = __pyx_pf_5MrWSI_4core_3bin_3Bin_22alloc_item(((struct __pyx_obj_5MrWSI_4core_3bin_Bin *)__pyx_v_self), __pyx_v_start_time, __pyx_v_demands, __pyx_v_length, __pyx_v_start_node);
 
-  /* "MrWSI/core/bin.pyx":74
+  /* "MrWSI/core/bin.pyx":75
  *         return st, bn_wrap_c(start_node_x), bn_wrap_c(start_node_y)
  * 
  *     def alloc_item(self, int start_time, MultiRes demands, int length,             # <<<<<<<<<<<<<<
@@ -2763,7 +2816,7 @@ static PyObject *__pyx_pf_5MrWSI_4core_3bin_3Bin_22alloc_item(struct __pyx_obj_5
   PyObject *__pyx_t_3 = NULL;
   __Pyx_RefNannySetupContext("alloc_item", 0);
 
-  /* "MrWSI/core/bin.pyx":76
+  /* "MrWSI/core/bin.pyx":77
  *     def alloc_item(self, int start_time, MultiRes demands, int length,
  *                    BinNode start_node=None):
  *         return item_wrap_c(bin_alloc_item(self.c_ptr, start_time, demands.c, length,             # <<<<<<<<<<<<<<
@@ -2772,34 +2825,34 @@ static PyObject *__pyx_pf_5MrWSI_4core_3bin_3Bin_22alloc_item(struct __pyx_obj_5
  */
   __Pyx_XDECREF(__pyx_r);
 
-  /* "MrWSI/core/bin.pyx":77
+  /* "MrWSI/core/bin.pyx":78
  *                    BinNode start_node=None):
  *         return item_wrap_c(bin_alloc_item(self.c_ptr, start_time, demands.c, length,
  *                                           start_node.c_ptr if start_node else NULL))             # <<<<<<<<<<<<<<
  * 
  *     def free_item(self, Item item):
  */
-  __pyx_t_2 = __Pyx_PyObject_IsTrue(((PyObject *)__pyx_v_start_node)); if (unlikely(__pyx_t_2 < 0)) __PYX_ERR(0, 77, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_IsTrue(((PyObject *)__pyx_v_start_node)); if (unlikely(__pyx_t_2 < 0)) __PYX_ERR(0, 78, __pyx_L1_error)
   if (__pyx_t_2) {
     __pyx_t_1 = __pyx_v_start_node->c_ptr;
   } else {
     __pyx_t_1 = NULL;
   }
 
-  /* "MrWSI/core/bin.pyx":76
+  /* "MrWSI/core/bin.pyx":77
  *     def alloc_item(self, int start_time, MultiRes demands, int length,
  *                    BinNode start_node=None):
  *         return item_wrap_c(bin_alloc_item(self.c_ptr, start_time, demands.c, length,             # <<<<<<<<<<<<<<
  *                                           start_node.c_ptr if start_node else NULL))
  * 
  */
-  __pyx_t_3 = __pyx_f_5MrWSI_4core_3bin_item_wrap_c(bin_alloc_item(__pyx_v_self->c_ptr, __pyx_v_start_time, __pyx_v_demands->c, __pyx_v_length, __pyx_t_1)); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 76, __pyx_L1_error)
+  __pyx_t_3 = __pyx_f_5MrWSI_4core_3bin_item_wrap_c(bin_alloc_item(__pyx_v_self->c_ptr, __pyx_v_start_time, __pyx_v_demands->c, __pyx_v_length, __pyx_t_1)); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 77, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
   __pyx_r = __pyx_t_3;
   __pyx_t_3 = 0;
   goto __pyx_L0;
 
-  /* "MrWSI/core/bin.pyx":74
+  /* "MrWSI/core/bin.pyx":75
  *         return st, bn_wrap_c(start_node_x), bn_wrap_c(start_node_y)
  * 
  *     def alloc_item(self, int start_time, MultiRes demands, int length,             # <<<<<<<<<<<<<<
@@ -2818,7 +2871,7 @@ static PyObject *__pyx_pf_5MrWSI_4core_3bin_3Bin_22alloc_item(struct __pyx_obj_5
   return __pyx_r;
 }
 
-/* "MrWSI/core/bin.pyx":79
+/* "MrWSI/core/bin.pyx":80
  *                                           start_node.c_ptr if start_node else NULL))
  * 
  *     def free_item(self, Item item):             # <<<<<<<<<<<<<<
@@ -2832,7 +2885,7 @@ static PyObject *__pyx_pw_5MrWSI_4core_3bin_3Bin_25free_item(PyObject *__pyx_v_s
   PyObject *__pyx_r = 0;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("free_item (wrapper)", 0);
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_item), __pyx_ptype_5MrWSI_4core_3bin_Item, 1, "item", 0))) __PYX_ERR(0, 79, __pyx_L1_error)
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_item), __pyx_ptype_5MrWSI_4core_3bin_Item, 1, "item", 0))) __PYX_ERR(0, 80, __pyx_L1_error)
   __pyx_r = __pyx_pf_5MrWSI_4core_3bin_3Bin_24free_item(((struct __pyx_obj_5MrWSI_4core_3bin_Bin *)__pyx_v_self), ((struct __pyx_obj_5MrWSI_4core_3bin_Item *)__pyx_v_item));
 
   /* function exit code */
@@ -2849,7 +2902,7 @@ static PyObject *__pyx_pf_5MrWSI_4core_3bin_3Bin_24free_item(struct __pyx_obj_5M
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("free_item", 0);
 
-  /* "MrWSI/core/bin.pyx":80
+  /* "MrWSI/core/bin.pyx":81
  * 
  *     def free_item(self, Item item):
  *         bin_free_item(self.c_ptr, item.c_ptr)             # <<<<<<<<<<<<<<
@@ -2858,7 +2911,7 @@ static PyObject *__pyx_pf_5MrWSI_4core_3bin_3Bin_24free_item(struct __pyx_obj_5M
  */
   bin_free_item(__pyx_v_self->c_ptr, __pyx_v_item->c_ptr);
 
-  /* "MrWSI/core/bin.pyx":79
+  /* "MrWSI/core/bin.pyx":80
  *                                           start_node.c_ptr if start_node else NULL))
  * 
  *     def free_item(self, Item item):             # <<<<<<<<<<<<<<
@@ -2873,7 +2926,7 @@ static PyObject *__pyx_pf_5MrWSI_4core_3bin_3Bin_24free_item(struct __pyx_obj_5M
   return __pyx_r;
 }
 
-/* "MrWSI/core/bin.pyx":82
+/* "MrWSI/core/bin.pyx":83
  *         bin_free_item(self.c_ptr, item.c_ptr)
  * 
  *     def extendable_interval(self, Item item, MultiRes capacities):             # <<<<<<<<<<<<<<
@@ -2909,11 +2962,11 @@ static PyObject *__pyx_pw_5MrWSI_4core_3bin_3Bin_27extendable_interval(PyObject 
         case  1:
         if (likely((values[1] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_capacities)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("extendable_interval", 1, 2, 2, 1); __PYX_ERR(0, 82, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("extendable_interval", 1, 2, 2, 1); __PYX_ERR(0, 83, __pyx_L3_error)
         }
       }
       if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "extendable_interval") < 0)) __PYX_ERR(0, 82, __pyx_L3_error)
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "extendable_interval") < 0)) __PYX_ERR(0, 83, __pyx_L3_error)
       }
     } else if (PyTuple_GET_SIZE(__pyx_args) != 2) {
       goto __pyx_L5_argtuple_error;
@@ -2926,14 +2979,14 @@ static PyObject *__pyx_pw_5MrWSI_4core_3bin_3Bin_27extendable_interval(PyObject 
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("extendable_interval", 1, 2, 2, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 82, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("extendable_interval", 1, 2, 2, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 83, __pyx_L3_error)
   __pyx_L3_error:;
   __Pyx_AddTraceback("MrWSI.core.bin.Bin.extendable_interval", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
   return NULL;
   __pyx_L4_argument_unpacking_done:;
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_item), __pyx_ptype_5MrWSI_4core_3bin_Item, 1, "item", 0))) __PYX_ERR(0, 82, __pyx_L1_error)
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_capacities), __pyx_ptype_5MrWSI_4core_8resource_MultiRes, 1, "capacities", 0))) __PYX_ERR(0, 82, __pyx_L1_error)
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_item), __pyx_ptype_5MrWSI_4core_3bin_Item, 1, "item", 0))) __PYX_ERR(0, 83, __pyx_L1_error)
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_capacities), __pyx_ptype_5MrWSI_4core_8resource_MultiRes, 1, "capacities", 0))) __PYX_ERR(0, 83, __pyx_L1_error)
   __pyx_r = __pyx_pf_5MrWSI_4core_3bin_3Bin_26extendable_interval(((struct __pyx_obj_5MrWSI_4core_3bin_Bin *)__pyx_v_self), __pyx_v_item, __pyx_v_capacities);
 
   /* function exit code */
@@ -2955,7 +3008,7 @@ static PyObject *__pyx_pf_5MrWSI_4core_3bin_3Bin_26extendable_interval(struct __
   PyObject *__pyx_t_3 = NULL;
   __Pyx_RefNannySetupContext("extendable_interval", 0);
 
-  /* "MrWSI/core/bin.pyx":84
+  /* "MrWSI/core/bin.pyx":85
  *     def extendable_interval(self, Item item, MultiRes capacities):
  *         cdef int begin, end
  *         bin_extendable_interval(self.c_ptr, item.c_ptr, capacities.c, &begin, &end)             # <<<<<<<<<<<<<<
@@ -2964,7 +3017,7 @@ static PyObject *__pyx_pf_5MrWSI_4core_3bin_3Bin_26extendable_interval(struct __
  */
   bin_extendable_interval(__pyx_v_self->c_ptr, __pyx_v_item->c_ptr, __pyx_v_capacities->c, (&__pyx_v_begin), (&__pyx_v_end));
 
-  /* "MrWSI/core/bin.pyx":85
+  /* "MrWSI/core/bin.pyx":86
  *         cdef int begin, end
  *         bin_extendable_interval(self.c_ptr, item.c_ptr, capacities.c, &begin, &end)
  *         return begin, end             # <<<<<<<<<<<<<<
@@ -2972,11 +3025,11 @@ static PyObject *__pyx_pf_5MrWSI_4core_3bin_3Bin_26extendable_interval(struct __
  *     def extend_item(self, Item item, int st, int ft):
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_1 = __Pyx_PyInt_From_int(__pyx_v_begin); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 85, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyInt_From_int(__pyx_v_begin); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 86, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_2 = __Pyx_PyInt_From_int(__pyx_v_end); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 85, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyInt_From_int(__pyx_v_end); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 86, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
-  __pyx_t_3 = PyTuple_New(2); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 85, __pyx_L1_error)
+  __pyx_t_3 = PyTuple_New(2); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 86, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
   __Pyx_GIVEREF(__pyx_t_1);
   PyTuple_SET_ITEM(__pyx_t_3, 0, __pyx_t_1);
@@ -2988,7 +3041,7 @@ static PyObject *__pyx_pf_5MrWSI_4core_3bin_3Bin_26extendable_interval(struct __
   __pyx_t_3 = 0;
   goto __pyx_L0;
 
-  /* "MrWSI/core/bin.pyx":82
+  /* "MrWSI/core/bin.pyx":83
  *         bin_free_item(self.c_ptr, item.c_ptr)
  * 
  *     def extendable_interval(self, Item item, MultiRes capacities):             # <<<<<<<<<<<<<<
@@ -3009,7 +3062,7 @@ static PyObject *__pyx_pf_5MrWSI_4core_3bin_3Bin_26extendable_interval(struct __
   return __pyx_r;
 }
 
-/* "MrWSI/core/bin.pyx":87
+/* "MrWSI/core/bin.pyx":88
  *         return begin, end
  * 
  *     def extend_item(self, Item item, int st, int ft):             # <<<<<<<<<<<<<<
@@ -3047,16 +3100,16 @@ static PyObject *__pyx_pw_5MrWSI_4core_3bin_3Bin_29extend_item(PyObject *__pyx_v
         case  1:
         if (likely((values[1] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_st)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("extend_item", 1, 3, 3, 1); __PYX_ERR(0, 87, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("extend_item", 1, 3, 3, 1); __PYX_ERR(0, 88, __pyx_L3_error)
         }
         case  2:
         if (likely((values[2] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_ft)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("extend_item", 1, 3, 3, 2); __PYX_ERR(0, 87, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("extend_item", 1, 3, 3, 2); __PYX_ERR(0, 88, __pyx_L3_error)
         }
       }
       if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "extend_item") < 0)) __PYX_ERR(0, 87, __pyx_L3_error)
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "extend_item") < 0)) __PYX_ERR(0, 88, __pyx_L3_error)
       }
     } else if (PyTuple_GET_SIZE(__pyx_args) != 3) {
       goto __pyx_L5_argtuple_error;
@@ -3066,18 +3119,18 @@ static PyObject *__pyx_pw_5MrWSI_4core_3bin_3Bin_29extend_item(PyObject *__pyx_v
       values[2] = PyTuple_GET_ITEM(__pyx_args, 2);
     }
     __pyx_v_item = ((struct __pyx_obj_5MrWSI_4core_3bin_Item *)values[0]);
-    __pyx_v_st = __Pyx_PyInt_As_int(values[1]); if (unlikely((__pyx_v_st == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 87, __pyx_L3_error)
-    __pyx_v_ft = __Pyx_PyInt_As_int(values[2]); if (unlikely((__pyx_v_ft == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 87, __pyx_L3_error)
+    __pyx_v_st = __Pyx_PyInt_As_int(values[1]); if (unlikely((__pyx_v_st == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 88, __pyx_L3_error)
+    __pyx_v_ft = __Pyx_PyInt_As_int(values[2]); if (unlikely((__pyx_v_ft == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 88, __pyx_L3_error)
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("extend_item", 1, 3, 3, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 87, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("extend_item", 1, 3, 3, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 88, __pyx_L3_error)
   __pyx_L3_error:;
   __Pyx_AddTraceback("MrWSI.core.bin.Bin.extend_item", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
   return NULL;
   __pyx_L4_argument_unpacking_done:;
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_item), __pyx_ptype_5MrWSI_4core_3bin_Item, 1, "item", 0))) __PYX_ERR(0, 87, __pyx_L1_error)
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_item), __pyx_ptype_5MrWSI_4core_3bin_Item, 1, "item", 0))) __PYX_ERR(0, 88, __pyx_L1_error)
   __pyx_r = __pyx_pf_5MrWSI_4core_3bin_3Bin_28extend_item(((struct __pyx_obj_5MrWSI_4core_3bin_Bin *)__pyx_v_self), __pyx_v_item, __pyx_v_st, __pyx_v_ft);
 
   /* function exit code */
@@ -3095,7 +3148,7 @@ static PyObject *__pyx_pf_5MrWSI_4core_3bin_3Bin_28extend_item(struct __pyx_obj_
   PyObject *__pyx_t_1 = NULL;
   __Pyx_RefNannySetupContext("extend_item", 0);
 
-  /* "MrWSI/core/bin.pyx":88
+  /* "MrWSI/core/bin.pyx":89
  * 
  *     def extend_item(self, Item item, int st, int ft):
  *         return item_wrap_c(bin_extend_item(self.c_ptr, item.c_ptr, st, ft))             # <<<<<<<<<<<<<<
@@ -3103,13 +3156,13 @@ static PyObject *__pyx_pf_5MrWSI_4core_3bin_3Bin_28extend_item(struct __pyx_obj_
  *     def usages(self, dim_index):
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_1 = __pyx_f_5MrWSI_4core_3bin_item_wrap_c(bin_extend_item(__pyx_v_self->c_ptr, __pyx_v_item->c_ptr, __pyx_v_st, __pyx_v_ft)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 88, __pyx_L1_error)
+  __pyx_t_1 = __pyx_f_5MrWSI_4core_3bin_item_wrap_c(bin_extend_item(__pyx_v_self->c_ptr, __pyx_v_item->c_ptr, __pyx_v_st, __pyx_v_ft)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 89, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
   goto __pyx_L0;
 
-  /* "MrWSI/core/bin.pyx":87
+  /* "MrWSI/core/bin.pyx":88
  *         return begin, end
  * 
  *     def extend_item(self, Item item, int st, int ft):             # <<<<<<<<<<<<<<
@@ -3128,7 +3181,7 @@ static PyObject *__pyx_pf_5MrWSI_4core_3bin_3Bin_28extend_item(struct __pyx_obj_
   return __pyx_r;
 }
 
-/* "MrWSI/core/bin.pyx":90
+/* "MrWSI/core/bin.pyx":91
  *         return item_wrap_c(bin_extend_item(self.c_ptr, item.c_ptr, st, ft))
  * 
  *     def usages(self, dim_index):             # <<<<<<<<<<<<<<
@@ -3160,7 +3213,7 @@ static PyObject *__pyx_pf_5MrWSI_4core_3bin_3Bin_30usages(struct __pyx_obj_5MrWS
   int __pyx_t_3;
   __Pyx_RefNannySetupContext("usages", 0);
 
-  /* "MrWSI/core/bin.pyx":91
+  /* "MrWSI/core/bin.pyx":92
  * 
  *     def usages(self, dim_index):
  *         cdef int length = bin_length(self.c_ptr)             # <<<<<<<<<<<<<<
@@ -3169,16 +3222,16 @@ static PyObject *__pyx_pf_5MrWSI_4core_3bin_3Bin_30usages(struct __pyx_obj_5MrWS
  */
   __pyx_v_length = bin_length(__pyx_v_self->c_ptr);
 
-  /* "MrWSI/core/bin.pyx":92
+  /* "MrWSI/core/bin.pyx":93
  *     def usages(self, dim_index):
  *         cdef int length = bin_length(self.c_ptr)
  *         cdef array.array sts = array.array("i", [])             # <<<<<<<<<<<<<<
  *         cdef array.array usages = array.array("l", [])
  *         array.resize(sts, length)
  */
-  __pyx_t_1 = PyList_New(0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 92, __pyx_L1_error)
+  __pyx_t_1 = PyList_New(0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 93, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_2 = PyTuple_New(2); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 92, __pyx_L1_error)
+  __pyx_t_2 = PyTuple_New(2); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 93, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_INCREF(__pyx_n_s_i);
   __Pyx_GIVEREF(__pyx_n_s_i);
@@ -3186,22 +3239,22 @@ static PyObject *__pyx_pf_5MrWSI_4core_3bin_3Bin_30usages(struct __pyx_obj_5MrWS
   __Pyx_GIVEREF(__pyx_t_1);
   PyTuple_SET_ITEM(__pyx_t_2, 1, __pyx_t_1);
   __pyx_t_1 = 0;
-  __pyx_t_1 = __Pyx_PyObject_Call(((PyObject *)__pyx_ptype_7cpython_5array_array), __pyx_t_2, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 92, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_Call(((PyObject *)__pyx_ptype_7cpython_5array_array), __pyx_t_2, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 93, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   __pyx_v_sts = ((arrayobject *)__pyx_t_1);
   __pyx_t_1 = 0;
 
-  /* "MrWSI/core/bin.pyx":93
+  /* "MrWSI/core/bin.pyx":94
  *         cdef int length = bin_length(self.c_ptr)
  *         cdef array.array sts = array.array("i", [])
  *         cdef array.array usages = array.array("l", [])             # <<<<<<<<<<<<<<
  *         array.resize(sts, length)
  *         array.resize(usages, length)
  */
-  __pyx_t_1 = PyList_New(0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 93, __pyx_L1_error)
+  __pyx_t_1 = PyList_New(0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 94, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_2 = PyTuple_New(2); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 93, __pyx_L1_error)
+  __pyx_t_2 = PyTuple_New(2); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 94, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_INCREF(__pyx_n_s_l);
   __Pyx_GIVEREF(__pyx_n_s_l);
@@ -3209,46 +3262,46 @@ static PyObject *__pyx_pf_5MrWSI_4core_3bin_3Bin_30usages(struct __pyx_obj_5MrWS
   __Pyx_GIVEREF(__pyx_t_1);
   PyTuple_SET_ITEM(__pyx_t_2, 1, __pyx_t_1);
   __pyx_t_1 = 0;
-  __pyx_t_1 = __Pyx_PyObject_Call(((PyObject *)__pyx_ptype_7cpython_5array_array), __pyx_t_2, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 93, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_Call(((PyObject *)__pyx_ptype_7cpython_5array_array), __pyx_t_2, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 94, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   __pyx_v_usages = ((arrayobject *)__pyx_t_1);
   __pyx_t_1 = 0;
 
-  /* "MrWSI/core/bin.pyx":94
+  /* "MrWSI/core/bin.pyx":95
  *         cdef array.array sts = array.array("i", [])
  *         cdef array.array usages = array.array("l", [])
  *         array.resize(sts, length)             # <<<<<<<<<<<<<<
  *         array.resize(usages, length)
  *         bin_to_array(self.c_ptr, sts.data.as_ints, usages.data.as_longs, dim_index)
  */
-  __pyx_t_3 = resize(__pyx_v_sts, __pyx_v_length); if (unlikely(__pyx_t_3 == -1)) __PYX_ERR(0, 94, __pyx_L1_error)
+  __pyx_t_3 = resize(__pyx_v_sts, __pyx_v_length); if (unlikely(__pyx_t_3 == -1)) __PYX_ERR(0, 95, __pyx_L1_error)
 
-  /* "MrWSI/core/bin.pyx":95
+  /* "MrWSI/core/bin.pyx":96
  *         cdef array.array usages = array.array("l", [])
  *         array.resize(sts, length)
  *         array.resize(usages, length)             # <<<<<<<<<<<<<<
  *         bin_to_array(self.c_ptr, sts.data.as_ints, usages.data.as_longs, dim_index)
  *         return list(zip(sts, usages))
  */
-  __pyx_t_3 = resize(__pyx_v_usages, __pyx_v_length); if (unlikely(__pyx_t_3 == -1)) __PYX_ERR(0, 95, __pyx_L1_error)
+  __pyx_t_3 = resize(__pyx_v_usages, __pyx_v_length); if (unlikely(__pyx_t_3 == -1)) __PYX_ERR(0, 96, __pyx_L1_error)
 
-  /* "MrWSI/core/bin.pyx":96
+  /* "MrWSI/core/bin.pyx":97
  *         array.resize(sts, length)
  *         array.resize(usages, length)
  *         bin_to_array(self.c_ptr, sts.data.as_ints, usages.data.as_longs, dim_index)             # <<<<<<<<<<<<<<
  *         return list(zip(sts, usages))
  */
-  __pyx_t_3 = __Pyx_PyInt_As_int(__pyx_v_dim_index); if (unlikely((__pyx_t_3 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 96, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_PyInt_As_int(__pyx_v_dim_index); if (unlikely((__pyx_t_3 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 97, __pyx_L1_error)
   bin_to_array(__pyx_v_self->c_ptr, __pyx_v_sts->data.as_ints, __pyx_v_usages->data.as_longs, __pyx_t_3);
 
-  /* "MrWSI/core/bin.pyx":97
+  /* "MrWSI/core/bin.pyx":98
  *         array.resize(usages, length)
  *         bin_to_array(self.c_ptr, sts.data.as_ints, usages.data.as_longs, dim_index)
  *         return list(zip(sts, usages))             # <<<<<<<<<<<<<<
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_1 = PyTuple_New(2); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 97, __pyx_L1_error)
+  __pyx_t_1 = PyTuple_New(2); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 98, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_INCREF(((PyObject *)__pyx_v_sts));
   __Pyx_GIVEREF(((PyObject *)__pyx_v_sts));
@@ -3256,17 +3309,17 @@ static PyObject *__pyx_pf_5MrWSI_4core_3bin_3Bin_30usages(struct __pyx_obj_5MrWS
   __Pyx_INCREF(((PyObject *)__pyx_v_usages));
   __Pyx_GIVEREF(((PyObject *)__pyx_v_usages));
   PyTuple_SET_ITEM(__pyx_t_1, 1, ((PyObject *)__pyx_v_usages));
-  __pyx_t_2 = __Pyx_PyObject_Call(__pyx_builtin_zip, __pyx_t_1, NULL); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 97, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_Call(__pyx_builtin_zip, __pyx_t_1, NULL); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 98, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  __pyx_t_1 = PySequence_List(__pyx_t_2); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 97, __pyx_L1_error)
+  __pyx_t_1 = PySequence_List(__pyx_t_2); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 98, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
   goto __pyx_L0;
 
-  /* "MrWSI/core/bin.pyx":90
+  /* "MrWSI/core/bin.pyx":91
  *         return item_wrap_c(bin_extend_item(self.c_ptr, item.c_ptr, st, ft))
  * 
  *     def usages(self, dim_index):             # <<<<<<<<<<<<<<
@@ -4207,7 +4260,7 @@ static PyMethodDef __pyx_methods_5MrWSI_4core_3bin_Bin[] = {
   {"close_time", (PyCFunction)__pyx_pw_5MrWSI_4core_3bin_3Bin_11close_time, METH_NOARGS, 0},
   {"span", (PyCFunction)__pyx_pw_5MrWSI_4core_3bin_3Bin_13span, METH_NOARGS, 0},
   {"peak_usage", (PyCFunction)__pyx_pw_5MrWSI_4core_3bin_3Bin_15peak_usage, METH_VARARGS|METH_KEYWORDS, 0},
-  {"current_block", (PyCFunction)__pyx_pw_5MrWSI_4core_3bin_3Bin_17current_block, METH_O, 0},
+  {"current_block", (PyCFunction)__pyx_pw_5MrWSI_4core_3bin_3Bin_17current_block, METH_VARARGS|METH_KEYWORDS, 0},
   {"earliest_slot", (PyCFunction)__pyx_pw_5MrWSI_4core_3bin_3Bin_19earliest_slot, METH_VARARGS|METH_KEYWORDS, 0},
   {"earliest_slot_2", (PyCFunction)__pyx_pw_5MrWSI_4core_3bin_3Bin_21earliest_slot_2, METH_VARARGS|METH_KEYWORDS, 0},
   {"alloc_item", (PyCFunction)__pyx_pw_5MrWSI_4core_3bin_3Bin_23alloc_item, METH_VARARGS|METH_KEYWORDS, 0},
@@ -4328,11 +4381,12 @@ static __Pyx_StringTabEntry __pyx_string_tab[] = {
   {&__pyx_n_s_start_node, __pyx_k_start_node, sizeof(__pyx_k_start_node), 0, 0, 1, 1},
   {&__pyx_n_s_start_time, __pyx_k_start_time, sizeof(__pyx_k_start_time), 0, 0, 1, 1},
   {&__pyx_n_s_test, __pyx_k_test, sizeof(__pyx_k_test), 0, 0, 1, 1},
+  {&__pyx_n_s_time, __pyx_k_time, sizeof(__pyx_k_time), 0, 0, 1, 1},
   {&__pyx_n_s_zip, __pyx_k_zip, sizeof(__pyx_k_zip), 0, 0, 1, 1},
   {0, 0, 0, 0, 0, 0, 0}
 };
 static int __Pyx_InitCachedBuiltins(void) {
-  __pyx_builtin_zip = __Pyx_GetBuiltinName(__pyx_n_s_zip); if (!__pyx_builtin_zip) __PYX_ERR(0, 97, __pyx_L1_error)
+  __pyx_builtin_zip = __Pyx_GetBuiltinName(__pyx_n_s_zip); if (!__pyx_builtin_zip) __PYX_ERR(0, 98, __pyx_L1_error)
   __pyx_builtin_MemoryError = __Pyx_GetBuiltinName(__pyx_n_s_MemoryError); if (!__pyx_builtin_MemoryError) __PYX_ERR(1, 107, __pyx_L1_error)
   return 0;
   __pyx_L1_error:;
@@ -4442,13 +4496,13 @@ PyMODINIT_FUNC PyInit_bin(void)
   __pyx_type_5MrWSI_4core_3bin_MemPool.tp_print = 0;
   if (PyObject_SetAttrString(__pyx_m, "MemPool", (PyObject *)&__pyx_type_5MrWSI_4core_3bin_MemPool) < 0) __PYX_ERR(0, 6, __pyx_L1_error)
   __pyx_ptype_5MrWSI_4core_3bin_MemPool = &__pyx_type_5MrWSI_4core_3bin_MemPool;
-  if (PyType_Ready(&__pyx_type_5MrWSI_4core_3bin_BinNode) < 0) __PYX_ERR(2, 44, __pyx_L1_error)
+  if (PyType_Ready(&__pyx_type_5MrWSI_4core_3bin_BinNode) < 0) __PYX_ERR(2, 46, __pyx_L1_error)
   __pyx_type_5MrWSI_4core_3bin_BinNode.tp_print = 0;
-  if (PyObject_SetAttrString(__pyx_m, "BinNode", (PyObject *)&__pyx_type_5MrWSI_4core_3bin_BinNode) < 0) __PYX_ERR(2, 44, __pyx_L1_error)
+  if (PyObject_SetAttrString(__pyx_m, "BinNode", (PyObject *)&__pyx_type_5MrWSI_4core_3bin_BinNode) < 0) __PYX_ERR(2, 46, __pyx_L1_error)
   __pyx_ptype_5MrWSI_4core_3bin_BinNode = &__pyx_type_5MrWSI_4core_3bin_BinNode;
-  if (PyType_Ready(&__pyx_type_5MrWSI_4core_3bin_Item) < 0) __PYX_ERR(2, 47, __pyx_L1_error)
+  if (PyType_Ready(&__pyx_type_5MrWSI_4core_3bin_Item) < 0) __PYX_ERR(2, 49, __pyx_L1_error)
   __pyx_type_5MrWSI_4core_3bin_Item.tp_print = 0;
-  if (PyObject_SetAttrString(__pyx_m, "Item", (PyObject *)&__pyx_type_5MrWSI_4core_3bin_Item) < 0) __PYX_ERR(2, 47, __pyx_L1_error)
+  if (PyObject_SetAttrString(__pyx_m, "Item", (PyObject *)&__pyx_type_5MrWSI_4core_3bin_Item) < 0) __PYX_ERR(2, 49, __pyx_L1_error)
   __pyx_ptype_5MrWSI_4core_3bin_Item = &__pyx_type_5MrWSI_4core_3bin_Item;
   if (PyType_Ready(&__pyx_type_5MrWSI_4core_3bin_Bin) < 0) __PYX_ERR(0, 26, __pyx_L1_error)
   __pyx_type_5MrWSI_4core_3bin_Bin.tp_print = 0;
@@ -4458,7 +4512,6 @@ PyMODINIT_FUNC PyInit_bin(void)
   __pyx_ptype_5MrWSI_4core_8resource_MultiRes = __Pyx_ImportType("MrWSI.core.resource", "MultiRes", sizeof(struct __pyx_obj_5MrWSI_4core_8resource_MultiRes), 1); if (unlikely(!__pyx_ptype_5MrWSI_4core_8resource_MultiRes)) __PYX_ERR(3, 34, __pyx_L1_error)
   __pyx_ptype_5MrWSI_4core_7problem_Problem = __Pyx_ImportType("MrWSI.core.problem", "Problem", sizeof(struct __pyx_obj_5MrWSI_4core_7problem_Problem), 1); if (unlikely(!__pyx_ptype_5MrWSI_4core_7problem_Problem)) __PYX_ERR(4, 49, __pyx_L1_error)
   __pyx_vtabptr_5MrWSI_4core_7problem_Problem = (struct __pyx_vtabstruct_5MrWSI_4core_7problem_Problem*)__Pyx_GetVtable(__pyx_ptype_5MrWSI_4core_7problem_Problem->tp_dict); if (unlikely(!__pyx_vtabptr_5MrWSI_4core_7problem_Problem)) __PYX_ERR(4, 49, __pyx_L1_error)
-  __pyx_ptype_5MrWSI_4core_7problem_VMType = __Pyx_ImportType("MrWSI.core.problem", "VMType", sizeof(struct __pyx_obj_5MrWSI_4core_7problem_VMType), 1); if (unlikely(!__pyx_ptype_5MrWSI_4core_7problem_VMType)) __PYX_ERR(4, 60, __pyx_L1_error)
   __pyx_ptype_7cpython_4type_type = __Pyx_ImportType(__Pyx_BUILTIN_MODULE_NAME, "type", 
   #if CYTHON_COMPILING_IN_PYPY
   sizeof(PyTypeObject),

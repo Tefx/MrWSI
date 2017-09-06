@@ -48,10 +48,11 @@ cdef class Bin:
     def peak_usage(self, force=False):
         return mr_wrap_c(bin_peak_usage(self.c_ptr, force), bin_dimension(self.c_ptr))
 
-    def current_block(self, int time):
+    def current_block(self, int time, BinNode node=None):
         cdef MultiRes mr = MultiRes(bin_dimension(self.c_ptr))
-        cdef int length = bin_current_block(self.c_ptr, time, mr.c)
-        return mr, length
+        cdef BinNode bn = BinNode()
+        cdef int length = bin_current_block(self.c_ptr, time, mr.c, node.c_ptr if node else NULL, &(bn.c_ptr))
+        return mr, length, bn
 
     def earliest_slot(self, MultiRes capacities, MultiRes demands, int length,
                       int est, bool only_forward=False):

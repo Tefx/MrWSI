@@ -8,8 +8,6 @@ class FairCommFinishEvent(CommFinishEvent):
         self.cancelled = False
 
     def adjust_bandwidth(self, bandwidth_delta, current_time):
-        self.from_machine.links[COMM_OUTPUT].remove(self)
-        self.to_machine.links[COMM_INPUT].remove(self)
         self.cancel()
 
         new_event = FairCommFinishEvent(self.env, self.comm, current_time,
@@ -17,13 +15,21 @@ class FairCommFinishEvent(CommFinishEvent):
                                         self.data_size - self.bandwidth *
                                         (current_time - self.start_time))
         self.env.push_event(new_event.finish_time(), new_event)
+        self.from_machine.links[COMM_OUTPUT].remove(self)
         self.from_machine.links[COMM_OUTPUT].add(new_event)
-        self.to_machine.links[COMM_INPUT].add(new_event)
-
         self.from_machine.remaining_resources -= bandwidth2capacities(
             bandwidth_delta, RES_DIM, COMM_OUTPUT)
+        if self.from_machine.remaining_bandwidth(COMM_OUTPUT) < 0:
+            print("ERROR!", self, self.from_machine.remaining_resources, bandwidth_delta)
+            for event in self.from_machine.links[COMM_OUTPUT]:
+                print(event, event.bandwidth)
+        assert self.from_machine.remaining_bandwidth(COMM_OUTPUT) >= 0
+
+        self.to_machine.links[COMM_INPUT].remove(self)
+        self.to_machine.links[COMM_INPUT].add(new_event)
         self.to_machine.remaining_resources -= bandwidth2capacities(
             bandwidth_delta, RES_DIM, COMM_INPUT)
+        assert self.from_machine.remaining_bandwidth(COMM_INPUT) >= 0
 
 
 class FairMachine(SimMachine):
@@ -46,15 +52,17 @@ class FairMachine(SimMachine):
                     len(self.links[comm_type]))
                 for e in self.links[comm_type]:
                     e.adjustable_bandwidths[comm_type] = fair_share
+            else:
+                for e in self.links[comm_type]:
+                    e.adjustable_bandwidths[comm_type] = 0
 
     def adjust_task_bandwidths(self, current_time):
         has_adjustment = False
-        for comm_type in (COMM_OUTPUT, COMM_INPUT):
-            for e in self.links[comm_type]:
-                bandwidth_delta = min(e.adjustable_bandwidths)
-                if bandwidth_delta > 0:
-                    e.adjust_bandwidth(bandwidth_delta, current_time)
-                    has_adjustment = True
+        for e in self.links[COMM_OUTPUT]:
+            bandwidth_delta = min(e.adjustable_bandwidths)
+            if bandwidth_delta > 0:
+                e.adjust_bandwidth(bandwidth_delta, current_time)
+                has_adjustment = True
         if has_adjustment:
             self.record(current_time)
         return has_adjustment

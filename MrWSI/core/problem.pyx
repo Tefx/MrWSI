@@ -5,6 +5,9 @@ from math import ceil
 from itertools import product
 
 DEF MULTIRES_DIM = 4
+COMM_INPUT = 0
+COMM_OUTPUT = 1
+
 
 def calculate_succs(tasks):
     succs = {task_id:[] for task_id in tasks}
@@ -13,76 +16,94 @@ def calculate_succs(tasks):
             succs[prev_id].append(task_id)
     return succs
 
-cdef class VMType:
-    def __cinit__(VMType self, Problem problem, int type_id):
+class VMType(object):
+    def __init__(self, problem, type_id):
         self.problem = problem
-        self.type_id = type_id
+        self._type_id = type_id
         self.bandwidth = self.capacities[2]
 
     @property
     def capacities(self):
-        return self.problem.type_capacities(self.type_id)
+        return self.problem.type_capacities(self._type_id)
 
-    def demands(VMType self):
-        return self.problem.type_demands(self.type_id)
+    def demands(self):
+        return self.problem.type_demands(self._type_id)
 
-    def charge(VMType self, int runtime):
-        return self.problem.vm_cost(self.type_id, runtime)
+    def charge(self, runtime):
+        return self.problem.vm_cost(self._type_id, runtime)
 
     def __repr__(self):
-        return self.problem.type_str_ids[self.type_id]
+        return self.problem.type_str_ids[self._type_id]
 
 class Task(object):
     def __init__(self, problem, task_id):
         self.problem = problem
-        self.task_id = task_id
+        self._task_id = task_id
         self.in_communications = problem.task_in_communications(task_id)
         self.out_communications = problem.task_out_communications(task_id)
+        self.data_sizes = [sum(c.data_size for c in self.communications(COMM_INPUT)), sum(c.data_size for c in self.communications(COMM_OUTPUT))]
+
+    def data_size(self, comm_type):
+        return self.data_sizes[comm_type]
+
+    def communications(self, comm_type):
+        if comm_type == COMM_INPUT:
+            return self.in_communications
+        else:
+            return self.out_communications
 
     def demands(self):
-        return self.problem.task_demands(self.task_id)
+        return self.problem.task_demands(self._task_id)
 
     def runtime(self, typ):
-        return self.problem.task_runtime(self.task_id, typ.type_id)
+        return self.problem.task_runtime(self._task_id, typ._type_id)
 
     def prevs(self):
-        return self.problem.task_prevs(self.task_id)
+        return self.problem.task_prevs(self._task_id)
 
     def succs(self):
-        return self.problem.task_prevs(self.task_id)
-
-    def mean_runtime(self):
-        return self.problem.task_mean_runtime(self.task_id)
-
-    def __repr__(self):
-        return self.problem.task_str_ids[self.task_id]
+        return self.problem.task_succs(self._task_id)
 
     @property
-    def id_for_set(self):
-        return self.task_id
+    def in_degree(self):
+        return len(self.in_communications)
+
+    @property
+    def out_degree(self):
+        return len(self.out_communications)
+
+    def mean_runtime(self):
+        return self.problem.task_mean_runtime(self._task_id)
+
+    def __hash__(self):
+        return hash(self._task_id)
+
+    def __eq__(self, other):
+        return self._task_id == other._task_id
+
+    def __repr__(self):
+        return self.problem.task_str_ids[self._task_id]
 
 class Communication(object):
     def __init__(self, problem, from_task_id, to_task_id):
         self.problem = problem
-        self.from_task_id = from_task_id
-        self.to_task_id = to_task_id
         self.data_size = self.problem.communication_data_size(from_task_id, to_task_id)
+        self._from_task_id = from_task_id
+        self._to_task_id = to_task_id
 
-    @property
-    def pair_id(self):
-        return "{}=>{}".format(self.from_task_id, self.to_task_id)
+    def __hash__(self):
+        return hash((self._from_task_id, self._to_task_id))
 
-    @property
-    def id_for_set(self):
-        return self.from_task_id, self.to_task_id
+    def __eq__(self, other):
+        return self._from_task_id == other._from_task_id and self._to_task_id == other._to_task_id
 
     @property
     def from_task(self):
-        return self.problem.tasks[self.from_task_id]
+        return self.problem.tasks[self._from_task_id]
 
     @property
     def to_task(self):
-        return self.problem.tasks[self.to_task_id]
+        return self.problem.tasks[self._to_task_id]
 
     def runtime(self, bandwidth):
         if bandwidth == float("inf"):
@@ -94,8 +115,8 @@ class Communication(object):
         return self.runtime(self.problem.type_mean_bandwidth())
 
     def __repr__(self):
-        return "({}=>{})".format(self.problem.task_str_ids[self.from_task_id], 
-                                 self.problem.task_str_ids[self.to_task_id])
+        return "({}=>{})".format(self.problem.task_str_ids[self._from_task_id],
+                                 self.problem.task_str_ids[self._to_task_id])
 
 cdef class Problem:
     def __cinit__(Problem self, dict tasks, dict types, int platform_limit_dim):

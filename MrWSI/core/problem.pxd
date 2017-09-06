@@ -57,8 +57,3 @@ cdef class Problem:
     cdef task_info_t* _ctask_info(self, int task_id)
     cdef type_info_t* _ctype_info(self, int type_id)
 
-cdef class VMType:
-    cdef Problem problem
-    cdef public int type_id
-    cdef public int bandwidth
-

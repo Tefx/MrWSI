@@ -1,12 +1,27 @@
 import os.path
 import pygraphviz as pgv
+import matplotlib as mpl
+mpl.use("Qt5Agg")
+import matplotlib.pyplot as plt
+from MrWSI.core.problem import COMM_INPUT
+
+
+def plot_cmp_results(log, field):
+    fig, ax = plt.subplots(figsize=(6, 4))
+    # for alg, res in log.items():
+        # ax.plot(res[field], label=alg)
+    labels = log.keys()
+    data = []
+    for alg in labels:
+        data.append(log[alg][field])
+    ax.hist(data, bins=200, label=labels, histtype="step", normed=False, cumulative=True)
+    ax.set_xlim(0, 1)
+    ax.legend(loc="lower right")
+    fig.tight_layout()
+    plt.savefig(os.path.join(".", "{}.png".format(field)), dpi=200)
 
 
 def plot_usage(platform, dim, name):
-    import matplotlib as mpl
-    mpl.use("Agg")
-    import matplotlib.pyplot as plt
-
     fig, axes = plt.subplots(
         len(platform.machines),
         sharex=True,
@@ -40,12 +55,11 @@ def plot_usage(platform, dim, name):
 def draw_dag(problem, path):
     graph = pgv.AGraph(directed=True)
     for task in problem.tasks:
-        task_id = task.task_id
         runtime = task.mean_runtime()
-        graph.add_node(task.task_id, label="{} <{}>".format(task_id, runtime))
-        for comm in task.in_communications:
+        graph.add_node(task, label="{} <{}>".format(task, runtime))
+        for comm in task.communications(COMM_INPUT):
             graph.add_edge(
-                comm.from_task_id,
-                comm.to_task_id,
-                label="{} <{}>".format(comm.mean_runtime(), comm.data_size))
+                comm.from_task,
+                comm.to_task,
+                label="<{}>".format(comm.mean_runtime()))
     graph.draw(path, prog="dot")

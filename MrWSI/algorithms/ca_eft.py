@@ -1,4 +1,5 @@
 from MrWSI.core.platform import Context, Machine, Platform, bandwidth2capacities, COMM_INPUT, COMM_OUTPUT
+from MrWSI.core.problem import COMM_INPUT, COMM_OUTPUT
 from MrWSI.core.resource import MultiRes
 from MrWSI.algorithms.heft import sort_by_rank_u
 from math import ceil
@@ -35,7 +36,7 @@ class CA_EFT(object):
     def snapshot_for_prevs(self, task, task_machine):
         state = {}
         for prev_task in task.prevs():
-            prev_machine = self.placements[prev_task.task_id]
+            prev_machine = self.placements[prev_task]
             if prev_machine != task_machine:
                 state[prev_machine] = (prev_machine.vm_type,
                                        prev_machine.cost(), [])
@@ -43,20 +44,20 @@ class CA_EFT(object):
 
     def comm_by_ranks(self, task, task_machine):
         est = 0
-        for comm in task.in_communications:
-            if self.placements[comm.from_task_id] == task_machine:
-                est = max(est, self.finish_times[comm.from_task_id])
+        for comm in task.communications(COMM_INPUT):
+            if self.placements[comm.from_task] == task_machine:
+                est = max(est, self.finish_times[comm.from_task])
             else:
                 est = max(
                     est,
-                    self.finish_times[comm.from_task_id] + comm.mean_runtime())
+                    self.finish_times[comm.from_task] + comm.mean_runtime())
         ranks = []
-        for comm in task.in_communications:
-            if self.placements[comm.from_task_id] != task_machine \
-               and est != self.finish_times[comm.from_task_id]:
+        for comm in task.communications(COMM_INPUT):
+            if self.placements[comm.from_task] != task_machine \
+               and est != self.finish_times[comm.from_task]:
                 ranks.append([
                     float(comm.mean_runtime()) /
-                    (est - self.finish_times[comm.from_task_id]), comm
+                    (est - self.finish_times[comm.from_task]), comm
                 ])
         return ranks
 
@@ -77,17 +78,17 @@ class CA_EFT(object):
         comm_pls = {}
         latest_comm_finish_time = 0
         earliest_comm_start_time = float("inf")
-        # comm_n_ranks = [(c.mean_runtime() + self.finish_times[c.from_task_id],
-        # c) for c in task.in_communications]
+        # comm_n_ranks = [(c.mean_runtime() + self.finish_times[c.from_task],
+        # c) for c in task.communications(COMM_INPUT)]
         comm_n_ranks = self.comm_by_ranks(task, task_machine)
         for _, comm in sorted(comm_n_ranks, key=lambda x: x[0], reverse=True):
-            from_machine = self.placements[comm.from_task_id]
+            from_machine = self.placements[comm.from_task]
             if not comm.data_size or from_machine == task_machine: continue
             st_bst, ft_bst, ci_bst, crs_bst, fm_type_bst = (float("inf"),
                                                             float("inf"),
                                                             float("inf"), None,
                                                             None)
-            est = self.finish_times[comm.from_task_id]
+            est = self.finish_times[comm.from_task]
             for fm_type in self.candidate_types(
                     from_machine.peak_usage(),
                     from_machine.peak_usage() + bandwidth2capacities(
@@ -100,10 +101,9 @@ class CA_EFT(object):
                                                                     crs,
                                                                     fm_type)
             from_machine.vm_type = fm_type_bst
-            from_machine.place_communication_2(comm, st_bst, crs_bst,
-                                               COMM_OUTPUT)
-            task_machine.place_communication_2(comm, st_bst, crs_bst,
-                                               COMM_INPUT)
+            from_machine.place_communication(comm, st_bst, crs_bst,
+                                             COMM_OUTPUT)
+            task_machine.place_communication(comm, st_bst, crs_bst, COMM_INPUT)
             comm_pls[comm] = (st_bst, crs_bst)
             earliest_comm_start_time = min(earliest_comm_start_time, st_bst)
             latest_comm_finish_time = max(latest_comm_finish_time, ft_bst)
@@ -114,15 +114,14 @@ class CA_EFT(object):
         for machine, (orig_type, orig_cost, comms) in machine_snapshot.items():
             ci += machine.cost() - orig_cost
             for comm in comms:
-                machine.remove_communication_2(comm, COMM_OUTPUT)
-                task_machine.remove_communication_2(comm, COMM_INPUT)
+                machine.remove_communication(comm, COMM_OUTPUT)
+                task_machine.remove_communication(comm, COMM_INPUT)
             machine_type_changes[machine] = machine.vm_type
             machine.vm_type = orig_type
         return comm_pls, machine_type_changes, earliest_comm_start_time, latest_comm_finish_time, ci
 
     def plan_task(self, task):
-        est = max(
-            [self.finish_times[pt.task_id] for pt in task.prevs()], default=0)
+        est = max([self.finish_times[pt] for pt in task.prevs()], default=0)
         max_bandwidth_cap = bandwidth2capacities(
             self.problem.type_max_bandwidth(),
             self.problem.multiresource_dimension, COMM_INPUT)
@@ -149,24 +148,21 @@ class CA_EFT(object):
         for machine, vm_type in comm_mtc_bst.items():
             machine.vm_type = vm_type
         for comm, (st, crs) in comm_pls_bst.items():
-            self.placements[comm.from_task_id].place_communication_2(
+            self.placements[comm.from_task].place_communication(
                 comm, st, crs, COMM_OUTPUT)
             machine_bst.place_communication_2(comm, st, crs, COMM_INPUT)
-            self.start_times[comm.pair_id] = st
-            self.comm_rates[comm.pair_id] = crs
+            self.start_times[comm] = st
+            self.comm_rates[comm] = crs
         machine_bst.vm_type = type_bst
         machine_bst.place_task(task, st_bst)
-        self.placements[task.task_id] = machine_bst
-        self.start_times[task.task_id] = st_bst
-        self.finish_times[task.task_id] = st_bst + task.runtime(type_bst)
+        self.placements[task] = machine_bst
+        self.start_times[task] = st_bst
+        self.finish_times[task] = st_bst + task.runtime(type_bst)
         self.platform.update_machine(machine_bst)
 
     def solve(self):
         for task in sort_by_rank_u(self.problem):
             self.plan_task(task)
-        # plot_usage(self.platform, 0, "{}.test".format(self.__class__.__name__))
-        # plot_usage(self.platform, 2, "{}.test".format(self.__class__.__name__))
-        # plot_usage(self.platform, 3, "{}.test".format(self.__class__.__name__))
         return self.platform.span(), self.platform.cost()
 
 

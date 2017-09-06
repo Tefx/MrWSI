@@ -1,4 +1,5 @@
 from MrWSI.core.platform import bandwidth2capacities, COMM_INPUT, COMM_OUTPUT
+from MrWSI.core.problem import COMM_INPUT, COMM_OUTPUT
 from MrWSI.core.resource import MultiRes
 
 from math import floor, ceil
@@ -57,7 +58,7 @@ class TaskEvent(Event):
         self.machine = env.machine_for_task(task)
 
     def object_rank(self):
-        return self.env.schedule.ST(self.task), self.task.id_for_set
+        return self.env.schedule.ST(self.task)
 
 
 class CommEvent(Event):
@@ -68,7 +69,7 @@ class CommEvent(Event):
         self.to_machine = env.machine_for_task(self.comm.to_task)
 
     def object_rank(self):
-        return self.env.schedule.CST(self.comm), self.comm.from_task.id_for_set
+        return self.env.schedule.ST(self.comm)
 
 
 class TaskStartEvent(TaskEvent, StartEvent):
@@ -76,13 +77,11 @@ class TaskStartEvent(TaskEvent, StartEvent):
         finish_event = self.env.task_finish_event_cls(self.env, self.task,
                                                       current_time)
         self.machine.add_task(finish_event, current_time)
-        # print(current_time, self,
-              # self.env.machines.index(self.machine), self.task.mean_runtime())
         return finish_event
 
     def is_ready(self):
-        for comm in self.task.in_communications:
-            if self.env.schedule.is_inter_comm(comm):
+        for comm in self.task.communications(COMM_INPUT):
+            if self.env.schedule.need_communication(comm):
                 if not self.env.is_finished(comm):
                     return False
             elif not self.env.is_finished(comm.from_task):
@@ -101,7 +100,6 @@ class TaskFinishEvent(TaskEvent, FinishEvent):
         if not self.cancelled:
             self.machine.remove_task(self, current_time)
             self.env.mark_finished(self.task)
-            # print(current_time, self, self.env.machines.index(self.machine))
 
     def finish_time(self):
         return self.start_time + self.task.runtime(self.machine.vm_type)
@@ -117,14 +115,11 @@ class CommStartEvent(CommEvent, StartEvent):
             self.possible_bandwidth(), self.comm.data_size)
         self.from_machine.add_comm(finish_event, current_time, COMM_OUTPUT)
         self.to_machine.add_comm(finish_event, current_time, COMM_INPUT)
-        # print(current_time, self,
-              # self.env.machines.index(self.from_machine),
-              # self.env.machines.index(self.to_machine))
         return finish_event
 
     def is_ready(self):
-        return self.env.is_finished(
-            self.comm.from_task) and self.possible_bandwidth() > 0
+        return self.env.is_finished(self.comm.from_task) and \
+                self.possible_bandwidth() > 0
 
     def possible_bandwidth(self):
         return min(
@@ -143,9 +138,6 @@ class CommFinishEvent(CommEvent, FinishEvent):
 
     def finish(self, current_time):
         if not self.cancelled:
-            # print(current_time, self,
-                  # self.env.machines.index(self.from_machine),
-                  # self.env.machines.index(self.to_machine))
             self.from_machine.remove_comm(self, current_time, COMM_OUTPUT)
             self.to_machine.remove_comm(self, current_time, COMM_INPUT)
             self.env.mark_finished(self.comm)
@@ -193,7 +185,6 @@ class SimMachine(object):
 
     def add_comm(self, event, current_time, comm_type):
         self.links[comm_type].add(event)
-        assert self.remaining_bandwidth(comm_type) >= 0
         self.remaining_resources -= bandwidth2capacities(
             event.bandwidth, RES_DIM, comm_type)
         assert self.remaining_bandwidth(comm_type) >= 0
@@ -202,11 +193,11 @@ class SimMachine(object):
     def remove_comm(self, event, current_time, comm_type):
         self.links[comm_type].remove(event)
         if not self.remaining_bandwidth(comm_type) >= 0:
-            print(event, self.remaining_resources, comm_type, self.remaining_bandwidth(comm_type))
+            print(event, self.remaining_resources, comm_type,
+                  self.remaining_bandwidth(comm_type))
         assert self.remaining_bandwidth(comm_type) >= 0
         self.remaining_resources += bandwidth2capacities(
             event.bandwidth, RES_DIM, comm_type)
-        assert self.remaining_bandwidth(comm_type) >= 0
         self.record(current_time)
 
     def remaining_bandwidth(self, comm_type):
@@ -214,10 +205,6 @@ class SimMachine(object):
 
     def available_bandwidth(self, comm_type):
         return self.remaining_bandwidth(comm_type)
-
-    def fix_remaining_bandwidth(self, comm_type):
-        self.remaining_resources[2 + comm_type] = self.bandwidth - sum(
-            e.bandwidth for e in self.links[comm_type])
 
 
 class SimEnv(object):
@@ -227,15 +214,16 @@ class SimEnv(object):
     comm_start_event_cls = CommStartEvent
     comm_finish_event_cls = CommFinishEvent
 
-    def __init__(self, problem, schedule):
-        self.problem = problem
-        self.schedule = schedule
+    def __init__(self, alg):
+        self.problem = alg.problem
+        self.schedule = alg.schedule
         self.machines = []
         self.event_queue = []
         self.delayed_events = []
         self.finished_set = set()
         self.prepare_machines()
         self.prepare_events()
+        self.have_run = False
 
     def prepare_machines(self):
         self.machines = [
@@ -247,20 +235,20 @@ class SimEnv(object):
         for task in self.problem.tasks:
             self.push_event(
                 self.schedule.ST(task), self.task_start_event_cls(self, task))
-            for comm in task.out_communications:
-                if self.schedule.is_inter_comm(comm):
+            for comm in task.communications(COMM_OUTPUT):
+                if self.schedule.need_communication(comm):
                     self.push_event(
-                        self.schedule.CST(comm),
+                        self.schedule.ST(comm),
                         self.comm_start_event_cls(self, comm))
 
     def machine_for_task(self, task):
         return self.machines[self.schedule.PL(task)]
 
     def is_finished(self, obj):
-        return obj.id_for_set in self.finished_set
+        return obj in self.finished_set
 
     def mark_finished(self, obj):
-        self.finished_set.add(obj.id_for_set)
+        self.finished_set.add(obj)
 
     def pop_event(self):
         return heapq.heappop(self.event_queue)
@@ -307,10 +295,22 @@ class SimEnv(object):
                 if not MultiRes.zero(
                         RES_DIM) <= u <= machine.vm_type.capacities:
                     print(t, u)
-        span = max(machine.close_time for machine in self.machines) - min(
+        self.have_run = True
+
+    @property
+    def span(self):
+        if not self.have_run: self.run()
+        return max(machine.close_time for machine in self.machines) - min(
             machine.open_time for machine in self.machines)
-        cost = sum(machine.cost() for machine in self.machines)
-        return span, cost
+
+    @property
+    def cost(self):
+        if not self.have_run: self.run()
+        return sum(machine.cost() for machine in self.machines)
+
+    @property
+    def machine_number(self):
+        return len(self.machines)
 
 
 class FCFSEnv(SimEnv):

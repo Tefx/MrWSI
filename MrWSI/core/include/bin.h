@@ -65,7 +65,9 @@ void bin_to_array(bin_t* bin, int* sts, res_t* usages, int dim);
 int bin_span(bin_t* bin);
 res_t* bin_peak_usage(bin_t* bin, bool force);
 
-int bin_current_block(bin_t* bin, int time, res_t* volumn);
+/*int bin_current_block(bin_t* bin, int time, res_t* volumn);*/
+int bin_current_block(bin_t* bin, int time, res_t* volumn,
+                      bin_node_t* start_node, bin_node_t** current_node);
 int bin_earliest_slot(bin_t* bin, res_t* capacities, res_t* demands, int length,
                       int est, bin_node_t** start_node, bool only_forward);
 int bin_earliest_slot_2(bin_t* bin_x, bin_t* bin_y, res_t* capacities_x,

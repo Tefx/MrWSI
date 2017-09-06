@@ -1,9 +1,6 @@
-from MrWSI.core.problem import Problem
+from MrWSI.core.problem import Problem, COMM_INPUT, COMM_OUTPUT
 from MrWSI.core.bin import MemPool, Bin
 from MrWSI.core.resource import MultiRes
-
-COMM_INPUT = 0
-COMM_OUTPUT = 1
 
 
 def bandwidth2capacities(bw, dimension, comm_type):
@@ -39,10 +36,10 @@ class Machine(Bin):
     def capacities(self):
         return self.problem.type_capacities(self.type_id)
 
-    def current_available_cr(self, time, vm_type, comm_type):
-        vol, length = self.current_block(time)
-        cr = vm_type.bandwidth - vol[2+comm_type]
-        return cr, length
+    def current_available_cr(self, time, vm_type, comm_type, bn=None):
+        vol, length, bn = self.current_block(time, bn)
+        cr = vm_type.bandwidth - vol[2 + comm_type]
+        return cr, length, bn
 
     def earliest_slot_for_task(self, vm_type, task, est):
         return self.earliest_slot(vm_type.capacities,
@@ -68,7 +65,7 @@ class Machine(Bin):
         self.tasks.remove(task)
         self.free_item(task.item)
 
-    def place_communication_2(self, comm, start_time, crs, comm_type):
+    def place_communication(self, comm, start_time, crs, comm_type):
         self.communications.add(comm)
         if not hasattr(comm, "items"): comm.items = [[], []]
         dimension = self.problem.multiresource_dimension
@@ -80,7 +77,7 @@ class Machine(Bin):
                                 rt, None))
             start_time += rt
 
-    def remove_communication_2(self, comm, comm_type):
+    def remove_communication(self, comm, comm_type):
         self.communications.remove(comm)
         for item in comm.items[comm_type]:
             self.free_item(item)
@@ -101,6 +98,10 @@ class Machine(Bin):
 
     def __contains__(self, x):
         return x in self.tasks or x in self.communications
+
+
+    def __repr__(self):
+        return "Machine<{}>".format(str(id(self))[-4:])
 
 
 class Platform(Bin):
@@ -139,6 +140,9 @@ class Platform(Bin):
     def __iter__(self):
         for machine in self.machines:
             yield machine
+
+    def __len__(self):
+        return len(self.machines)
 
     def cost(self):
         return sum(machine.cost() for machine in self)
