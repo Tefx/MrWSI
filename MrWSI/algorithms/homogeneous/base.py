@@ -46,8 +46,14 @@ class Heuristic(object):
     def TYP(self, x):
         return self.vm_type
 
-    def need_communication(self, comm, to_machine):
-        return comm.data_size and \
+    def need_communication(self, comm, to_machine=None):
+        if not to_machine:
+            if comm.to_task in self.placements:
+                to_machine = self.PL_m(comm.to_task)
+            else:
+                return True
+        else:
+            return comm.data_size and \
                 self.placements[comm.from_task] != to_machine
 
     def sort_tasks(self):

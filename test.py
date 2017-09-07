@@ -61,16 +61,13 @@ if __name__ == "__main__":
             # ("EFT(s)", eft),
             # ("EFT(fcfs)", FCFSEnv(eft)),
             # ("EFT(fair)", FairEnv(eft)),
-            # ("CA_EFT(U)", CA_EFT_U(problem)),
-            # ("CA_EFT(S)", CA_EFT_S(problem)),
-            # ("CA_EFT(2)", CA_EFT_2(problem)),
-            ("CA_EFT(PU)", CA_EFT_PU(problem)),
-            # ("CA_EFT(PS)", CA_EFT_PS(problem)),
-            # ("CA_EFT(P2)", CA_EFT_P2(problem)),
-            # ("CA_EFT(PF)", CA_EFT_PF(problem)),
-            ("CA_EFT(PE)", CA_EFT_PE(problem)),
-            # ("CA_EFT(PW)", CA_EFT_PW(problem)),
-            # ("CA_EFT(PM)", CA_EFT_MIX(problem)),
+            ("CAEFT(PU)", CAEFT_PU(problem)),
+            ("CAEFT(PT)", CAEFT_PT(problem)),
+            ("CAEFT(PS)", CAEFT_PS(problem)),
+            ("CAEFT(PM)", CAEFT_PM(problem)),
+            ("CAEFT(PL)", CAEFT_PL(problem)),
+            ("CAEFT(PL2)", CAEFT_PL2(problem)),
+            ("CAEFT(PL3)", CAEFT_PL3(problem)),
         ]
         log_record(result_log, results)
         if results[-1][1].span != min(x.span for _, x in results):

@@ -1,25 +1,9 @@
 from MrWSI.core.problem import COMM_INPUT, COMM_OUTPUT
 from .base import Heuristic
+from .sorting import UpwardRanking
 
 
-class RankUSort(Heuristic):
-    def sort_tasks(self):
-        self.ranks = {}
-        return sorted(self.problem.tasks, key=self.upward_rank, reverse=True)
-
-    def upward_rank(self, task):
-        if task not in self.ranks:
-            self.ranks[task] = max(
-                [
-                    self.upward_rank(comm.to_task) +
-                    comm.runtime(self.problem.vm_type.bandwidth)
-                    for comm in task.communications(COMM_OUTPUT)
-                ],
-                default=0) + task.runtime(self.problem.vm_type)
-        return self.ranks[task]
-
-
-class EFT(RankUSort):
+class EFT(UpwardRanking):
     def earliest_start_time(self, task, machine):
         est = 0
         for comm in task.communications(COMM_INPUT):

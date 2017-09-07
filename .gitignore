@@ -102,3 +102,4 @@ ENV/
 /perf.data
 /perf.data.old
 *.png
+*.res

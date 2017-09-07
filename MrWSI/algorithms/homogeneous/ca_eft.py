@@ -1,11 +1,11 @@
 from MrWSI.core.platform import Machine, COMM_INPUT, COMM_OUTPUT
-from .eft import RankUSort
+from .sorting import *
 from .base import Heuristic
 
 from math import ceil
 
 
-class CA_EFT(Heuristic):
+class CAEFT(Heuristic):
     def sorted_in_comms(self, task):
         return sorted(
             task.communications(COMM_INPUT),
@@ -53,7 +53,6 @@ class CA_EFT(Heuristic):
                                           self.PL_m(comm.from_task), machine)
 
         return (machine, comm_pls, task_st), (task_ft, cost_increase)
-        # return (machine, comm_pls, task_st), task_ft
 
     def place_communication(self, comm, from_machine, to_machine, st, crs):
         from_machine.place_communication(comm, st, crs, COMM_OUTPUT)
@@ -76,7 +75,7 @@ class CA_EFT(Heuristic):
                                      *comm_pls)
 
 
-class CA_EFT_P(CA_EFT):
+class CAEFT_P(CAEFT):
     def find_slots_for_communication(self, comm, from_machine, to_machine):
         remaining_data_size = comm.data_size
         st = self.FT(comm.from_task)
@@ -102,198 +101,33 @@ class CA_EFT_P(CA_EFT):
         return st - runtime, st, crs
 
 
-def memo(func):
-    store = func.__name__ + "_store"
-
-    def wrapped(self, task):
-        d = getattr(self, store, None)
-        if d is None:
-            d = {}
-            setattr(self, store, d)
-        if task not in d:
-            d[task] = func(self, task)
-        return d[task]
-
-    return wrapped
-
-
-class RankSort(Heuristic):
-    def tct(self, task, comm_type):
-        return ceil(task.data_size(comm_type) / self.bandwidth)
-
-    def sort_tasks(self):
-        self.rem_in_deps = {t: t.in_degree for t in self.problem.tasks}
-        self.ready_set = set(t for t in self.problem.tasks if not t.in_degree)
-        while (self.ready_set):
-            # print([(t, self.rank(t), self.rank_s(t)) for t in self.ready_set])
-            task = max(self.ready_set, key=self.rank)
-            self.ready_set.remove(task)
-            for succ in task.succs():
-                self.rem_in_deps[succ] -= 1
-                if not self.rem_in_deps[succ]:
-                    self.ready_set.add(succ)
-                    del self.rem_in_deps[succ]
-            yield task
-
-
-class RankSSort(RankSort):
-    @memo
-    def rank(self, task):
-        return sum(
-            c.runtime(self.bandwidth)
-            for c in task.communications(COMM_INPUT)) + task.runtime(
-                self.vm_type) + max(
-                    [self.rank(t) for t in task.succs()], default=0)
-
-
-class RankWSort(RankSort):
-    @memo
-    def rank(self, task):
-        return task.runtime(self.vm_type) + self.tct(task, COMM_OUTPUT) + max(
-            [self.rank(t) for t in task.succs()], default=0)
-
-
-class RankFSort(RankSort):
-    @memo
-    def rank_u(self, task):
-        return task.runtime(self.vm_type) + max(
-            [
-                self.rank_u(c.to_task) + c.runtime(self.bandwidth)
-                for c in task.communications(COMM_OUTPUT)
-            ],
-            default=0)
-
-    @memo
-    def rank_d(self, task):
-        if task in self.placements:
-            return self.ST(task)
-        else:
-            return max(
-                [
-                    self.rank_d(c.from_task) +
-                    c.from_task.runtime(self.vm_type) +
-                    c.runtime(self.bandwidth)
-                    for c in task.communications(COMM_INPUT)
-                ],
-                default=0)
-
-    def rank(self, task):
-        return self.rank_u(task) + self.rank_d(task)
-
-    def delete_rank_d(self, task):
-        if task in self.rank_d_store:
-            del self.rank_d_store[task]
-            for st in task.succs():
-                self.delete_rank_d(st)
-
-    def next_task(self, tasks):
-        task = max(tasks, key=self.rank)
-        pts = [t for t in task.prevs() if t in self.rem_tasks]
-        if pts:
-            return self.next_task(pts)
-        else:
-            return task
-
-    def sort_tasks(self):
-        self.rem_tasks = set(self.problem.tasks)
-        task = None
-        while (self.rem_tasks):
-            if task: self.delete_rank_d(task)
-            # print([(t, self.rank(t), self.rank_d(t), self.rank_u(t))
-                   # for t in self.rem_tasks])
-            task = self.next_task(self.rem_tasks)
-            self.rem_tasks.remove(task)
-            yield task
-
-
-class RankESort(RankFSort):
-    @memo
-    def rank_u(self, task):
-        return task.runtime(self.vm_type) + self.tct(task, COMM_OUTPUT) + max(
-            [self.rank_u(t) for t in task.succs()], default=0)
-
-    @memo
-    def rank_d(self, task):
-        if task in self.placements:
-            return self.FT(task)
-        else:
-            return max(
-                [
-                    self.rank_d(t) + self.tct(t, COMM_OUTPUT)
-                    for t in task.prevs()
-                ],
-                default=0) + task.runtime(self.vm_type)
-
-    def rank(self, task):
-        return self.rank_u(task) + self.rank_d(task) - task.runtime(
-            self.vm_type)
-
-
-class R2Sort(Heuristic):
-    @memo
-    def rank(self, task):
-        return max(
-            [
-                c.runtime(self.bandwidth)
-                for c in task.communications(COMM_INPUT)
-            ],
-            default=0) + task.runtime(self.vm_type) + max(
-                [self.rank(t) for t in task.succs()], default=0)
-
-    def next_task(self, tasks):
-        task = max(tasks, key=self.rank)
-        pts = [t for t in task.prevs() if t in self.unscheduled_tasks]
-        if pts:
-            yield from self.next_task(pts)
-        self.unscheduled_tasks.remove(task)
-        yield task
-
-    def sort_tasks(self):
-        self.unscheduled_tasks = set(self.problem.tasks)
-        while self.unscheduled_tasks:
-            yield from self.next_task(self.unscheduled_tasks)
-
-
-class CA_EFT_U(CA_EFT, RankUSort):
+class CAEFT_U(CAEFT, UpwardRanking):
     pass
 
 
-class CA_EFT_S(CA_EFT, RankSSort):
+class CAEFT_PU(CAEFT_P, UpwardRanking):
     pass
 
 
-class CA_EFT_2(CA_EFT, R2Sort):
+class CAEFT_PT(CAEFT_P, TCTRanking):
     pass
 
 
-class CA_EFT_PU(CA_EFT_P, RankUSort):
+class CAEFT_PS(CAEFT_P, SRanking):
     pass
 
 
-class CA_EFT_PS(CA_EFT_P, RankSSort):
+class CAEFT_PM(CAEFT_P, MRanking):
     pass
 
 
-class CA_EFT_P2(CA_EFT_P, R2Sort):
+class CAEFT_PL(CAEFT_P, LLTRanking):
     pass
 
 
-class CA_EFT_PF(CA_EFT_P, RankFSort):
+class CAEFT_PL2(CAEFT_P, LLT2Ranking):
     pass
 
 
-class CA_EFT_PE(CA_EFT_P, RankESort):
+class CAEFT_PL3(CAEFT_P, LLT3Ranking):
     pass
-
-
-class CA_EFT_PW(CA_EFT_P, RankWSort):
-    pass
-
-
-def CA_EFT_MIX(problem):
-    alg_e = CA_EFT_PE(problem)
-    alg_w = CA_EFT_PW(problem)
-    if alg_e.span < alg_w.span:
-        return alg_e
-    else:
-        return alg_w
