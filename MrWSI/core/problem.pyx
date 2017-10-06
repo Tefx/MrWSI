@@ -83,6 +83,7 @@ class Task(object):
 
     def __repr__(self):
         return self.problem.task_str_ids[self._task_id]
+        # return str(int(self.problem.task_str_ids[self._task_id][2:]))
 
 class Communication(object):
     def __init__(self, problem, from_task_id, to_task_id):
@@ -115,8 +116,7 @@ class Communication(object):
         return self.runtime(self.problem.type_mean_bandwidth())
 
     def __repr__(self):
-        return "({}=>{})".format(self.problem.task_str_ids[self._from_task_id],
-                                 self.problem.task_str_ids[self._to_task_id])
+        return "({}=>{})".format(self.from_task, self.to_task)
 
 cdef class Problem:
     def __cinit__(Problem self, dict tasks, dict types, int platform_limit_dim):
@@ -135,7 +135,8 @@ cdef class Problem:
             task_info = self._ctask_info(task_id)
             raw_task = tasks[task_str_id]
             # raw_task["demands"][0] = ceil(raw_task["demands"][0]) * 1000
-            raw_task["demands"][0] *= 1000
+            # raw_task["demands"][0] *= 1000
+            raw_task["demands"][0] = 4000
             raw_task["demands"].append(raw_task["demands"][-1])
             demands = array.array("l", map(int, raw_task["demands"]))
             prevs = array.array("i", [self.task_str_ids.index(t) for t in raw_task["prevs"].keys()])
@@ -204,10 +205,18 @@ cdef class Problem:
             raw_types = json.load(f)
         if type_family != "all":
             raw_types = {name:info for name,info in raw_types.items() if type_family in name}
+
+        out_degrees = {t:0 for t in raw_tasks.keys()}
         for task in raw_tasks.values():
             task["runtime"] *= 100
             for prev_id in task["prevs"].keys():
                 task["prevs"][prev_id] *= 100
+                out_degrees[prev_id] += 1
+        exit_tasks = [t for t,v in out_degrees.items() if v == 0]
+
+        raw_tasks["E"] = {"runtime":0,
+                           "demands":[0,0,0],
+                           "prevs":{t:0 for t in exit_tasks}}
 
         problem = cls(raw_tasks, raw_types, 1)
         problem.charge_unit = charge_unit

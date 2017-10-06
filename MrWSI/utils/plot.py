@@ -4,6 +4,7 @@ import matplotlib as mpl
 mpl.use("Qt5Agg")
 import matplotlib.pyplot as plt
 from MrWSI.core.problem import COMM_INPUT
+import numpy as np
 
 
 def plot_cmp_results(log, field):
@@ -14,9 +15,15 @@ def plot_cmp_results(log, field):
     data = []
     for alg in labels:
         data.append(log[alg][field])
-    ax.hist(data, bins=200, label=labels, histtype="step", normed=False, cumulative=True)
-    ax.set_xlim(0, 1)
-    ax.legend(loc="lower right")
+    # ax.hist(data, bins=200, label=labels, histtype="step", normed=False, cumulative=True)
+    # ax.set_xlim(0, 1)
+    # ax.legend(loc="lower right")
+    ax.axhline(y=1)
+    ax.boxplot(data, labels=labels, showfliers=False)
+    for i,y in enumerate(data):
+        x = np.random.normal(i+1, 0.01*len(data), len(y))
+        ax.plot(x, y, "k.", alpha=0.2)
+    # ax.legend()
     fig.tight_layout()
     plt.savefig(os.path.join(".", "{}.png".format(field)), dpi=200)
 

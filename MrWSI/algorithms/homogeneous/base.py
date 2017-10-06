@@ -20,6 +20,13 @@ class HomoProblem(Problem):
 
 
 class Heuristic(object):
+    log = [
+        # "alg",
+        # "sort",
+    ]
+    allow_share = False
+    allow_preemptive = False
+
     def __init__(self, problem):
         self.problem = problem
         self.context = Context(problem)
@@ -45,6 +52,12 @@ class Heuristic(object):
 
     def TYP(self, x):
         return self.vm_type
+
+    def RT(self, x):
+        if isinstance(x, Task):
+            return x.runtime(self.vm_type)
+        else:
+            return x.runtime(self.bandwidth)
 
     def need_communication(self, comm, to_machine=None):
         if not to_machine:
@@ -96,7 +109,8 @@ class Heuristic(object):
             self.perform_placement(task, placement_bst)
         self.have_solved = True
 
-        # self.log("./")
+        if "alg" in self.log:
+            self.log_alg("./")
 
     @property
     def cost(self):
@@ -123,15 +137,16 @@ class Heuristic(object):
         return Schedule(self.problem, lambda x: pls[x], self.TYP, self.ST,
                         len(self.platform))
 
-    def log(self, path):
+    def log_alg(self, path):
         from MrWSI.utils.plot import draw_dag
         import os.path
 
         draw_dag(self.problem, os.path.join(path, "dag.png"))
-        print("By {}, Order: {}".format(self.__class__.__name__, self._order))
+        print("By {}, Order: {}".format(self.alg_name, self._order))
         for machine in sorted(
                 self.platform, key=lambda m: (m.open_time(), m.close_time())):
             print("Machine {}:".format(str(id(machine))[-4:]))
+            # machine.print_list()
             for task in sorted(
                     machine.tasks, key=lambda t: (self.ST(t), self.FT(t))):
                 print("  Task {}: [{}, {})".format(
@@ -149,3 +164,45 @@ class Heuristic(object):
                                  str(id(machine))[-4:],
                                  str(id(self.PL_m(comm.to_task)))[-4:]))
         print()
+
+    def export(self, path, attrs={}):
+        import json
+
+        if not self.have_solved: self.solve()
+        machines_list = list(self.platform)
+        machines = []
+        for machine in machines_list:
+            tasks = []
+            for task in sorted(machine.tasks, key=self.ST):
+                demands = task.demands()
+                comms = []
+                for comm in task.communications(COMM_OUTPUT):
+                    if comm not in self.start_times: continue
+                    to_machine = machines_list.index(self.PL_m(comm.to_task))
+                    comms.append({
+                        "to_task": str(comm.to_task),
+                        "start_time": self.ST(comm) / 100,
+                        "finish_time": self.FT(comm) / 100,
+                        "data_size": int(comm.data_size * 1024 / 100),
+                    })
+                tasks.append({
+                    "id": str(task),
+                    "start_time": self.ST(task) / 100,
+                    "runtime": self.RT(task) / 100,
+                    "resources": (demands[0] / 1000, demands[1]),
+                    "prevs": [str(t) for t in task.prevs()],
+                    "succs": [str(t) for t in task.succs()],
+                    "output": comms,
+                })
+            machines.append(tasks)
+        capacities = self.vm_type.capacities
+        schedule = {
+            "vm_capacities": [int(capacities[0] / 1000), capacities[1]],
+            "num_tasks": self.problem.num_tasks,
+            "allow_share": self.allow_share,
+            "allow_preemptive": self.allow_preemptive,
+            "machines": machines
+        }
+        schedule.update(attrs)
+        with open(path, "w") as f:
+            json.dump(schedule, f, indent=2)

@@ -33,6 +33,8 @@ cdef extern from "bin.h":
                             res_t* capacities_y, res_t* demands_x, res_t* demands_y, int length,
                             int est, bin_node_t** start_node_x,
                             bin_node_t** start_node_y)
+    int bin_finish_time_for_demands(bin_t* bin, res_t* capacities, res_t demand,
+                                    int di, int st)
     item_t* bin_alloc_item(bin_t* bin, int start_time, res_t* demands, int length,
                           bin_node_t*start_node)
     void bin_free_item(bin_t* bin, item_t* item)

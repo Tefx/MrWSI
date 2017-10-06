@@ -20,7 +20,8 @@ class FairCommFinishEvent(CommFinishEvent):
         self.from_machine.remaining_resources -= bandwidth2capacities(
             bandwidth_delta, RES_DIM, COMM_OUTPUT)
         if self.from_machine.remaining_bandwidth(COMM_OUTPUT) < 0:
-            print("ERROR!", self, self.from_machine.remaining_resources, bandwidth_delta)
+            print("ERROR!", self, self.from_machine.remaining_resources,
+                  bandwidth_delta)
             for event in self.from_machine.links[COMM_OUTPUT]:
                 print(event, event.bandwidth)
         assert self.from_machine.remaining_bandwidth(COMM_OUTPUT) >= 0
@@ -71,6 +72,8 @@ class FairMachine(SimMachine):
 class FairEnv(SimEnv):
     machine_cls = FairMachine
     comm_finish_event_cls = FairCommFinishEvent
+    env_name = "fair"
+    allow_share = True
 
     def after_events(self, current_time):
         while True:

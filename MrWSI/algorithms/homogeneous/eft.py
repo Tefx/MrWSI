@@ -4,13 +4,14 @@ from .sorting import UpwardRanking
 
 
 class EFT(UpwardRanking):
+    alg_name = "EFT"
+    allow_share = True
+
     def earliest_start_time(self, task, machine):
         est = 0
         for comm in task.communications(COMM_INPUT):
             if self.need_communication(comm, machine):
-                est = max(est,
-                          self.FT(comm.from_task) +
-                          comm.runtime(self.vm_type.bandwidth))
+                est = max(est, self.FT(comm.from_task) + self.RT(comm))
             else:
                 est = max(est, self.FT(comm.from_task))
         return est
@@ -28,5 +29,5 @@ class EFT(UpwardRanking):
         for comm in task.communications(COMM_INPUT):
             if self.need_communication(comm, machine):
                 self.start_times[comm] = self.FT(comm.from_task)
-                self.finish_times[comm] = self.FT(
-                    comm.from_task) + comm.runtime(self.bandwidth)
+                self.finish_times[
+                    comm] = self.FT(comm.from_task) + self.RT(comm)

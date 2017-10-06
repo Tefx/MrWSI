@@ -69,6 +69,12 @@ inline bool mr_eq(res_t* a, res_t* b, int dim) {
     return true;
 }
 
+inline bool mr_not_empty(res_t* a, int dim) {
+    for (int i = 0; i < dim; ++i)
+        if (r_gt(a[i], 0)) return true;
+    return false;
+}
+
 #define mr_ineg(a, dim)                                        \
     {                                                          \
         for (int _i = 0; _i < (dim); ++_i) (a)[_i] = -(a)[_i]; \

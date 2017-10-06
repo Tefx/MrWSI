@@ -5,6 +5,7 @@ from MrWSI.core.resource import MultiRes
 from math import floor, ceil
 import heapq
 from copy import copy
+from functools import partial
 
 RES_DIM = 4
 
@@ -214,9 +215,20 @@ class SimEnv(object):
     comm_start_event_cls = CommStartEvent
     comm_finish_event_cls = CommFinishEvent
 
+    env_name = "sim"
+    allow_share = False
+    allow_preemptive = False
+
     def __init__(self, alg):
         self.problem = alg.problem
+        self.alg_name = "{}[{}]".format(alg.alg_name, self.env_name)
         self.schedule = alg.schedule
+        self.export = partial(
+            alg.export,
+            attrs={
+                "allow_share": self.allow_share,
+                "allow_preemptive": self.allow_preemptive
+            })
         self.machines = []
         self.event_queue = []
         self.delayed_events = []
@@ -314,4 +326,5 @@ class SimEnv(object):
 
 
 class FCFSEnv(SimEnv):
-    pass
+    env_name = "fcfs"
+    # allow_preemptive = True

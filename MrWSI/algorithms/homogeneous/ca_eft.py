@@ -1,16 +1,24 @@
 from MrWSI.core.platform import Machine, COMM_INPUT, COMM_OUTPUT
-from .sorting import *
 from .base import Heuristic
 
 from math import ceil
 
 
+def mkalg(name, *cls):
+    class InnerClass(*cls):
+        alg_name = name
+
+    return InnerClass
+
+
 class CAEFT(Heuristic):
+    allow_share = False
+    allow_preemptive = False
+
     def sorted_in_comms(self, task):
         return sorted(
             task.communications(COMM_INPUT),
-            key=lambda comm: comm.runtime(self.bandwidth) + self.FT(comm.from_task),
-            reverse=True)
+            key=lambda comm: self.FT(comm.from_task))
 
     def find_slots_for_communication(self, comm, from_machine, to_machine):
         comm_runtime = comm.runtime(self.bandwidth)
@@ -76,6 +84,9 @@ class CAEFT(Heuristic):
 
 
 class CAEFT_P(CAEFT):
+    allow_share = False
+    allow_preemptive = True
+
     def find_slots_for_communication(self, comm, from_machine, to_machine):
         remaining_data_size = comm.data_size
         st = self.FT(comm.from_task)
@@ -99,35 +110,3 @@ class CAEFT_P(CAEFT):
             st += length
 
         return st - runtime, st, crs
-
-
-class CAEFT_U(CAEFT, UpwardRanking):
-    pass
-
-
-class CAEFT_PU(CAEFT_P, UpwardRanking):
-    pass
-
-
-class CAEFT_PT(CAEFT_P, TCTRanking):
-    pass
-
-
-class CAEFT_PS(CAEFT_P, SRanking):
-    pass
-
-
-class CAEFT_PM(CAEFT_P, MRanking):
-    pass
-
-
-class CAEFT_PL(CAEFT_P, LLTRanking):
-    pass
-
-
-class CAEFT_PL2(CAEFT_P, LLT2Ranking):
-    pass
-
-
-class CAEFT_PL3(CAEFT_P, LLT3Ranking):
-    pass

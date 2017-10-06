@@ -61,6 +61,11 @@ class Machine(Bin):
                                     task.demands(),
                                     task.runtime(self.vm_type), start_node)
 
+    def comm_finish_time_est(self, comm, st, comm_type):
+        bandwidth = self.vm_type.bandwidth
+        return self.eft_for_demand(bandwidth * comm.runtime(bandwidth),
+                                   2 + comm_type, st, self.vm_type.capacities)
+
     def remove_task(self, task):
         self.tasks.remove(task)
         self.free_item(task.item)
@@ -99,7 +104,6 @@ class Machine(Bin):
     def __contains__(self, x):
         return x in self.tasks or x in self.communications
 
-
     def __repr__(self):
         return "Machine<{}>".format(str(id(self))[-4:])
 
@@ -110,7 +114,7 @@ class Platform(Bin):
                          context.platform_node_pool,
                          context.platform_item_pool)
         self.problem = context.problem
-        self.machines = set()
+        self.machines = []
         self.context = context
 
     def extendable_interval(self, machine):
@@ -124,7 +128,7 @@ class Platform(Bin):
 
     def update_machine(self, machine, start_node=None):
         if machine not in self.machines:
-            self.machines.add(machine)
+            self.machines.append(machine)
             machine.item = self.alloc_item(machine.open_time(),
                                            machine.vm_type.demands(),
                                            machine.span(), start_node)

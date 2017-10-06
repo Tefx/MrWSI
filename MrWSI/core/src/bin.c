@@ -277,6 +277,28 @@ int bin_earliest_slot_2(bin_t* bin_x, bin_t* bin_y, res_t* capacities_x,
                             bin_x->dimension, start_node_x, start_node_y);
 }
 
+int bin_finish_time_for_demands(bin_t* bin, res_t* capacities, res_t demand,
+                                int di, int st) {
+    /*bin_print(bin);*/
+    /*printf("%ld %d\n", demand, st);*/
+    bin_node_t* node = _bin_search(bin, st);
+    bin_node_t* node2 = _node_next(node);
+    st = fmax(node->time, st);
+    res_t cur_rem_res;
+    res_t cur_cap;
+    while (1) {
+        cur_cap = capacities[di] - _node_usage(node)[di];
+        if (r_gt(cur_cap, 0)) {
+            cur_rem_res =
+                node2 == bin->head ? LONG_MAX : (node2->time - st) * cur_cap;
+            if (demand <= cur_rem_res) return st + ceil(demand / cur_cap);
+        }
+        node = node2;
+        node2 = _node_next(node2);
+        st = node->time;
+    }
+}
+
 #define _update_peak(bin, node, delta)                                      \
     {                                                                       \
         if ((delta)[0] < 0)                                                 \
