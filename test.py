@@ -2,16 +2,16 @@
 
 from MrWSI.core.problem import Problem
 from MrWSI.core.platform import Context
-from MrWSI.simulation.base import FCFSEnv
+from MrWSI.simulation.base import FCFSEnv, SimEnv
 from MrWSI.simulation.fair import FairEnv
 from MrWSI.algorithms.homogeneous import *
 
 from math import ceil
 
 
-def str_result(alg_name, res):
-    return "{}:<{:<2}> {:6}s/${:<6.2f}".format(alg_name, res.machine_number,
-                                               res.span / 100, res.cost)
+def str_result(res):
+    return "{}:<{:<2}> {:6}s/${:<6.2f}".format(
+        res.alg_name, res.machine_number, res.span / 100, res.cost)
 
 
 def pegasus_wrks(wrk_dir, start=""):
@@ -29,18 +29,30 @@ def random_wrks(wrk_dir, start=""):
 
 def log_record(log, results):
     if not log:
-        for alg, _ in results:
-            log[alg] = {"span": [], "cost": []}
+        for res in results:
+            log[res.alg_name] = {"span": [], "cost": []}
 
     for field in ["span", "cost"]:
-        res = [getattr(res, field) for _, res in results]
+        res = [getattr(res, field) for res in results]
         v_min = min(res)
         v_max = max(res)
 
-        for alg, res in results:
+        for res in results:
             value = (getattr(res, field) - v_min) / (
                 v_max - v_min) if v_max != v_min else 0
-            log[alg][field].append(value)
+            log[res.alg_name][field].append(value)
+
+
+def log_record_r(log, results):
+    if not log:
+        for res in results:
+            log[res.alg_name] = {"span": [], "cost": []}
+
+    for field in ["span", "cost"]:
+        base = getattr(results[0], field)
+        if all(getattr(res, field) == base for res in results): break
+        for res in results:
+            log[res.alg_name][field].append(base / getattr(res, field))
 
 
 if __name__ == "__main__":
@@ -50,29 +62,31 @@ if __name__ == "__main__":
     pegasus_wrk_path = "./resources/workflows/pegasus"
     random_wrk_path = "./resources/workflows/random_tiny"
 
-    ec2_file = "./resources/platforms/EC2_small.plt"
+    ec2_file = "./resources/platforms/EC2.plt"
     result_log = {}
     for wrk_path, wrk_name in random_wrks(random_wrk_path, ""):
-    # for wrk_path, wrk_name in pegasus_wrks(pegasus_wrk_path):
-        problem = HomoProblem.load(wrk_path, ec2_file, "t2.xlarge", 3600, 1000)
+        # for wrk_path, wrk_name in pegasus_wrks(pegasus_wrk_path, ""):
+        problem = HomoProblem.load(wrk_path, ec2_file, "c4.xlarge", 1, 200)
         # if problem.num_tasks > 90: continue
         eft = EFT(problem)
         results = [
-            # ("EFT(s)", eft),
-            # ("EFT(fcfs)", FCFSEnv(eft)),
-            # ("EFT(fair)", FairEnv(eft)),
-            ("CAEFT(PU)", CAEFT_PU(problem)),
-            ("CAEFT(PT)", CAEFT_PT(problem)),
-            ("CAEFT(PS)", CAEFT_PS(problem)),
-            ("CAEFT(PM)", CAEFT_PM(problem)),
-            ("CAEFT(PL)", CAEFT_PL(problem)),
-            ("CAEFT(PL2)", CAEFT_PL2(problem)),
-            ("CAEFT(PL3)", CAEFT_PL3(problem)),
+            # eft,
+            # FairEnv(eft),
+            # FCFSEnv(eft),
+            # mkalg("CAEFT(U)", UpwardRanking, CAEFT)(problem),
+            # mkalg("CAEFT(M3)", M3Ranking, CAEFT)(problem),
+            mkalg("CAEFT(PU)", UpwardRanking, CAEFT_P)(problem),
+            # mkalg("CAEFT(PM3)", M3Ranking, CAEFT_P)(problem),
+            # mkalg("CAEFT(PM5)", M5Ranking, CAEFT_P)(problem),
+            mkalg("CAEFT(PP)", PSort, CAEFT_P)(problem),
+            # mkalg("CAEFT(PL4.3)", LLT4_3Ranking, CAEFT_P)(problem),
         ]
-        log_record(result_log, results)
-        if results[-1][1].span != min(x.span for _, x in results):
-            print("{:<16} ".format(wrk_name) + " ".join(
-                str_result(*res) for res in results))
+        for alg in results:
+            alg.export("results/{}.{}.schedule".format(wrk_name, alg.alg_name))
+        log_record_r(result_log, results)
+        # if results[-1].span != min(x.span for x in results):
+        print("{:<16} ".format(wrk_name) + " ".join(
+            str_result(res) for res in results))
     for alg, res in result_log.items():
         rs = res["span"]
         print(alg, sum(rs) / len(rs))

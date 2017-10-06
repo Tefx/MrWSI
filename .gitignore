@@ -103,3 +103,4 @@ ENV/
 /perf.data.old
 *.png
 *.res
+/results/
