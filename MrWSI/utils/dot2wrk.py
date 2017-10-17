@@ -29,7 +29,7 @@ def generate_task_demand():
     return min(cores, CPU_LIMIT), min(memory, MEM_LIMIT), 0
 
 
-def read_dot(dot_path, out_dir):
+def convert_dot(dot_path, out_dir):
     with open(dot_path) as f:
         dag_id = os.path.basename(dot_path)[:-4]
         dag = nx.DiGraph(nx.nx_agraph.read_dot(dot_path))
@@ -51,4 +51,4 @@ def read_dot(dot_path, out_dir):
 
 if __name__ == "__main__":
     from sys import argv
-    read_dot(argv[1], argv[2])
+    convert_dot(argv[1], argv[2])

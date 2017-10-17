@@ -69,6 +69,9 @@ class Heuristic(object):
             return comm.data_size and \
                 self.placements[comm.from_task] != to_machine
 
+    def is_placed(self, obj):
+        return obj in self.placements
+
     def sort_tasks(self):
         pass
 
@@ -114,22 +117,26 @@ class Heuristic(object):
 
     @property
     def cost(self):
-        if not self.have_solved: self.solve()
+        if not self.have_solved:
+            self.solve()
         return self.platform.cost()
 
     @property
     def span(self):
-        if not self.have_solved: self.solve()
+        if not self.have_solved:
+            self.solve()
         return self.platform.span()
 
     @property
     def machine_number(self):
-        if not self.have_solved: self.solve()
+        if not self.have_solved:
+            self.solve()
         return len(self.platform)
 
     @property
     def schedule(self):
-        if not self.have_solved: self.solve()
+        if not self.have_solved:
+            self.solve()
         pls = {}
         for i, machine in enumerate(self.platform):
             for task in machine.tasks:
@@ -168,7 +175,8 @@ class Heuristic(object):
     def export(self, path, attrs={}):
         import json
 
-        if not self.have_solved: self.solve()
+        if not self.have_solved:
+            self.solve()
         machines_list = list(self.platform)
         machines = []
         for machine in machines_list:
@@ -177,7 +185,8 @@ class Heuristic(object):
                 demands = task.demands()
                 comms = []
                 for comm in task.communications(COMM_OUTPUT):
-                    if comm not in self.start_times: continue
+                    if comm not in self.start_times:
+                        continue
                     to_machine = machines_list.index(self.PL_m(comm.to_task))
                     comms.append({
                         "to_task": str(comm.to_task),

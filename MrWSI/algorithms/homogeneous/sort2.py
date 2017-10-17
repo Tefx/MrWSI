@@ -12,6 +12,8 @@ class PSort(Heuristic):
         memo_clean(self.after_rt_alt)
         memo_clean(self.rank_before)
         memo_clean(self.rank_after)
+        self.best_pl_gauss = {}
+        self.critical_parent = {}
         for task in self.problem.tasks:
             self.rank_before(task)
 
@@ -25,8 +27,8 @@ class PSort(Heuristic):
         x1 = self.RT(ty)
         y1 = self.after_rt(ty)
         y1a = self.after_rt_alt(ty)
-        # print(tx, t0, "-", x0, y0, y0a)
-        # print(ty, t1, t1a, x1, y1, y1a)
+        # print("Task:", tx, t0, "-", x0, y0, y0a)
+        # print("Task:", ty, t1, t1a, x1, y1, y1a)
         return min(
             max(t0 + x0 + y0, t1a + x1 + y1),
             max(t0 + x0 + y0, max(t1, t0 + x0) + x1 + y1a),
@@ -34,10 +36,11 @@ class PSort(Heuristic):
             max(t1, t0 + x0 + y0) + x1 + y1)
 
     def better_place_first(self, tx, ty):
-        if self.critical_parent[tx] & self.critical_parent[ty]:
+        if (self.critical_parent[tx] & self.critical_parent[ty]) or (
+                self.best_pl_gauss[tx] & self.best_pl_gauss[tx]):
             sx = self.estimated_span(tx, ty)
             sy = self.estimated_span(ty, tx)
-            # print(tx, ty, sx, sy)
+            # print("C:", tx, ty, sx, sy)
             return sx < sy
         else:
             return False
@@ -98,10 +101,14 @@ class PSort(Heuristic):
         ft = 0
         for c in comms:
             if not (c == comm or
-                    (comm in self.placements and
-                     self.placements.get(c, None) is self.placements[comm])):
+                    (comm in self.placements and self.placements.get(
+                        c, None) == self.placements[comm])):
                 ft = max(ft, self.rank_before(c.from_task)) + self.RT(c)
-        return max(ft, self.rank_before(comm.from_task))
+        for c in comms:
+            if c == comm or (comm in self.placements and self.placements.get(
+                    c, None) == self.PL_m(comm)):
+                ft = max(ft, self.rank_before(c.from_task))
+        return ft
 
     @memo
     def before_rt(self, task):
@@ -169,3 +176,69 @@ class PSort(Heuristic):
                 if not self.rem_in_deps[succ]:
                     self.ready_tasks.add(succ)
             yield task
+
+
+class P2Sort(PSort):
+    @memo
+    def before_rt_alt(self, task):
+        if task not in self.best_pl_gauss:
+            self.before_rt(task)
+        if len(self.best_pl_gauss[task]) > 1:
+            return self.before_rt(task)
+        comms = sorted(
+            task.communications(COMM_INPUT),
+            key=lambda c: self.rank_before(c.from_task))
+        ft_max = 0
+        for c in comms:
+            ft_max = max(ft_max, self.rank_before(c.from_task)) + self.RT(c)
+        for c in comms:
+            if self.placements.get(c, None) in self.best_pl_gauss or (
+                    len(self.critical_parent[task]) == 1
+                    and c in self.critical_parent[task]):
+                break
+            ft = self.ft_without(comms, c)
+            if ft < ft_max:
+                ft_max = ft
+        return ft_max
+
+
+class P1_1Sort(P2Sort):
+    def existing_comm_time(self, task):
+        if task not in self.placements:
+            return 0
+        else:
+            machine = self.PL_m(task)
+            return sum(
+                c.runtime(self.bandwidth)
+                for c in task.communications(COMM_OUTPUT)
+                if c.to_task in self.placements
+                and self.PL_m(c.to_task) != machine)
+
+    @memo
+    def before_rt_alt(self, task):
+        comms = sorted(
+            task.communications(COMM_INPUT),
+            key=lambda c: self.rank_before(c.from_task) + self.existing_comm_time(c.from_task))
+        ft = 0
+        for c in comms:
+            ft = max(ft,
+                     self.rank_before(c.from_task) +
+                     self.existing_comm_time(c.from_task)) + self.RT(c)
+        return ft
+
+    def ft_without(self, comms, comm):
+        ft = 0
+        for c in comms:
+            if not (c == comm or
+                    (comm in self.placements and self.placements.get(
+                        c, None) == self.placements[comm])):
+                ft = max(ft,
+                         self.rank_before(c.from_task) +
+                         self.existing_comm_time(c.from_task)) + self.RT(c)
+        for c in comms:
+            if c == comm or (comm in self.placements and self.placements.get(
+                    c, None) == self.PL_m(comm)):
+                ft = max(ft,
+                         self.rank_before(c.from_task) +
+                         self.existing_comm_time(c.from_task))
+        return ft

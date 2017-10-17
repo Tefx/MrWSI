@@ -7,23 +7,24 @@ from MrWSI.core.problem import COMM_INPUT
 import numpy as np
 
 
-def plot_cmp_results(log, field):
+def plot_cmp_results(log, field, typ="box"):
     fig, ax = plt.subplots(figsize=(6, 4))
     # for alg, res in log.items():
-        # ax.plot(res[field], label=alg)
+    # ax.plot(res[field], label=alg)
     labels = log.keys()
     data = []
     for alg in labels:
         data.append(log[alg][field])
-    # ax.hist(data, bins=200, label=labels, histtype="step", normed=False, cumulative=True)
-    # ax.set_xlim(0, 1)
-    # ax.legend(loc="lower right")
-    ax.axhline(y=1)
-    ax.boxplot(data, labels=labels, showfliers=False)
-    for i,y in enumerate(data):
-        x = np.random.normal(i+1, 0.01*len(data), len(y))
-        ax.plot(x, y, "k.", alpha=0.2)
-    # ax.legend()
+    if typ == "hist":
+        ax.hist(data, bins=1000, label=labels, histtype="step", normed=False, cumulative=True)
+        ax.set_xlim(0, 1)
+        ax.legend(loc="lower right")
+    elif typ == "box":
+        ax.axhline(y=1)
+        ax.boxplot(data, labels=labels, showfliers=False)
+        for i, y in enumerate(data):
+            x = np.random.normal(i + 1, 0.01 * len(data), len(y))
+            ax.plot(x, y, "k.", alpha=0.2)
     fig.tight_layout()
     plt.savefig(os.path.join(".", "{}.png".format(field)), dpi=200)
 

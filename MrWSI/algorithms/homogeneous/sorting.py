@@ -20,9 +20,33 @@ def memo(func):
     return wrapped
 
 
+def memo2(func):
+    store = func.__name__ + "_store"
+
+    @wraps(func)
+    def wrapped(self, x, y):
+        d = getattr(self, store, None)
+        if d is None:
+            d = {}
+            setattr(self, store, d)
+        if (x, y) not in d:
+            d[(x, y)] = func(self, x, y)
+        return d[(x, y)]
+
+    return wrapped
+
+
 def memo_clean(func):
     if hasattr(func.__self__, func.__name__ + "_store"):
         delattr(func.__self__, func.__name__ + "_store")
+
+
+def memo_delete(func, key):
+    store = getattr(func.__self__, func.__name__ + "_store", None)
+    if store and key in store:
+        del store[key]
+        return True
+    return False
 
 
 def tryFT(func):
@@ -42,7 +66,8 @@ class StaticSort(Heuristic):
 
     def sort_tasks(self):
         for task in sorted(self.problem.tasks, key=self.rank, reverse=True):
-            if "sort" in self.log: self.log_sort(task)
+            if "sort" in self.log:
+                self.log_sort(task)
             yield task
 
     def log_sort(self, task):
@@ -63,7 +88,8 @@ class ReadySort(Heuristic):
         self.ready_set = set(t for t in self.problem.tasks if not t.in_degree)
         while (self.ready_set):
             task = max(self.ready_set, key=self.rank)
-            if "sort" in self.log: self.log_sort(task)
+            if "sort" in self.log:
+                self.log_sort(task)
             self.ready_set.remove(task)
             self.rank_clean(task)
             for succ in task.succs():
@@ -109,7 +135,8 @@ class GlobalSort(Heuristic):
         self.rem_tasks = set(self.problem.tasks)
         while (self.rem_tasks):
             task = self.next_task(self.rem_tasks)
-            if "sort" in self.log: self.log_sort(task)
+            if "sort" in self.log:
+                self.log_sort(task)
             self.rem_tasks.remove(task)
             self.rank_clean(task)
             yield task
@@ -324,7 +351,8 @@ class M4Ranking(StaticSort):
                 if r1 < r:
                     r = r1
                     rt = c
-            if rt: self.rank_c[rt.to_task] += 1
+            if rt:
+                self.rank_c[rt.to_task] += 1
         return r + self.RT(task) if comms else self.RT(task)
 
     @memo
@@ -513,7 +541,8 @@ class LLT4_3Ranking(LLT4_2Ranking):
         for c in comms:
             if not lc or c != lc:
                 cft = max(cft, self.comm_est(c)) + c.runtime(self.bandwidth)
-        if lc: cft = max(cft, self.rank_d(c.from_task))
+        if lc:
+            cft = max(cft, self.rank_d(c.from_task))
         return cft + task.runtime(self.vm_type)
 
 
@@ -544,7 +573,8 @@ class LLT4_4Ranking(LLT4_3Ranking):
         for c in comms:
             if not lc or c != lc:
                 cft = max(cft, self.comm_est(c)) + c.runtime(self.bandwidth)
-        if lc: cft = max(cft, self.rank_d(c.from_task))
+        if lc:
+            cft = max(cft, self.rank_d(c.from_task))
         return cft + task.runtime(self.vm_type)
 
 
@@ -565,7 +595,8 @@ class LLT4_5Ranking(LLT4_4Ranking):
         for c in comms:
             if c is not critial_pre_task:
                 cft = max(cft, self.comm_est(c)) + c.runtime(self.bandwidth)
-        if critial_pre_comm: cft = max(cft, self.rank_d(c.from_task))
+        if critial_pre_comm:
+            cft = max(cft, self.rank_d(c.from_task))
         return cft + task.runtime(self.vm_type)
 
 
@@ -574,7 +605,8 @@ class LLT4_6Ranking(LLT4_5Ranking):
         from_task = comm.from_task
         to_task = comm.to_task
         return self.rank_d(from_task) + comm.runtime(self.bandwidth) == \
-                max(self.rank_d(c.from_task) + c.runtime(self.bandwidth) for c in to_task.communications(COMM_INPUT))
+            max(self.rank_d(c.from_task) + c.runtime(self.bandwidth)
+                for c in to_task.communications(COMM_INPUT))
 
     @memo
     def rank_u(self, task):
@@ -767,7 +799,8 @@ class CP3Ranking(CP2Ranking):
                     x = 0 if i == 0 else X[i - 1]
                     hd = 0 if i == len(comms) - 1 else Hd[i + 1]
                     r1 = max(hu, self.rank_u(c.to_task), x + hd)
-                    if r1 < r: bst = i, c, r1
+                    if r1 < r:
+                        bst = i, c, r1
                     r = min(r, r1)
         return r + self.RT(task) if comms else self.RT(task)
 
