@@ -74,7 +74,7 @@ if __name__ == "__main__":
 
     ec2_file = "./resources/platforms/EC2.plt"
     result_log = {}
-    for wrk_path, wrk_name in random_wrks(random_wrk_path, "0_"):
+    for wrk_path, wrk_name in random_wrks(random_wrk_path, ""):
     # for wrk_path, wrk_name in pegasus_wrks(pegasus_wrk_path, ""):
         problem = HomoProblem.load(wrk_path, ec2_file, "c4.xlarge", 1, 1000)
         # if problem.num_tasks > 90: continue
@@ -87,6 +87,7 @@ if __name__ == "__main__":
             # mkalg("CAEFT(C3.5)", NConflict, NSpanComparer, RTEstimater, C3Sort, CAEFT)(problem),
             # mkalg("CAEFT(M3)", M3Ranking, CAEFT)(problem),
             # mkalg("CAEFT(PU)", UpwardRanking, CAEFT_P)(problem),
+            # mkalg("CAEFT(PU2)", UpwardRanking, CAEFT_P2)(problem),
             # mkalg("CAEFT(PM3)", M3Ranking, CAEFT_P)(problem),
             # mkalg("CAEFT(PM5)", M5Ranking, CAEFT_P)(problem),
             # mkalg("CAEFT(PL4)", LLT4_3Ranking, CAEFT_P)(problem),
@@ -112,8 +113,8 @@ if __name__ == "__main__":
             # mkalg("CAEFT(PC3.7)", NConflict, NSpanComparer, RTEstimater2, C3Sort, CAEFT_P)(problem),
             # mkalg("CAEFT(PC3.8)", NConflict, NSpanComparer, RTEstimater2, OutCommSorter, C3Sort, CAEFT_P)(problem),
             # mkalg("CAEFT(PC3.9)", NConflict, NSpanComparer, RTEstimater2, RTEstimater3, C3Sort, CAEFT_P)(problem),
-            mkalg("CA", CASort, CAEFT_P)(problem),
-            # mkalg("CA2", CA2Sort, CAEFT_P)(problem),
+            # mkalg("CA", CASort, CAEFT_P)(problem),
+            mkalg("CA2", CASort, CAEFT_P2)(problem),
         ]
         for alg in results:
             alg.export("results/{}.{}.schedule".format(wrk_name, alg.alg_name))

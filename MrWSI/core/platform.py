@@ -72,14 +72,13 @@ class Machine(Bin):
 
     def place_communication(self, comm, start_time, crs, comm_type):
         self.communications.add(comm)
-        if not hasattr(comm, "items"): comm.items = [[], []]
         dimension = self.problem.multiresource_dimension
         comm.items[comm_type] = []
         for rt, cr in crs:
-            comm.items[comm_type].append(
-                self.alloc_item(start_time,
-                                bandwidth2capacities(cr, dimension, comm_type),
-                                rt, None))
+            if cr:
+                cap = bandwidth2capacities(cr, dimension, comm_type)
+                item = self.alloc_item(start_time, cap, rt, None)
+                comm.items[comm_type].append(item)
             start_time += rt
 
     def remove_communication(self, comm, comm_type):
@@ -92,8 +91,10 @@ class Machine(Bin):
         return super().extendable_interval(task.item, self.capacities())
 
     def cost(self, span=None):
-        if not self.vm_type: return 0
-        if not span: span = self.span()
+        if not self.vm_type:
+            return 0
+        if not span:
+            span = self.span()
         return self.vm_type.charge(span)
 
     def cost_increase(self, start_time, runtime, vm_type):

@@ -35,6 +35,8 @@ typedef struct item_t {
 #define _item_next_finish(item) \
     list_entry((item)->finish_list.next, item_t, finish_list)
 
+#define node_time(node) (node)->time
+
 typedef struct bin_t {
     bin_node_t* head;
     int dimension;

@@ -1,7 +1,7 @@
 from MrWSI.core.platform import Machine, COMM_INPUT, COMM_OUTPUT
 from .base import Heuristic
 
-from math import ceil,floor
+from math import ceil, floor
 
 
 def mkalg(name, *cls):
@@ -28,12 +28,16 @@ class CAEFT(Heuristic):
         comm_crs = [(comm_runtime, self.bandwidth)]
         return comm_st, comm_st + comm_runtime, comm_crs
 
+    def prepare_machines(self, machines):
+        pass
+
     def plan_task_on(self, task, machine):
         task_est = 0
         comm_pls = {}
         machines = set(
             self.PL_m(comm.from_task)
             for comm in task.communications(COMM_INPUT))
+        self.prepare_machines(machines)
         machines.add(machine)
         cost_orig = sum(m.cost() for m in machines)
         for comm in self.sorted_in_comms(task):
@@ -87,7 +91,6 @@ class CAEFT_P(CAEFT):
     allow_share = False
     allow_preemptive = True
 
-    @profile
     def find_slots_for_communication(self, comm, from_machine, to_machine):
         remaining_data_size = comm.data_size
         st = self.FT(comm.from_task)
@@ -96,8 +99,10 @@ class CAEFT_P(CAEFT):
         bn_0 = bn_1 = None
 
         while remaining_data_size > 0:
-            cr_0, len_0, bn_0 = from_machine.current_available_cr(st, self.vm_type, COMM_OUTPUT, bn_0)
-            cr_1, len_1, bn_1 = to_machine.current_available_cr(st, self.vm_type, COMM_INPUT, bn_1)
+            cr_0, len_0, bn_0 = from_machine.current_available_cr(
+                st, self.vm_type, COMM_OUTPUT, bn_0)
+            cr_1, len_1, bn_1 = to_machine.current_available_cr(
+                st, self.vm_type, COMM_INPUT, bn_1)
             cr = cr_0 if cr_0 < cr_1 else cr_1
             length = len_0 if len_0 < len_1 else len_1
             # cr = min(cr_0, cr_1)
@@ -111,3 +116,16 @@ class CAEFT_P(CAEFT):
             st += length
 
         return st - runtime, st, crs
+
+
+class CAEFT_P2(CAEFT):
+    allow_share = False
+    allow_preemptive = True
+
+    def find_slots_for_communication(self, comm, from_machine, to_machine):
+        return from_machine.find_idle_common_slots(to_machine,
+                                                   self.FT(comm.from_task),
+                                                   comm.data_size,
+                                                   2 + COMM_OUTPUT,
+                                                   2 + COMM_INPUT,
+                                                   self.bandwidth)

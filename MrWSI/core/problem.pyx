@@ -95,6 +95,7 @@ class Communication(object):
         self.data_size = self.problem.communication_data_size(from_task_id, to_task_id)
         self._from_task_id = from_task_id
         self._to_task_id = to_task_id
+        self.items = [[], []]
 
     def __hash__(self):
         return hash((self._from_task_id, self._to_task_id))

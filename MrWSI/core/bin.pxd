@@ -7,6 +7,8 @@ cdef extern from "bin.h":
     struct bin_t
     struct mempool_t
 
+    int node_time(bin_node_t* node)
+
     mempool_t* bin_create_node_pool(int dimension, size_t buffer_size)
     mempool_t* bin_create_item_pool(int dimension, size_t buffer_size)
     void mp_free_pool(mempool_t*pool)
@@ -53,3 +55,4 @@ cdef class Item:
 
 cdef class Bin:
     cdef bin_t* c_ptr
+    cpdef current_block(Bin self, int time, BinNode node)
