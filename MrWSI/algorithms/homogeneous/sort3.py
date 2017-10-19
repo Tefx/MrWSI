@@ -57,6 +57,7 @@ class CSort(Heuristic):
         x1 = self.RT(ty)
         y1, y1a = self.rt_after(ty)
         if self.may_conflict(p0, p1):
+            # print(tx, t0, t0a, x0, y0, y0a)
             s0 = self.span_est_2(tx, ty, t0, t0a, x0, y0,
                                  y0a, t1, t1a, x1, y1, y1a)
             s1 = self.span_est_2(tx, ty, t1, t1a, x1, y1,
@@ -65,6 +66,7 @@ class CSort(Heuristic):
             # print(ty, t1, t1a, x1, y1, y1a)
             # print(p0, p1)
             # print(s0, s1, self.default_rank(tx), self.default_rank(ty), "\n")
+            # print(tx, ty, s0, s1)
             return s0 < s1
         else:
             return False
@@ -138,7 +140,7 @@ class CSort(Heuristic):
 
     @memo
     def rt_after(self, task):
-        comms = self.sorted_out_comm(task)
+        comms = self.sorted_out_comms(task)
         if comms:
             lc = len(comms)
             X = [0 for _ in range(lc)]
@@ -170,7 +172,7 @@ class CSort(Heuristic):
             r = rn = 0
         return r, rn
 
-    def sorted_out_comm(self, task):
+    def sorted_out_comms(self, task):
         return sorted(
             task.communications(COMM_OUTPUT),
             key=lambda c: self.at_est(c.to_task),
@@ -267,7 +269,7 @@ class NS2Comparer(CSort):
 
 
 class OutCommSorter(CSort):
-    def sorted_out_comm(self, task):
+    def sorted_out_comms(self, task):
         dcs = {c: 0 for c in task.communications(COMM_OUTPUT)}
         for c0 in dcs.keys():
             for c1 in dcs.keys():
@@ -278,7 +280,7 @@ class OutCommSorter(CSort):
 
 class RTEstimater(CSort):
     def rt_after(self, task):
-        comms = self.sorted_out_comm(task)
+        comms = self.sorted_out_comms(task)
         ffs = [self.comm_can_follow(task, c) for c in comms]
         rts = [self.rem_time_est(task, comms, ffs, c)
                for c in comms if self.comm_can_follow(task, c)]
@@ -307,7 +309,7 @@ class RTEstimater(CSort):
 
 class RTEstimater2(CSort):
     def rt_after(self, task):
-        comms = self.sorted_out_comm(task)
+        comms = self.sorted_out_comms(task)
         ato = 0
         tc = 0
         for c in comms:
@@ -372,7 +374,7 @@ class C3Sort(C2Sort):
                 ft += self.RT(c)
         return ft
 
-    def sorted_in_comm(self, task):
+    def sorted_in_comms(self, task):
         return sorted(
             task.communications(COMM_INPUT),
             key=lambda c: self.ft_w_comm_est(c.from_task))
@@ -411,6 +413,7 @@ class RTEstimater3(C3Sort):
     def rt_before(self, task):
         comms = self.sorted_in_comms(task)
         pls = {}
+        # print("                pppp", task, comms, [self.ft_w_comm_est(c.from_task) for c in comms])
         for i, c in enumerate(comms):
             if self.is_placed(c.from_task):
                 m = self.PL_m(c.from_task)
@@ -471,7 +474,7 @@ class RTEstimater3(C3Sort):
             else:
                 ma = M[i + 1]
                 d += min(A[i], B[ma] - d)
-        # print(task, comms, pl, pli, ft_m, bt_none, d)
+        # print(">>", task, ft_m, bt_none, d)
         ft = max(ft_m, bt_none - d)
         if isinstance(pl, Machine):
             return pl.earliest_slot_for_task(self.vm_type, task, ft)[0]

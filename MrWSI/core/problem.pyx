@@ -72,6 +72,10 @@ class Task(object):
     def out_degree(self):
         return len(self.out_communications)
 
+    @property
+    def id(self):
+        return self._task_id
+
     def mean_runtime(self):
         return self.problem.task_mean_runtime(self._task_id)
 

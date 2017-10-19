@@ -54,8 +54,8 @@ def log_record_r(log, results):
 
     for field in ["span", "cost"]:
         base = getattr(results[0], field)
-        # if all(getattr(res, field) == base for res in results):
-            # break
+        if all(getattr(res, field) == base for res in results):
+            break
         for res in results:
             log[res.alg_name][field].append(base / getattr(res, field))
 
@@ -74,7 +74,7 @@ if __name__ == "__main__":
 
     ec2_file = "./resources/platforms/EC2.plt"
     result_log = {}
-    for wrk_path, wrk_name in random_wrks(random_wrk_path, "3_"):
+    for wrk_path, wrk_name in random_wrks(random_wrk_path, "0_"):
     # for wrk_path, wrk_name in pegasus_wrks(pegasus_wrk_path, ""):
         problem = HomoProblem.load(wrk_path, ec2_file, "c4.xlarge", 1, 1000)
         # if problem.num_tasks > 90: continue
@@ -111,7 +111,9 @@ if __name__ == "__main__":
             # mkalg("CAEFT(PC3.6)", NConflict, NSpanComparer, RTEstimater, OutCommSorter, C3Sort, CAEFT_P)(problem),
             # mkalg("CAEFT(PC3.7)", NConflict, NSpanComparer, RTEstimater2, C3Sort, CAEFT_P)(problem),
             # mkalg("CAEFT(PC3.8)", NConflict, NSpanComparer, RTEstimater2, OutCommSorter, C3Sort, CAEFT_P)(problem),
-            mkalg("CAEFT(PC3.9)", NConflict, NSpanComparer, RTEstimater2, RTEstimater3, C3Sort, CAEFT_P)(problem),
+            # mkalg("CAEFT(PC3.9)", NConflict, NSpanComparer, RTEstimater2, RTEstimater3, C3Sort, CAEFT_P)(problem),
+            mkalg("CA", CASort, CAEFT_P)(problem),
+            # mkalg("CA2", CA2Sort, CAEFT_P)(problem),
         ]
         for alg in results:
             alg.export("results/{}.{}.schedule".format(wrk_name, alg.alg_name))
@@ -122,4 +124,4 @@ if __name__ == "__main__":
     for alg, res in result_log.items():
         rs = res["span"]
         print(alg, mean(rs), median(rs))
-    plot_cmp_results(result_log, "span", "hist")
+    plot_cmp_results(result_log, "span", "box")

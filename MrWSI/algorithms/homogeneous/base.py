@@ -59,6 +59,10 @@ class Heuristic(object):
         else:
             return x.runtime(self.bandwidth)
 
+    @property
+    def L(self):
+        return self.problem.platform_limits[0]
+
     def need_communication(self, comm, to_machine=None):
         if not to_machine:
             if comm.to_task in self.placements:

@@ -105,3 +105,4 @@ ENV/
 *.res
 /results/
 /.idea/
+*.py.lprof
