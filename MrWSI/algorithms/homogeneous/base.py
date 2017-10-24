@@ -80,7 +80,7 @@ class Heuristic(object):
         pass
 
     def default_fitness(self):
-        return float("inf"), float("inf")
+        return float("inf") 
 
     def compare_fitness(self, f0, f1):
         return f0 < f1
@@ -103,6 +103,7 @@ class Heuristic(object):
             yield machine
         if self.problem.platform_limits[0] > len(self.platform):
             yield Machine(self.problem.vm_type, self.context)
+        # print([m for m in self.platform.machines])
 
     def solve(self):
         for task in self.sort_tasks():
@@ -111,6 +112,7 @@ class Heuristic(object):
             for machine in self.available_machines():
                 assert machine.vm_type.capacities >= task.demands()
                 placement, fitness = self.plan_task_on(task, machine)
+                # print(machine, fitness)
                 if self.compare_fitness(fitness, fitness_bst):
                     placement_bst, fitness_bst = placement, fitness
             self.perform_placement(task, placement_bst)

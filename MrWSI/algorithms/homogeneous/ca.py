@@ -67,8 +67,9 @@ class CASort(Heuristic):
                         dcs[ty.id] -= 1
                     elif ftx > fty:
                         dcs[tx.id] -= 1
-        # print([(t, dcs[t.id], self.RP[t.id]) for t in self.ready_tasks])
         task = max(self.ready_tasks, key=lambda t: (dcs[t.id], self.RP[t.id]))
+        # print(">>>>>>>>>Selected:", task, [
+              # (t, dcs[t.id], self.RP[t.id]) for t in self.ready_tasks])
         return task
 
     def has_contention(self, tx, ty):

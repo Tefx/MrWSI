@@ -8,6 +8,7 @@ from MrWSI.algorithms.homogeneous import *
 
 from math import ceil
 from statistics import mean, median
+from collections import namedtuple
 
 
 def str_result(res):
@@ -38,9 +39,6 @@ def log_record(log, results):
         v_min = min(res)
         v_max = max(res)
 
-        # base = getattr(results[0], field)
-        # if all(getattr(res, field) == base for res in results):
-        # break
         for res in results:
             value = (getattr(res, field) - v_min) / (
                 v_max - v_min) if v_max != v_min else 0
@@ -60,70 +58,50 @@ def log_record_r(log, results):
             log[res.alg_name][field].append(base / getattr(res, field))
 
 
-def solve_alg(alg):
-    return alg.span
+AlgRes = namedtuple("AlgRes", ["alg_name", "span", "cost"])
+
+
+def run_alg_on(wrk):
+    ec2_file = "./resources/platforms/EC2.plt"
+    wrk_path, wrk_name = wrk
+    problem = HomoProblem.load(wrk_path, ec2_file, "c4.xlarge", 1, 1000)
+    eft = EFT(problem)
+    algs = [
+        # eft,
+        # FairEnv(eft),
+        FCFSEnv(eft),
+        # mkalg("CAEFT(U)", UpwardRanking, CAEFT)(problem),
+        # mkalg("CAEFT(C3.5)", NConflict, NSpanComparer, RTEstimater, C3Sort, CAEFT)(problem),
+        mkalg("CAEFT(PU2)", UpwardRanking, CAEFT_P2)(problem),
+        # mkalg("CA", CASort, CAEFT_P)(problem),
+        mkalg("CA2", CASort, CAEFT_P2)(problem),
+        mkalg("CA3", CA3Sort, CAEFT_P2)(problem),
+        mkalg("CA4", CA4Sort, CAEFT_P2)(problem),
+    ]
+    # for alg in algs:
+        # alg.export("results/{}.{}.schedule".format(wrk_name, alg.alg_name))
+    for alg in algs:
+        alg.span
+    # if algs[-1].span != min(x.span for x in algs):
+    print("{:<16} ".format(wrk_name) + " ".join(str_result(alg)
+                                                for alg in algs))
+    return [AlgRes(alg.alg_name, alg.span, alg.cost) for alg in algs]
 
 
 if __name__ == "__main__":
     import os
     from MrWSI.utils.plot import plot_cmp_results
-    from multiprocessing import Pool
+    from multiprocessing.pool import Pool
 
     pegasus_wrk_path = "./resources/workflows/pegasus"
     random_wrk_path = "./resources/workflows/random_tiny"
 
-    ec2_file = "./resources/platforms/EC2.plt"
+    wrks = random_wrks(random_wrk_path, "")
+    all_results = list(Pool().map(run_alg_on, wrks))
+
     result_log = {}
-    for wrk_path, wrk_name in random_wrks(random_wrk_path, ""):
-        # for wrk_path, wrk_name in pegasus_wrks(pegasus_wrk_path, ""):
-        problem = HomoProblem.load(wrk_path, ec2_file, "c4.xlarge", 1, 1000)
-        # if problem.num_tasks > 90: continue
-        eft = EFT(problem)
-        results = [
-            # eft,
-            # FairEnv(eft),
-            FCFSEnv(eft),
-            # mkalg("CAEFT(U)", UpwardRanking, CAEFT)(problem),
-            # mkalg("CAEFT(C3.5)", NConflict, NSpanComparer, RTEstimater, C3Sort, CAEFT)(problem),
-            # mkalg("CAEFT(M3)", M3Ranking, CAEFT)(problem),
-            # mkalg("CAEFT(PU)", UpwardRanking, CAEFT_P)(problem),
-            mkalg("CAEFT(PU2)", UpwardRanking, CAEFT_P2)(problem),
-            # mkalg("CAEFT(PM3)", M3Ranking, CAEFT_P)(problem),
-            # mkalg("CAEFT(PM5)", M5Ranking, CAEFT_P)(problem),
-            # mkalg("CAEFT(PL4)", LLT4_3Ranking, CAEFT_P)(problem),
-            # mkalg("CAEFT(PP)", PSort, CAEFT_P)(problem),
-            # mkalg("CAEFT(PP1.1)", P1_1Sort, CAEFT_P)(problem),
-            # mkalg("CAEFT(PP2)", P2Sort, CAEFT_P)(problem),
-            # mkalg("CAEFT(PC)", CSort, CAEFT_P)(problem),
-            # mkalg("CAEFT(PC1.1)", NConflict, CSort, CAEFT_P)(problem),
-            # mkalg("CAEFT(PC1.3)", NConflict, NSpanComparer, CSort, CAEFT_P)(problem),
-            # mkalg("CAEFT(PC2)", C2Sort, CAEFT_P)(problem),
-            # mkalg("CAEFT(PC2.1)", NConflict, C2Sort, CAEFT_P)(problem),
-            # mkalg("CAEFT(PC2.2)", NConflict, StrictCommFollowTest, C2Sort, CAEFT_P)(problem),
-            # mkalg("CAEFT(PC2.3)", NConflict, NSpanComparer, C2Sort, CAEFT_P)(problem),
-            # mkalg("CAEFT(PC2.4)", NConflict, NS2Comparer, C2Sort, CAEFT_P)(problem),
-            # mkalg("CAEFT(PC2.5)", NConflict, NSpanComparer, RTEstimater, C2Sort, CAEFT_P)(problem),
-            # mkalg("CAEFT(PC3)", C3Sort, CAEFT_P)(problem),
-            # mkalg("CAEFT(PC3.1)", NConflict, C3Sort, CAEFT_P)(problem),
-            # mkalg("CAEFT(PC3.3)", NConflict, NSpanComparer, C3Sort, CAEFT_P)(problem),
-            # mkalg("CAEFT(PCS3.3)", NConflict, NSpanComparer, CSortStatic, CAEFT_P)(problem),
-            # mkalg("CAEFT(PC3.5)", NConflict, NSpanComparer, RTEstimater, C3Sort, CAEFT_P)(problem),
-            # mkalg("CAEFT(PC3.5.m)", NConflict, MRNSComparer, RTEstimater, C3Sort, CAEFT_P)(problem),
-            # mkalg("CAEFT(PC3.6)", NConflict, NSpanComparer, RTEstimater, OutCommSorter, C3Sort, CAEFT_P)(problem),
-            # mkalg("CAEFT(PC3.7)", NConflict, NSpanComparer, RTEstimater2, C3Sort, CAEFT_P)(problem),
-            # mkalg("CAEFT(PC3.8)", NConflict, NSpanComparer, RTEstimater2, OutCommSorter, C3Sort, CAEFT_P)(problem),
-            # mkalg("CAEFT(PC3.9)", NConflict, NSpanComparer, RTEstimater2, RTEstimater3, C3Sort, CAEFT_P)(problem),
-            # mkalg("CA", CASort, CAEFT_P)(problem),
-            # mkalg("CA2", CASort, CAEFT_P2)(problem),
-            mkalg("CA3", CA3Sort, CAEFT_P2)(problem),
-            mkalg("CA4", CA4Sort, CAEFT_P2)(problem),
-        ]
-        for alg in results:
-            alg.export("results/{}.{}.schedule".format(wrk_name, alg.alg_name))
+    for results in all_results:
         log_record(result_log, results)
-        # if results[-1].span != min(x.span for x in results):
-        print("{:<16} ".format(wrk_name) + " ".join(
-            str_result(res) for res in results))
     for alg, res in result_log.items():
         rs = res["span"]
         print(alg, mean(rs), median(rs))
