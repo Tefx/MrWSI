@@ -72,14 +72,16 @@ class Machine(Bin):
 
     def place_communication(self, comm, start_time, crs, comm_type):
         self.communications.add(comm)
-        dimension = self.problem.multiresource_dimension
-        comm.items[comm_type] = []
-        for rt, cr in crs:
-            if cr:
-                cap = bandwidth2capacities(cr, dimension, comm_type)
-                item = self.alloc_item(start_time, cap, rt, None)
-                comm.items[comm_type].append(item)
-            start_time += rt
+        comm.items[comm_type] = self.alloc_multi_items(
+            start_time, crs, 2 + comm_type)
+        # dimension = self.problem.multiresource_dimension
+        # comm.items[comm_type] = []
+        # for rt, cr in crs:
+        # if cr:
+        # cap = bandwidth2capacities(cr, dimension, comm_type)
+        # item = self.alloc_item(start_time, cap, rt, None)
+        # comm.items[comm_type].append(item)
+        # start_time += rt
 
     def remove_communication(self, comm, comm_type):
         self.communications.remove(comm)

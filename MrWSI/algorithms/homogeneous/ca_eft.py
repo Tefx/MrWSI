@@ -18,7 +18,7 @@ class CAEFT(Heuristic):
     def sorted_in_comms(self, task):
         return sorted(
             task.communications(COMM_INPUT),
-            key=lambda comm: self.FT(comm.from_task))
+            key=5lambda comm: self.FT(comm.from_task))
 
     def find_slots_for_communication(self, comm, from_machine, to_machine):
         comm_runtime = comm.runtime(self.bandwidth)
@@ -123,9 +123,9 @@ class CAEFT_P2(CAEFT):
     allow_preemptive = True
 
     def find_slots_for_communication(self, comm, from_machine, to_machine):
-        return from_machine.find_idle_common_slots(to_machine,
-                                                   self.FT(comm.from_task),
-                                                   comm.data_size,
-                                                   2 + COMM_OUTPUT,
-                                                   2 + COMM_INPUT,
-                                                   self.bandwidth)
+        return from_machine.find_idle_common_slots2(to_machine,
+                                                    self.FT(comm.from_task),
+                                                    comm.data_size,
+                                                    2 + COMM_OUTPUT,
+                                                    2 + COMM_INPUT,
+                                                    self.bandwidth)

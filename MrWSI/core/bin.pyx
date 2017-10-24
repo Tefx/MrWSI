@@ -1,5 +1,5 @@
 from MrWSI.core.problem cimport Problem
-from MrWSI.core.resource cimport mr_wrap_c, MultiRes
+from MrWSI.core.resource cimport mr_wrap_c, MultiRes, res_t, mr_alloc, mr_free, mr_set
 from cpython cimport array
 import array
 from libc.math cimport ceil
@@ -60,6 +60,37 @@ cdef class Bin:
         cdef int length = bin_current_block(self.c_ptr, time, mr.c, node.c_ptr if node else NULL, &(bn.c_ptr))
         return mr, length, bn
 
+    def find_idle_common_slots2(Bin self, Bin other_bin, int st, long ds, int vi0, int vi1, int bandwidth):
+        cdef res_t *mr_0 = mr_alloc(bin_dimension(self.c_ptr))
+        cdef res_t *mr_1 = mr_alloc(bin_dimension(self.c_ptr))
+        cdef bin_node_t* bn_0 = NULL
+        cdef bin_node_t* bn_1 = NULL
+        cdef long length, len_0, len_1
+        cdef list crs = []
+        cdef long runtime = 0
+
+        while ds > 0:
+            len_0 = bin_current_block(self.c_ptr, st, mr_0, bn_0, &bn_0)
+            len_1 = bin_current_block(other_bin.c_ptr, st, mr_1, bn_1, &bn_1)
+            if len_0 < len_1:
+                length = len_0
+            else:
+                length = len_1
+            if not (mr_0[vi0] or mr_1[vi1]):
+                ds -= length * bandwidth
+                if ds < 0:
+                    length += int(ceil(ds / bandwidth))
+                crs.append((length, bandwidth))
+                runtime += length
+            elif crs:
+                crs.append((length, 0))
+                runtime += length
+            st += length
+
+        mr_free(mr_0)
+        mr_free(mr_1)
+        return st - runtime, st, crs
+
     def find_idle_common_slots(Bin self, Bin other_bin, int st, long ds, int vi0, int vi1, int bandwidth):
         cdef long length, len_0, len_1
         cdef MultiRes vol_0, vol_1
@@ -67,10 +98,14 @@ cdef class Bin:
         cdef BinNode bn_1 = None
         cdef list crs = []
         cdef long runtime = 0
+
         while ds > 0:
             vol_0, len_0, bn_0 = self.current_block(st, bn_0)
             vol_1, len_1, bn_1 = other_bin.current_block(st, bn_1)
-            length = len_0 if len_0 < len_1 else len_1
+            if len_0 < len_1:
+                length = len_0
+            else:
+                length = len_1
             if not (vol_0[vi0] or vol_1[vi1]):
                 ds -= length * bandwidth
                 if ds < 0:
@@ -106,6 +141,24 @@ cdef class Bin:
                    BinNode start_node=None):
         return item_wrap_c(bin_alloc_item(self.c_ptr, start_time, demands.c, length,
                                           start_node.c_ptr if start_node else NULL))
+
+    def alloc_multi_items(Bin self, int start_time, list crs, int index):
+        cdef int dim = bin_dimension(self.c_ptr)
+        cdef res_t* demands = mr_alloc(dim)
+        cdef Item item
+        cdef list items = []
+        cdef int rt, cr
+
+        mr_set(demands, 0, dim)
+        for rt, cr in crs:
+            if cr:
+                demands[index] = cr
+                item = item_wrap_c(bin_alloc_item(self.c_ptr, start_time, demands, rt, NULL))
+                items.append(item)
+            start_time += rt
+        mr_free(demands)
+        return items
+
 
     def free_item(Bin self, Item item):
         bin_free_item(self.c_ptr, item.c_ptr)

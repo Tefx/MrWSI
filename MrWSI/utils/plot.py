@@ -16,7 +16,8 @@ def plot_cmp_results(log, field, typ="box"):
     for alg in labels:
         data.append(log[alg][field])
     if typ == "hist":
-        ax.hist(data, bins=1000, label=labels, histtype="step", normed=False, cumulative=True)
+        ax.hist(data, bins=1000, label=labels,
+                histtype="step", normed=False, cumulative=True)
         ax.set_xlim(0, 1)
         ax.legend(loc="lower right")
     elif typ == "box":

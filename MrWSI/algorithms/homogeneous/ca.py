@@ -45,9 +45,10 @@ class CASort(Heuristic):
         self.order_for_at = []
         for t in self.toporder:
             if self.is_placed(t):
-                self.RA[t.id] = self.FT(t) + \
-                    sum(self.RT(c) for c in t.communications(COMM_OUTPUT)
-                        if c in self.start_times)
+                self.RA[t.id] = self.FT(t)
+                for c in t.communications(COMM_OUTPUT):
+                    if c in self.start_times:
+                        self.RA[t.id] += self.RT(c)
             else:
                 self.calculate_AT(t)
                 self.RA[t.id] = self.AT[t.id] + self.RT(t)
@@ -66,6 +67,7 @@ class CASort(Heuristic):
                         dcs[ty.id] -= 1
                     elif ftx > fty:
                         dcs[tx.id] -= 1
+        # print([(t, dcs[t.id], self.RP[t.id]) for t in self.ready_tasks])
         task = max(self.ready_tasks, key=lambda t: (dcs[t.id], self.RP[t.id]))
         return task
 
@@ -91,8 +93,9 @@ class CASort(Heuristic):
         sm = {}
         st = []
         for i, c in enumerate(comms):
-            if self.is_placed(c.from_task):
-                m = self.PL_m(c.from_task)
+            from_task = c.from_task
+            if self.is_placed(from_task):
+                m = self.PL_m(from_task)
                 if m not in sm:
                     sm[m] = [i]
                 else:
@@ -121,9 +124,13 @@ class CASort(Heuristic):
         at_none = 0
         for i, c in enumerate(comms):
             ra = self.RA[c.from_task.id]
-            tmp = max(at_none, ra)
-            A[i] = tmp + self.RT(c) - at_none
-            B[i] = tmp - ra
+            if at_none < ra:
+                A[i] = ra + self.RT(c) - at_none
+                B[i] = 0
+            else:
+                A[i] = self.RT(c)
+                B[i] = at_none - ra
+            # print(i, c, at_none, ra)
             at_none += A[i]
         B[-1] = inf
         k = inf
@@ -141,6 +148,7 @@ class CASort(Heuristic):
             at = inf
             bmt = []
         ato = inf
+        # print(at_none, A, B, M)
         for m, cs in SM.items():
             d = 0
             ma = 0
@@ -166,6 +174,7 @@ class CASort(Heuristic):
         self.AT[task.id] = at
         self.ATO[task.id] = ato
         self.BM[task.id] = set(bmt)
+        # print(task, at, ato, bmt)
 
     def calculate_PT(self, task):
         comms = sorted(task.communications(COMM_OUTPUT),
@@ -189,7 +198,166 @@ class CASort(Heuristic):
         self.PT[task.id] = pt
         self.PTO[task.id] = pto
 
+
 class CA2Sort(CASort):
     def sorted_in_comms(self, task):
         return sorted(task.communications(COMM_INPUT), key=lambda c: self.RA[c.from_task.id])
 
+
+class CA3Sort(CASort):
+    def _prepare_arrays(self):
+        self.AT = [None] * self.problem.num_tasks
+        self.ATO = [None] * self.problem.num_tasks
+        self.RA = [None] * self.problem.num_tasks
+        self.PT = [None] * self.problem.num_tasks
+        self.PTO = [None] * self.problem.num_tasks
+        self.RP = [None] * self.problem.num_tasks
+        self.BM = [None] * self.problem.num_tasks
+        self._A = [None] * self.problem.num_tasks
+        self._B = [None] * self.problem.num_tasks
+        self._M = [None] * self.problem.num_tasks
+        self._P = [None] * self.problem.num_tasks
+
+    def calculate_AT(self, task):
+        comms = sorted(task.communications(COMM_INPUT),
+                       key=lambda c: self.RA[c.from_task.id])
+        A = self._A
+        B = self._B
+        M = self._M
+
+        at_none = 0
+        k = inf
+        for c in comms:
+            t = c.from_task.id
+            d = self.RA[t] - at_none
+            if d > 0:
+                A[t] = d + self.RT(c)
+                B[t] = 0
+            else:
+                A[t] = self.RT(c)
+                B[t] = -d
+            at_none += A[t]
+        for c in reversed(comms):
+            t = c.from_task.id
+            M[t] = k
+            k = min(B[t], k)
+
+        Sm = {}
+        St = []
+        for c in comms:
+            t = c.from_task
+            if self.is_placed(t):
+                m = self.PL_m(t)
+                if m not in Sm:
+                    Sm[m] = [M[t.id], A[t.id], self.FT(t)]
+                else:
+                    Sm[m][0] = M[t.id]
+                    Sm[m][1] += A[t.id]
+                    Sm[m][2] = max(Sm[m][2], self.FT(t))
+            else:
+                St.append(t)
+
+        if self.L > len(self.platform) or len(Sm) < len(self.platform):
+            at = at_none
+            bmt = [-id(task)]
+        else:
+            at = inf
+            bmt = []
+        ato = inf
+        # print(task, task.id, comms, at_none, Sm, St, M)
+        # print([(c, M[c.from_task.id]) for c in comms])
+
+        for m, (mt, sa, ft) in Sm.items():
+            st = max(ft, at_none - min(mt, sa))
+            # print(m, st)
+            st, _ = m.earliest_slot_for_task(self.vm_type, task, st)
+            at, ato, bmt = self._min2(at, ato, bmt, st, id(m))
+
+        for t in St:
+            st = max(self.RA[t.id], at_none - min(A[t.id], M[t.id]))
+            # print(t, st)
+            at, ato, bmt = self._min2(at, ato, bmt, st, id(t))
+
+        self.AT[task.id] = at
+        self.ATO[task.id] = ato
+        self.BM[task.id] = set(bmt)
+        # print(task, at, ato, bmt)
+
+
+class CA4Sort(CA3Sort):
+    def calculate_AT(self, task):
+        comms = sorted(task.communications(COMM_INPUT),
+                       key=lambda c: self.RA[c.from_task.id])
+        A = self._A
+        B = self._B
+        M = self._M
+        P = self._P
+
+        at_none = 0
+        k = inf
+        for c in comms:
+            t = c.from_task.id
+            d = self.RA[t] - at_none
+            if d > 0:
+                A[t] = d + self.RT(c)
+                B[t] = 0
+            else:
+                A[t] = self.RT(c)
+                B[t] = -d
+            at_none += A[t]
+        for c in reversed(comms):
+            t = c.from_task.id
+            M[t] = k
+            k = min(B[t], k)
+
+        Sm = {}
+        St = []
+        last_t = None
+        last_m = None
+        for c in comms:
+            t = c.from_task
+            if self.is_placed(t):
+                m = self.PL_m(t)
+                if m not in Sm:
+                    Sm[m] = [[t.id], self.FT(t)]
+                else:
+                    Sm[m][0].append(t.id)
+                    Sm[m][1] = max(Sm[m][1], self.FT(t))
+                if last_m == m:
+                    P[t.id] = last_t
+                else:
+                    P[t.id] = False
+                last_m = m
+                last_t = t.id
+            else:
+                St.append(t)
+
+        if self.L > len(self.platform) or len(Sm) < len(self.platform):
+            at = at_none
+            bmt = [-id(task)]
+        else:
+            at = inf
+            bmt = []
+        ato = inf
+        # print(task, task.id, comms, at_none, Sm, St, M)
+        # print([(c, M[c.from_task.id]) for c in comms])
+
+        d = 0
+        for m, (ts, ft) in Sm.items():
+            for t in ts:
+                if P[t]:
+                    A[t] += A[P[t]] - d
+                d = min(A[t] + d, M[t])
+            st = max(ft, at_none - d)
+            st, _ = m.earliest_slot_for_task(self.vm_type, task, st)
+            at, ato, bmt = self._min2(at, ato, bmt, st, id(m))
+
+        for t in St:
+            st = max(self.RA[t.id], at_none - min(A[t.id], M[t.id]))
+            # print(t, st)
+            at, ato, bmt = self._min2(at, ato, bmt, st, id(t))
+
+        self.AT[task.id] = at
+        self.ATO[task.id] = ato
+        self.BM[task.id] = set(bmt)
+        # print(task, at, ato, bmt)
