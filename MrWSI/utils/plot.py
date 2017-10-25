@@ -1,7 +1,7 @@
 import os.path
 import pygraphviz as pgv
 import matplotlib as mpl
-mpl.use("Qt5Agg")
+mpl.use("Agg")
 import matplotlib.pyplot as plt
 from MrWSI.core.problem import COMM_INPUT
 import numpy as np

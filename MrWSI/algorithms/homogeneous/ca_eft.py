@@ -34,12 +34,6 @@ class CAEFT(Heuristic):
     def plan_task_on(self, task, machine):
         task_est = 0
         comm_pls = {}
-        # machines = set(
-            # self.PL_m(comm.from_task)
-            # for comm in task.communications(COMM_INPUT))
-        # self.prepare_machines(machines)
-        # machines.add(machine)
-        # cost_orig = sum(m.cost() for m in machines)
         for comm in self.sorted_in_comms(task):
             if self.need_communication(comm, machine):
                 prev_machine = self.PL_m(comm.from_task)
@@ -53,19 +47,16 @@ class CAEFT(Heuristic):
                 task_est = max(task_est, self.FT(comm.from_task))
         task_st, _ = machine.earliest_slot_for_task(self.vm_type, task,
                                                     task_est)
-        task_runtime = task.runtime(self.vm_type)
-        task_ft = task_st + task_runtime
-        # cost_increase = sum(
-        # m.cost() for m in machines) - cost_orig + machine.cost_increase(
-        # task_st, task_runtime, self.vm_type)
 
         for comm in task.communications(COMM_INPUT):
             if self.need_communication(comm, machine):
                 self.remove_communication(comm,
                                           self.PL_m(comm.from_task), machine)
+        pls = (machine, comm_pls, task_st)
+        return pls, self.fitness(task, *pls)
 
-        # return (machine, comm_pls, task_st), (task_ft, cost_increase)
-        return (machine, comm_pls, task_st), task_ft
+    def fitness(self, task, machine, comm_pls, task_st):
+        return task_st + self.RT(task)
 
     def place_communication(self, comm, from_machine, to_machine, st, crs):
         from_machine.place_communication(comm, st, crs, COMM_OUTPUT)

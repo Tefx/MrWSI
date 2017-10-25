@@ -38,6 +38,7 @@ def log_record(log, results):
         res = [getattr(res, field) for res in results]
         v_min = min(res)
         v_max = max(res)
+        # if v_min == v_max: break
 
         for res in results:
             value = (getattr(res, field) - v_min) / (
@@ -69,17 +70,21 @@ def run_alg_on(wrk):
     algs = [
         # eft,
         # FairEnv(eft),
-        FCFSEnv(eft),
+        # FCFSEnv(eft),
         # mkalg("CAEFT(U)", UpwardRanking, CAEFT)(problem),
         # mkalg("CAEFT(C3.5)", NConflict, NSpanComparer, RTEstimater, C3Sort, CAEFT)(problem),
-        mkalg("CAEFT(PU2)", UpwardRanking, CAEFT_P2)(problem),
+        # mkalg("CAEFT(PU2)", UpwardRanking, CAEFT_P)(problem),
         # mkalg("CA", CASort, CAEFT_P)(problem),
-        mkalg("CA2", CASort, CAEFT_P2)(problem),
-        mkalg("CA3", CA3Sort, CAEFT_P2)(problem),
-        mkalg("CA4", CA4Sort, CAEFT_P2)(problem),
+        # mkalg("CA(sa)", CASort_SimpleAT, CAEFT_P)(problem),
+        # mkalg("CA(mc)", CAMoreCompare, CASort, CAEFT_P)(problem),
+        # mkalg("CA(sa/mc)", CAMoreCompare, CASimpleAT, CAEFT_P)(problem),
+        # mkalg("CAFit", CAFit, CASort, CAEFT_P)(problem),
+        # mkalg("CAFit(sa)", CAFit, CASimpleAT, CAEFT_P)(problem),
+        mkalg("CAFit(mc)", CAFit, CAMoreCompare, CASort, CAEFT_P)(problem),
+        # mkalg("CAFit(sa/mc)", CAFit, CAMoreCompare, CASimpleAT, CAEFT_P)(problem),
     ]
     # for alg in algs:
-        # alg.export("results/{}.{}.schedule".format(wrk_name, alg.alg_name))
+    # alg.export("results/{}.{}.schedule".format(wrk_name, alg.alg_name))
     for alg in algs:
         alg.span
     # if algs[-1].span != min(x.span for x in algs):
@@ -97,7 +102,8 @@ if __name__ == "__main__":
     random_wrk_path = "./resources/workflows/random_tiny"
 
     wrks = random_wrks(random_wrk_path, "")
-    all_results = list(Pool().map(run_alg_on, wrks))
+    all_results = list(map(run_alg_on, wrks))
+    # all_results = list(Pool().map(run_alg_on, wrks))
 
     result_log = {}
     for results in all_results:

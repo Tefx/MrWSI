@@ -106,3 +106,4 @@ ENV/
 /results/
 /.idea/
 *.py.lprof
+*.directory
