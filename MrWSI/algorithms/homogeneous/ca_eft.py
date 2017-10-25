@@ -93,37 +93,6 @@ class CAEFT_P(CAEFT):
     allow_preemptive = True
 
     def find_slots_for_communication(self, comm, from_machine, to_machine):
-        remaining_data_size = comm.data_size
-        st = self.FT(comm.from_task)
-        crs = []
-        runtime = 0
-        bn_0 = bn_1 = None
-
-        while remaining_data_size > 0:
-            cr_0, len_0, bn_0 = from_machine.current_available_cr(
-                st, self.vm_type, COMM_OUTPUT, bn_0)
-            cr_1, len_1, bn_1 = to_machine.current_available_cr(
-                st, self.vm_type, COMM_INPUT, bn_1)
-            cr = cr_0 if cr_0 < cr_1 else cr_1
-            length = len_0 if len_0 < len_1 else len_1
-            # cr = min(cr_0, cr_1)
-            # length = min(len_0, len_1)
-            remaining_data_size -= length * cr
-            if remaining_data_size < 0:
-                length += ceil(remaining_data_size / cr)
-            if crs or cr:
-                crs.append([length, cr])
-                runtime += length
-            st += length
-
-        return st - runtime, st, crs
-
-
-class CAEFT_P2(CAEFT):
-    allow_share = False
-    allow_preemptive = True
-
-    def find_slots_for_communication(self, comm, from_machine, to_machine):
         return from_machine.find_idle_common_slots2(to_machine,
                                                     self.FT(comm.from_task),
                                                     comm.data_size,
