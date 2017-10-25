@@ -2,6 +2,8 @@ from MrWSI.core.problem import Problem, Task, Communication, COMM_INPUT, COMM_OU
 from MrWSI.core.platform import Context, Platform, Machine
 from MrWSI.core.schedule import Schedule
 
+import numpy as np
+
 
 class HomoProblem(Problem):
     @classmethod
@@ -41,6 +43,15 @@ class Heuristic(object):
         self._pls = None
         self._order = []
 
+        self._RT = [0] * self.problem.num_tasks
+        for t in self.problem.tasks:
+            self._RT[t.id] = t.runtime(self.vm_type)
+        self._CT = np.zeros(
+            shape=(self.problem.num_tasks, self.problem.num_tasks))
+        for t in self.problem.tasks:
+            for c in t.communications(COMM_OUTPUT):
+                self._CT[t.id, c.to_task.id] = c.runtime(self.bandwidth)
+
     def ST(self, obj):
         return self.start_times[obj]
 
@@ -58,6 +69,9 @@ class Heuristic(object):
             return x.runtime(self.vm_type)
         else:
             return x.runtime(self.bandwidth)
+
+    def CT(self, c):
+        return self._CT[c.from_task.id, c.to_task.id]
 
     @property
     def L(self):
@@ -80,7 +94,7 @@ class Heuristic(object):
         pass
 
     def default_fitness(self):
-        return float("inf") 
+        return float("inf")
 
     def compare_fitness(self, f0, f1):
         return f0 < f1

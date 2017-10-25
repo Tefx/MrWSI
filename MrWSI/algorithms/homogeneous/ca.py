@@ -51,9 +51,9 @@ class CASort(Heuristic):
         dcs = [0] * self.problem.num_tasks
         for tx in self.ready_tasks:
             for ty in self.ready_tasks:
-                if tx.id < ty.id and self.has_contention(tx, ty):
-                    ftx = self.est_ft(tx, ty)
-                    fty = self.est_ft(ty, tx)
+                if tx.id < ty.id and self.has_contention(tx.id, ty.id):
+                    ftx = self.est_ft(tx.id, ty.id)
+                    fty = self.est_ft(ty.id, tx.id)
                     if ftx < fty:
                         dcs[ty.id] -= 1
                     elif ftx > fty:
@@ -67,63 +67,39 @@ class CASort(Heuristic):
                 self.RA[t.id] = self.FT(t)
                 for c in t.communications(COMM_OUTPUT):
                     if c in self.start_times:
-                        self.RA[t.id] += self.RT(c)
+                        self.RA[t.id] += self.CT(c)
             else:
                 self.calculate_AT(t)
-                self.RA[t.id] = self.AT[t.id] + self.RT(t)
+                self.RA[t.id] = self.AT[t.id] + self._RT[t.id]
         for t in reversed(self.toporder):
             if not self._placed[t.id]:
                 self.calculate_PT(t)
-                self.RP[t.id] = self.PT[t.id] + self.RT(t)
+                self.RP[t.id] = self.PT[t.id] + self._RT[t.id]
 
     def has_contention(self, tx, ty):
-        p0 = self.BM[tx.id]
-        p1 = self.BM[ty.id]
+        p0 = self.BM[tx]
+        p1 = self.BM[ty]
         return (len(p0) == 1 or len(p1) == 1) and (p0 & p1) and \
-            -self.RT(ty) < self.AT[ty.id] - self.AT[tx.id] < self.RT(tx)
+            -self._RT[ty] < self.AT[ty] - \
+            self.AT[tx] < self._RT[tx]
 
     def est_ft(self, ti, tj):
-        at_i = self.AT[ti.id]
-        ato_i = self.ATO[ti.id]
-        rt_i = self.RT(ti)
-        pt_i = self.PT[ti.id]
-        pto_i = self.PTO[ti.id]
-        at_j = self.AT[tj.id]
-        ato_j = self.ATO[tj.id]
-        rt_j = self.RT(tj)
-        pt_j = self.PT[tj.id]
-        pto_j = self.PTO[tj.id]
+        at_i = self.AT[ti]
+        ato_i = self.ATO[ti]
+        rt_i = self._RT[ti]
+        pt_i = self.PT[ti]
+        pto_i = self.PTO[ti]
+        at_j = self.AT[tj]
+        ato_j = self.ATO[tj]
+        rt_j = self._RT[tj]
+        pt_j = self.PT[tj]
+        pto_j = self.PTO[tj]
         return min(
             at_i + rt_i + rt_j + pt_i + pt_j,
             at_i + rt_i + rt_j + max(pt_i, pto_j),
             at_i + rt_i + max(pto_i, rt_j + pt_j),
             max(at_i + rt_i + pt_i, ato_j + rt_j + pt_j)
         )
-        # return min(
-        # self.AT[ti.id] + self.RT(ti) + self.RT(tj) +
-        # self.PT[ti.id] + self.PT[tj.id],
-        # self.AT[ti.id] + self.RT(ti) + self.RT(tj) +
-        # max(self.PT[ti.id], self.PTO[tj.id]),
-        # self.AT[ti.id] + self.RT(ti) + max(self.PTO[ti.id],
-        # self.RT(tj) + self.PT[tj.id]),
-        # max(self.AT[ti.id] + self.RT(ti) + self.PT[ti.id],
-        # self.ATO[tj.id] + self.RT(tj) + self.PT[tj.id])
-        # )
-
-    # def _at_divide_preds(self, comms):
-        # sm = {}
-        # st = []
-        # for i, c in enumerate(comms):
-        # from_task = c.from_task
-        # if self.is_placed(from_task):
-        # m = self.PL_m(from_task)
-        # if m not in sm:
-        # sm[m] = [i]
-        # else:
-        # sm[m].append(i)
-        # else:
-        # st.append(i)
-        # return sm, st
 
     def _min2(self, at, ato, bmt, x, m):
         if x < at:
@@ -147,10 +123,10 @@ class CASort(Heuristic):
             t = c.from_task.id
             d = self.RA[t] - at_none
             if d > 0:
-                A[t] = d + self.RT(c)
+                A[t] = d + self.CT(c)
                 B[t] = 0
             else:
-                A[t] = self.RT(c)
+                A[t] = self.CT(c)
                 B[t] = -d
             at_none += A[t]
 
@@ -202,18 +178,18 @@ class CASort(Heuristic):
         pto = 0
         tc = 0
         for c in comms:
-            tc += self.RT(c)
+            tc += self.CT(c)
             pto = max(pto, tc + self.RP[c.to_task.id])
 
         pt = 0
         tc = 0
         tt = 0
         for c in comms:
-            if id(task) in self.BM[c.to_task.id] and tt < tc + self.RT(c):
+            if id(task) in self.BM[c.to_task.id] and tt < tc + self.CT(c):
                 tt += self.RP[c.to_task.id]
                 pt = max(pt, tt)
             else:
-                tc += self.RT(c)
+                tc += self.CT(c)
                 pt = max(pt, tc + self.RP[c.to_task.id])
         self.PT[task.id] = pt
         self.PTO[task.id] = pto
@@ -233,10 +209,10 @@ class CASimpleAT(CASort):
             t = c.from_task.id
             d = self.RA[t] - at_none
             if d > 0:
-                A[t] = d + self.RT(c)
+                A[t] = d + self.CT(c)
                 B[t] = 0
             else:
-                A[t] = self.RT(c)
+                A[t] = self.CT(c)
                 B[t] = -d
             at_none += A[t]
         for c in reversed(comms):
@@ -285,17 +261,17 @@ class CAMoreCompare(Heuristic):
     def select_task(self):
         self.update_AT_and_PT()
         dcs = [0] * self.problem.num_tasks
-        unplaced_tasks = [
-            t for t in self.problem.tasks if not self._placed[t.id]]
-        for tx in unplaced_tasks:
-            for ty in unplaced_tasks:
-                if tx.id < ty.id and self.has_contention(tx, ty):
+        for tx in range(self.problem.num_tasks):
+            for ty in range(tx + 1, self.problem.num_tasks):
+                if not self._placed[tx] and not self._placed[ty] and\
+                        not (self.rids[tx] and self.rids[ty]) and\
+                        self.has_contention(tx, ty):
                     ftx = self.est_ft(tx, ty)
                     fty = self.est_ft(ty, tx)
                     if ftx < fty:
-                        dcs[ty.id] -= 1
+                        dcs[ty] -= 1
                     elif ftx > fty:
-                        dcs[tx.id] -= 1
+                        dcs[tx] -= 1
         task = max(self.ready_tasks, key=lambda t: (dcs[t.id], self.RP[t.id]))
         return task
 
@@ -305,13 +281,13 @@ class CAFit(Heuristic):
         return inf, inf
 
     def fitness(self, task, machine, comm_pls, st):
-        rt_x = self.RT(task)
+        rt_x = self._RT[task.id]
         ft_x = st + rt_x
         pt_x = self.PT[task.id]
         pto_x = self.PTO[task.id]
         wft = ft_x + pt_x
         for t in self.ready_tasks:
-            rt_y = self.RT(t)
+            rt_y = self._RT[t.id]
             at_y = self.AT[t.id]
             ato_y = self.ATO[t.id]
             pt_y = self.PT[t.id]
@@ -319,6 +295,39 @@ class CAFit(Heuristic):
 
             if t != task:
                 pt = self.BM[t.id]
+                if len(pt) == 1 and id(machine) in pt and\
+                        -rt_x < st - at_y < rt_y:
+                    wft = max(wft, min(
+                        ft_x + rt_y + pt_x + pt_y,
+                        ft_x + rt_y + max(pt_x, pto_y),
+                        ft_x + max(pto_x, rt_y + pt_y),
+                        max(ft_x + pt_x, ato_y + rt_y + pt_y)))
+                else:
+                    wft = max(wft, at_y + rt_y + pt_y)
+        return wft, ft_x
+
+
+class CAFit2(Heuristic):
+    def default_fitness(self):
+        return inf, inf
+
+    def fitness(self, task, machine, comm_pls, st):
+        rt_x = self._RT[task.id]
+        ft_x = st + rt_x
+        pt_x = self.PT[task.id]
+        pto_x = self.PTO[task.id]
+        wft = ft_x + pt_x
+        for t in range(self.problem.num_tasks):
+            if self._placed[t]:
+                continue
+            rt_y = self._RT[t]
+            at_y = self.AT[t]
+            ato_y = self.ATO[t]
+            pt_y = self.PT[t]
+            pto_y = self.PTO[t]
+
+            if t != task.id:
+                pt = self.BM[t]
                 if len(pt) == 1 and id(machine) in pt and\
                         -rt_x < st - at_y < rt_y:
                     wft = max(wft, min(

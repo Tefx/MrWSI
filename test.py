@@ -70,17 +70,18 @@ def run_alg_on(wrk):
     algs = [
         # eft,
         # FairEnv(eft),
-        # FCFSEnv(eft),
+        FCFSEnv(eft),
         # mkalg("CAEFT(U)", UpwardRanking, CAEFT)(problem),
         # mkalg("CAEFT(C3.5)", NConflict, NSpanComparer, RTEstimater, C3Sort, CAEFT)(problem),
-        # mkalg("CAEFT(PU2)", UpwardRanking, CAEFT_P)(problem),
+        mkalg("CAEFT(PU2)", UpwardRanking, CAEFT_P)(problem),
         # mkalg("CA", CASort, CAEFT_P)(problem),
         # mkalg("CA(sa)", CASort_SimpleAT, CAEFT_P)(problem),
-        # mkalg("CA(mc)", CAMoreCompare, CASort, CAEFT_P)(problem),
+        mkalg("CA(mc)", CAMoreCompare, CASort, CAEFT_P)(problem),
         # mkalg("CA(sa/mc)", CAMoreCompare, CASimpleAT, CAEFT_P)(problem),
         # mkalg("CAFit", CAFit, CASort, CAEFT_P)(problem),
         # mkalg("CAFit(sa)", CAFit, CASimpleAT, CAEFT_P)(problem),
         mkalg("CAFit(mc)", CAFit, CAMoreCompare, CASort, CAEFT_P)(problem),
+        # mkalg("CAFit2(mc)", CAFit2, CAMoreCompare, CASort, CAEFT_P)(problem),
         # mkalg("CAFit(sa/mc)", CAFit, CAMoreCompare, CASimpleAT, CAEFT_P)(problem),
     ]
     # for alg in algs:
@@ -102,8 +103,8 @@ if __name__ == "__main__":
     random_wrk_path = "./resources/workflows/random_tiny"
 
     wrks = random_wrks(random_wrk_path, "")
-    all_results = list(map(run_alg_on, wrks))
-    # all_results = list(Pool().map(run_alg_on, wrks))
+    # all_results = list(map(run_alg_on, wrks))
+    all_results = list(Pool().map(run_alg_on, wrks))
 
     result_log = {}
     for results in all_results:
