@@ -38,7 +38,8 @@ def log_record(log, results):
         res = [getattr(res, field) for res in results]
         v_min = min(res)
         v_max = max(res)
-        # if v_min == v_max: break
+        if v_min == v_max:
+            break
 
         for res in results:
             value = (getattr(res, field) - v_min) / (
@@ -48,14 +49,14 @@ def log_record(log, results):
 
 def log_record_r(log, results):
     if not log:
-        for res in results:
+        for res in results[1:]:
             log[res.alg_name] = {"span": [], "cost": []}
 
     for field in ["span", "cost"]:
         base = getattr(results[0], field)
         if all(getattr(res, field) == base for res in results):
             break
-        for res in results:
+        for res in results[1:]:
             log[res.alg_name][field].append(base / getattr(res, field))
 
 
@@ -69,29 +70,52 @@ def run_alg_on(wrk):
     eft = EFT(problem)
     algs = [
         # eft,
-        # FairEnv(eft),
+        FairEnv(eft),
         FCFSEnv(eft),
-        # mkalg("CAEFT(U)", UpwardRanking, CAEFT)(problem),
-        # mkalg("CAEFT(C3.5)", NConflict, NSpanComparer, RTEstimater, C3Sort, CAEFT)(problem),
-        mkalg("CAEFT(PU2)", UpwardRanking, CAEFT_P)(problem),
+        mkalg("CAEFT(U)", UpwardRanking, CAEFT)(problem),
+        # mkalg("CAFit2(U)", CAFit2, CAMoreCompare, CASort, CAEFT)(problem),
+        # mkalg("CA2Fit2(U)", CAFit2, CAMoreCompare, CASort2, CAEFT)(problem),
+        mkalg("CAFit3(U)", ContentionTest, CAFit3, CAMoreCompare, CAEFT)(problem),
+
+        mkalg("CAEFT(PU)", UpwardRanking, CAEFT_P)(problem),
         # mkalg("CA", CASort, CAEFT_P)(problem),
         # mkalg("CA(sa)", CASort_SimpleAT, CAEFT_P)(problem),
-        mkalg("CA(mc)", CAMoreCompare, CASort, CAEFT_P)(problem),
+        # mkalg("CA(mc)", CAMoreCompare, CASort, CAEFT_P)(problem),
         # mkalg("CA(sa/mc)", CAMoreCompare, CASimpleAT, CAEFT_P)(problem),
         # mkalg("CAFit", CAFit, CASort, CAEFT_P)(problem),
         # mkalg("CAFit(sa)", CAFit, CASimpleAT, CAEFT_P)(problem),
-        mkalg("CAFit(mc)", CAFit, CAMoreCompare, CASort, CAEFT_P)(problem),
-        # mkalg("CAFit2(mc)", CAFit2, CAMoreCompare, CASort, CAEFT_P)(problem),
-        # mkalg("CAFit(sa/mc)", CAFit, CAMoreCompare, CASimpleAT, CAEFT_P)(problem),
+        # mkalg("CAFit(mc)", CAFit, CAMoreCompare, CASort, CAEFT_P)(problem),
+        # mkalg("CAFit(PU)", CAFit, CAMoreCompare, CAEFT_P)(problem),
+        # mkalg("CAFit2(PU)", CAFit2, CAMoreCompare, CAEFT_P)(problem),
+        mkalg("CAFit3(PU)", ContentionTest, CAFit3, CAMoreCompare, CAEFT_P)(problem),
+        # mkalg("CAFit3(PU/c)", ContentionTest, CAFit3, CAMoreCompare, CAEFT_P)(problem),
+        # mkalg("CAFit3(PU/c2)", ContentionTest2, CAFit3, CAMoreCompare, CAEFT_P)(problem),
+        # mkalg("CAFit4(PU)", CAFit4, CAMoreCompare, CAEFT_P)(problem),
     ]
     # for alg in algs:
     # alg.export("results/{}.{}.schedule".format(wrk_name, alg.alg_name))
     for alg in algs:
         alg.span
     # if algs[-1].span != min(x.span for x in algs):
-    print("{:<16} ".format(wrk_name) + " ".join(str_result(alg)
-                                                for alg in algs))
+    print("{:<16}(CCR={:<.1f}) ".format(wrk_name, problem.ccr) +
+          " ".join(str_result(alg) for alg in algs))
     return [AlgRes(alg.alg_name, alg.span, alg.cost) for alg in algs]
+
+
+def stat_n_plot(all_results, plot_type="box", std_type="MM"):
+    result_log = {}
+    for results in all_results:
+        if std_type == "MM":
+            log_record(result_log, results)
+        elif std_type == "AS":
+            log_record_r(result_log, results)
+    for alg, res in result_log.items():
+        rs = res["span"]
+        print(alg, mean(rs), median(rs))
+    if std_type == "MM":
+        plot_cmp_results(result_log, "span", plot_type, 0)
+    elif std_type == "AS":
+        plot_cmp_results(result_log, "span", plot_type, 1)
 
 
 if __name__ == "__main__":
@@ -102,14 +126,7 @@ if __name__ == "__main__":
     pegasus_wrk_path = "./resources/workflows/pegasus"
     random_wrk_path = "./resources/workflows/random_tiny"
 
-    wrks = random_wrks(random_wrk_path, "")
+    wrks = list(random_wrks(random_wrk_path, ""))
     # all_results = list(map(run_alg_on, wrks))
     all_results = list(Pool().map(run_alg_on, wrks))
-
-    result_log = {}
-    for results in all_results:
-        log_record(result_log, results)
-    for alg, res in result_log.items():
-        rs = res["span"]
-        print(alg, mean(rs), median(rs))
-    plot_cmp_results(result_log, "span", "box")
+    stat_n_plot(all_results, "hist", "AS")

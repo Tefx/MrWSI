@@ -150,7 +150,7 @@ class UpwardRanking(StaticSort):
                 self.rank(comm.to_task) + self.RT(comm)
                 for comm in task.communications(COMM_OUTPUT)
             ],
-            default=0) + self.RT(task)
+            default=0) + (self.RT(task) or 1)
 
 
 class M1Ranking(StaticSort):

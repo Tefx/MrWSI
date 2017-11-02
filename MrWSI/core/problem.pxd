@@ -15,7 +15,7 @@ cdef extern from "problem.h":
 
     void task_info_init(task_info_t* task, res_t* demands, int* prevs,
                         int num_prevs, int* succs, int num_succs, int* runtimes,
-                        int num_types, int* data_sizes, int num_tasks)
+                        int num_types, long* data_sizes, int num_tasks)
 
     void type_info_init(type_info_t* type, res_t* capacities, res_t* demands,
                         int platform_limit_dim, double price);
@@ -39,7 +39,7 @@ cdef extern from "problem.h":
     res_t* problem_type_demands(problem_t* problem, int type_id)
     res_t* problem_type_capacities(problem_t* problem,int  type_id)
     double problem_type_price(problem_t* problem, int type_id)
-    int problem_data_size(problem_t* problem, int task_from, int task_to)
+    long problem_data_size(problem_t* problem, int task_from, int task_to)
 
     int problem_task_average_runtime(problem_t* problem, int task_id)
     int problem_cheapest_type(problem_t* problem)

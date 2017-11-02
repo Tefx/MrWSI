@@ -3,18 +3,18 @@
 
 void task_info_init(task_info_t* task, res_t* demands, int* prevs,
                     int num_prevs, int* succs, int num_succs, int* runtimes,
-                    int num_types, int* data_sizes, int num_tasks) {
+                    int num_types, long* data_sizes, int num_tasks) {
     mr_copy(task->demands, demands, MULTIRES_DIM);
     task->num_prevs = num_prevs;
     task->num_succs = num_succs;
     task->prevs = (int*)malloc(sizeof(int) * num_prevs);
     task->succs = (int*)malloc(sizeof(int) * num_succs);
     task->runtimes = (int*)malloc(sizeof(int) * num_types);
-    task->data_sizes = (int*)calloc(num_tasks, sizeof(int));
+    task->data_sizes = (long*)calloc(num_tasks, sizeof(long));
     memcpy(task->prevs, prevs, sizeof(int) * num_prevs);
     memcpy(task->succs, succs, sizeof(int) * num_succs);
     memcpy(task->runtimes, runtimes, sizeof(int) * num_types);
-    memcpy(task->data_sizes, data_sizes, sizeof(int) * num_tasks);
+    memcpy(task->data_sizes, data_sizes, sizeof(long) * num_tasks);
 }
 
 void task_info_destory(task_info_t* task) {

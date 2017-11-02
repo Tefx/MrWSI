@@ -3,6 +3,7 @@ from MrWSI.core.platform import Context, Platform, Machine
 from MrWSI.core.schedule import Schedule
 
 import numpy as np
+from statistics import mean
 
 
 class HomoProblem(Problem):
@@ -19,6 +20,16 @@ class HomoProblem(Problem):
     @property
     def vm_type(self):
         return self.types[0]
+
+    @property
+    def ccr(self):
+        task_costs = []
+        comm_costs = []
+        for task in self.tasks:
+            task_costs.append(task.runtime(self.vm_type))
+            for comm in task.communications(COMM_OUTPUT):
+                comm_costs.append(comm.runtime(self.vm_type.bandwidth))
+        return mean(comm_costs) / mean(task_costs)
 
 
 class Heuristic(object):

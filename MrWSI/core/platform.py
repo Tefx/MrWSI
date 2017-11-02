@@ -2,6 +2,7 @@ from MrWSI.core.problem import Problem, COMM_INPUT, COMM_OUTPUT
 from MrWSI.core.bin import MemPool, Bin
 from MrWSI.core.resource import MultiRes
 
+from math import inf
 
 def bandwidth2capacities(bw, dimension, comm_type):
     c = MultiRes.zero(dimension)
@@ -126,7 +127,7 @@ class Platform(Bin):
         if ei0 == self.open_time:
             ei0 = 0
         if ei1 == self.close_time:
-            ei1 = int(float("inf"))
+            ei1 = inf
         return ei0, ei1
 
     def update_machine(self, machine, start_node=None):

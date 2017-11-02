@@ -7,7 +7,7 @@ from MrWSI.core.problem import COMM_INPUT
 import numpy as np
 
 
-def plot_cmp_results(log, field, typ="box"):
+def plot_cmp_results(log, field, typ="box", base=0):
     fig, ax = plt.subplots(figsize=(6, 4))
     # for alg, res in log.items():
     # ax.plot(res[field], label=alg)
@@ -16,16 +16,20 @@ def plot_cmp_results(log, field, typ="box"):
     for alg in labels:
         data.append(log[alg][field])
     if typ == "hist":
-        ax.hist(data, bins=1000, label=labels,
-                histtype="step", normed=False, cumulative=True)
-        ax.set_xlim(0, 1)
+        if base == 0:
+            ax.hist(data, bins=1000, label=labels,
+                    histtype="step", normed=False, cumulative=True)
+            ax.set_xlim(0, 1)
+        else:
+            ax.hist(data, bins=1000, label=labels,
+                    histtype="step", normed=True, cumulative=True)
         ax.legend(loc="lower right")
     elif typ == "box":
-        ax.axhline(y=1)
-        ax.boxplot(data, labels=labels, showfliers=False)
-        for i, y in enumerate(data):
-            x = np.random.normal(i + 1, 0.01 * len(data), len(y))
-            ax.plot(x, y, "k.", alpha=0.2)
+        ax.axhline(y=base)
+        ax.boxplot(data, labels=labels, showfliers=False, whis=[10, 90])
+        # for i, y in enumerate(data):
+            # x = np.random.normal(i + 1, 0.01 * len(data), len(y))
+            # ax.plot(x, y, "k.", alpha=0.2)
     fig.tight_layout()
     plt.savefig(os.path.join(".", "{}.png".format(field)), dpi=200)
 

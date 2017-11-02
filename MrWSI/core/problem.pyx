@@ -1,7 +1,7 @@
 from cpython cimport array
 import array
 import json
-from math import ceil
+from math import ceil, ceil
 from itertools import product
 
 DEF MULTIRES_DIM = 4
@@ -41,7 +41,10 @@ class Task(object):
         self._task_id = task_id
         self.in_communications = problem.task_in_communications(task_id)
         self.out_communications = problem.task_out_communications(task_id)
-        self.data_sizes = [sum(c.data_size for c in self.communications(COMM_INPUT)), sum(c.data_size for c in self.communications(COMM_OUTPUT))]
+        self.data_sizes = [
+                sum(c.data_size for c in self.communications(COMM_INPUT)),
+                sum(c.data_size for c in self.communications(COMM_OUTPUT))
+                ]
 
     def data_size(self, comm_type):
         return self.data_sizes[comm_type]
@@ -143,24 +146,24 @@ cdef class Problem:
             # raw_task["demands"][0] *= 1000
             raw_task["demands"][0] = 4000
             raw_task["demands"].append(raw_task["demands"][-1])
-            demands = array.array("l", map(int, raw_task["demands"]))
+            demands = array.array("l", map(long, raw_task["demands"]))
             prevs = array.array("i", [self.task_str_ids.index(t) for t in raw_task["prevs"].keys()])
             succs = array.array("i", [self.task_str_ids.index(t) for t in raw_succs[task_str_id]])
             runtimes = array.array("i", [ceil(raw_task["runtime"]/types[p]["speed"]) for p in self.type_str_ids])
-            data_sizes = array.array("i", [0 for _ in range(len(tasks))])
+            data_sizes = array.array("l", [0 for _ in range(len(tasks))])
             for prev_id, data in raw_task["prevs"].items():
-                data_sizes[self.task_str_ids.index(prev_id)] = int(data / 1024.0)
+                data_sizes[self.task_str_ids.index(prev_id)] = long(data)
             task_info_init(task_info, demands.data.as_longs, 
                            prevs.data.as_ints, len(prevs),
                            succs.data.as_ints, len(succs),
                            runtimes.data.as_ints, len(types),
-                           data_sizes.data.as_ints, len(tasks))
+                           data_sizes.data.as_longs, len(tasks))
 
         for type_id, type_str_id in enumerate(self.type_str_ids):
             type_info = self._ctype_info(type_id)
             raw_type = types[type_str_id]
             raw_type["capacities"][0] *= 1000
-            raw_type["capacities"][2] = int(raw_type["capacities"][2] / 1024.0)
+            raw_type["capacities"][2] = long(raw_type["capacities"][2] / 1024.0)
             raw_type["capacities"].append(raw_type["capacities"][-1])
             capacities = array.array("l", raw_type["capacities"])
             type_demands = array.array("l", [1 for _ in range(platform_limit_dim)])
@@ -170,7 +173,7 @@ cdef class Problem:
         self.types = [VMType(self, type_id) for type_id in range(self.c.num_types)]
 
         bws = [min(typ0.bandwidth, typ1.bandwidth) for typ0, typ1 in product(self.types, self.types)]
-        self.mean_bandwidth = int(sum(bws) / len(bws))
+        self.mean_bandwidth = long(sum(bws) / len(bws))
 
     cdef task_info_t* _ctask_info(Problem self, int task_id):
         return self.c.tasks + task_id
@@ -202,7 +205,7 @@ cdef class Problem:
         problem_reverse_dag(&self.c)
 
     @classmethod
-    def load(Problem cls, wrk_file, plt_file, 
+    def load(Problem cls, wrk_file, plt_file,
              type_family="all", charge_unit=3600,platform_limits=[20]):
         with open(wrk_file) as f:
             raw_tasks = json.load(f)
@@ -212,19 +215,22 @@ cdef class Problem:
             raw_types = {name:info for name,info in raw_types.items() if type_family in name}
 
         out_degrees = {t:0 for t in raw_tasks.keys()}
-        for task in raw_tasks.values():
+        for task_id, task in raw_tasks.items():
             task["runtime"] *= 100
             for prev_id in task["prevs"].keys():
                 task["prevs"][prev_id] *= 100
                 out_degrees[prev_id] += 1
         exit_tasks = [t for t,v in out_degrees.items() if v == 0]
 
-        raw_tasks["E"] = {"runtime":0,
-                           "demands":[0,0,0],
-                           "prevs":{t:0 for t in exit_tasks}}
+        for task in raw_tasks.values():
+            if not task["prevs"]:
+                task["prevs"] = {"S":0}
+        raw_tasks["S"] = {"runtime":0, "demands":[0,0,0], "prevs":{}}
+        raw_tasks["E"] = {"runtime":0, "demands":[0,0,0],
+                "prevs":{t:0 for t in exit_tasks}}
 
         problem = cls(raw_tasks, raw_types, 1)
-        problem.charge_unit = charge_unit
+        problem.charge_unit = charge_unit * 100
         problem.platform_limits = platform_limits if isinstance(platform_limits, list) else [platform_limits]
         return problem
 
@@ -280,7 +286,7 @@ cdef class Problem:
 
     def vm_cost(Problem self, int type_id, int runtime):
         # return problem_charge(&self.c, type_id, runtime)
-        return problem_charge(&self.c, type_id, int(runtime/100))
+        return problem_charge(&self.c, type_id, runtime)
 
     def task_mean_runtime(Problem self, int task_id):
         return problem_task_average_runtime(&self.c, task_id)

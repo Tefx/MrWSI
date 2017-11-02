@@ -58,9 +58,9 @@ def read_dax(dax_path):
         if task_from and task_to_set:
             for task_to in task_to_set:
                 if task_from not in tasks[task_to]["prevs"]:
-                    tasks[task_to]["prevs"][task_from] = data
+                    tasks[task_to]["prevs"][task_from] = int(data / 1024)
                 else:
-                    tasks[task_to]["prevs"][task_from] += data
+                    tasks[task_to]["prevs"][task_from] += int(data / 1024)
 
     return tasks
 

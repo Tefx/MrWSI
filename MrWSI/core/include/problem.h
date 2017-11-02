@@ -13,12 +13,12 @@ typedef struct task_info_t {
     int* succs;
     res_t demands[MULTIRES_DIM];
     int* runtimes;
-    int* data_sizes;
+    long* data_sizes;
 } task_info_t;
 
 void task_info_init(task_info_t* task, res_t* demands, int* prevs,
                     int num_prevs, int* succs, int num_succs, int* runtimes,
-                    int num_types, int* data_sizes, int num_tasks);
+                    int num_types, long* data_sizes, int num_tasks);
 
 typedef struct type_info_t {
     res_t capacities[MULTIRES_DIM];
