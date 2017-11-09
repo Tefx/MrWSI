@@ -37,10 +37,10 @@ def convert_dot(dot_path, out_dir):
     tasks = {}
     for task_id in dag:
         tasks[task_id] = {
-            "runtime": ceil(int(dag.node[task_id]["size"]) / 10e10),
+            "runtime": ceil(int(dag.node[task_id]["size"]) / 10e8),
             "demands": generate_task_demand(),
             "prevs": {
-                p: int(int(dag[p][task_id]["size"]) / 5120 * 5)
+                p: int(int(dag[p][task_id]["size"]) / 309.6 * 5)
                 for p in dag.predecessors(task_id)
             }
         }

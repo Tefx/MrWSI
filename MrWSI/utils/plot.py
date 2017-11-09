@@ -5,6 +5,7 @@ mpl.use("Agg")
 import matplotlib.pyplot as plt
 from MrWSI.core.problem import COMM_INPUT
 import numpy as np
+from matplotlib.ticker import PercentFormatter
 
 
 def plot_cmp_results(log, field, typ="box", base=0):
@@ -22,8 +23,16 @@ def plot_cmp_results(log, field, typ="box", base=0):
             ax.set_xlim(0, 1)
         else:
             ax.hist(data, bins=1000, label=labels,
-                    histtype="step", normed=True, cumulative=True)
-        ax.legend(loc="lower right")
+                    histtype="step", density=True, cumulative=-1, lw=0.5)
+            ax.yaxis.set_major_formatter(PercentFormatter(xmax=1))
+            ax.minorticks_on()
+            ax.set_xlim(xmin=1)
+            # ax.set_xlim(0, 1)
+            ax.set_ylim(0, 1)
+            plt.grid(b=True, which="major", linestyle="-", linewidth="0.5")
+            plt.grid(b=True, which="minor", linestyle="--", linewidth="0.3")
+        ax.legend(loc="upper right")
+        # ax.legend(loc="upper left")
     elif typ == "box":
         ax.axhline(y=base)
         ax.boxplot(data, labels=labels, showfliers=False, whis=[10, 90])

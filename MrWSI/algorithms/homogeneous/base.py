@@ -63,6 +63,18 @@ class Heuristic(object):
             for c in t.communications(COMM_OUTPUT):
                 self._CT[t.id, c.to_task.id] = c.runtime(self.bandwidth)
 
+    def _topsort(self):
+        toporder = [t for t in self.problem.tasks if not t.in_degree]
+        rids = [t.in_degree for t in self.problem.tasks]
+        i = 0
+        while i < self.problem.num_tasks:
+            for t in toporder[i].succs():
+                rids[t.id] -= 1
+                if not rids[t.id]:
+                    toporder.append(t)
+            i += 1
+        return toporder
+
     def ST(self, obj):
         return self.start_times[obj]
 
@@ -137,7 +149,7 @@ class Heuristic(object):
             for machine in self.available_machines():
                 assert machine.vm_type.capacities >= task.demands()
                 placement, fitness = self.plan_task_on(task, machine)
-                # print(task, machine, fitness)
+                # print(task, machine, fitness, placement)
                 if self.compare_fitness(fitness, fitness_bst):
                     placement_bst, fitness_bst = placement, fitness
             self.perform_placement(task, placement_bst)

@@ -87,8 +87,9 @@ class CASort(Heuristic):
         return (len(p0) == 1 or len(p1) == 1) and (p0 & p1) and \
             -self._RT[ty] < self.AT[ty] - self.AT[tx] < self._RT[tx]
 
-    def est_ft(self, ti, tj):
-        at_i = self.AT[ti]
+    def est_ft(self, ti, tj, at_i=None):
+        if not at_i:
+            at_i = self.AT[ti]
         ato_i = self.ATO[ti]
         rt_i = self._RT[ti]
         pt_i = self.PT[ti]
@@ -408,27 +409,22 @@ class CAFit3(Heuristic):
     def fitness(self, task, machine, comm_pls, st):
         taskid = task.id
         rt_x = self._RT[taskid]
-        ft_x = st + rt_x
         pt_x = self.PT[taskid]
-        pto_x = self.PTO[taskid]
-        wft = [ft_x + pt_x]
+        wft = [st + rt_x + pt_x]
+        # print("  ", task, st, rt_x, pt_x, wft)
         for t in self.ready_tasks:
             tid = t.id
-            rt_y = self._RT[tid]
             at_y = self.AT[tid]
-            ato_y = self.ATO[tid]
-            pt_y = self.PT[tid]
-            pto_y = self.PTO[tid]
-
+            rt_y = self._RT[tid]
             if tid != taskid:
-                pt = self.BM[tid]
-                if len(pt) == 1 and id(machine) in pt and -rt_x < st - at_y < rt_y:
-                    wft.append(min(ft_x + rt_y + pt_x + pt_y,
-                                   ft_x + rt_y + max(pt_x, pto_y),
-                                   ft_x + max(pto_x, rt_y + pt_y),
-                                   max(ft_x + pt_x, ato_y + rt_y + pt_y)))
+                bm_t = self.BM[tid]
+                if len(bm_t) == 1 and id(machine) in bm_t and -rt_x < st - at_y < rt_y:
+                    wft.append(self.est_ft(taskid, tid, st))
+                    # print("    C", t, at_y, rt_y, self.PT[tid], self.PTO[tid], wft, bm_t)
                 else:
-                    wft.append(at_y + rt_y + pt_y)
+                    wft.append(at_y + rt_y + self.PT[tid])
+                    # print("    N", t, at_y, rt_y, self.ATO[tid], self.PT[tid], self.PTO[tid], wft)
+        # print([(t, id(t), self.BM[t.id]) for t in self.problem.tasks])
         return sorted(wft, reverse=True)
 
 
@@ -576,3 +572,35 @@ class CASort2(CASort):
                 t_bst = tx
                 sp_bst = sp
         return t_bst
+
+
+class CA2(CASort):
+    def solve(self):
+        self.ready_tasks = set(
+            t for t in self.problem.tasks if not t.in_degree)
+        self.rids = [t.in_degree for t in self.problem.tasks]
+        self._prepare_arrays()
+        while self.ready_tasks:
+            self.update_AT_and_PT()
+            task_bst, placement_bst = None, None
+            fitness_bst = self.default_fitness()
+            for task in self.ready_tasks:
+                # print("  Task", task, self.AT[task.id], self.ATO[task.id], self._RT[task.id], self.PT[task.id], self.PTO[task.id])
+                for machine in self.available_machines():
+                    assert machine.vm_type.capacities >= task.demands()
+                    placement, fitness = self.plan_task_on(task, machine)
+                    # print("    On", placement, fitness)
+                    if self.compare_fitness(fitness, fitness_bst):
+                        task_bst, placement_bst, fitness_bst = task, placement, fitness
+            # print("Placed", task_bst, placement_bst)
+            self.perform_placement(task_bst, placement_bst)
+            self._order.append(task_bst)
+            self._placed[task_bst.id] = True
+            self.ready_tasks.remove(task_bst)
+            for t in task_bst.succs():
+                self.rids[t.id] -= 1
+                if not self.rids[t.id]:
+                    self.ready_tasks.add(t)
+        self.have_solved = True
+        if "alg" in self.log:
+            self.log_alg("./")

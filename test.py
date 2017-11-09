@@ -58,26 +58,39 @@ def log_record_r(log, results):
             break
         for res in results[1:]:
             log[res.alg_name][field].append(base / getattr(res, field))
+            # log[res.alg_name][field].append(getattr(res, field) / base)
 
 
 AlgRes = namedtuple("AlgRes", ["alg_name", "span", "cost"])
 
 
+def two_algs(alg0, alg1, problem):
+    alg0 = alg0(problem)
+    alg1 = alg1(problem)
+    if alg0.span < alg1.span:
+        alg0.alg_name = "two"
+        return alg0
+    else:
+        alg1.alg_name = "two"
+        return alg1
+
+
 def run_alg_on(wrk):
     ec2_file = "./resources/platforms/EC2.plt"
     wrk_path, wrk_name = wrk
-    problem = HomoProblem.load(wrk_path, ec2_file, "c4.xlarge", 1, 1000)
+    problem = HomoProblem.load(wrk_path, ec2_file, "c4.xlarge", 1, 2000)
     eft = EFT(problem)
     algs = [
         # eft,
-        FairEnv(eft),
+        # FairEnv(eft),
         FCFSEnv(eft),
-        mkalg("CAEFT(U)", UpwardRanking, CAEFT)(problem),
+        # mkalg("CAEFT(U)", UpwardRanking, CAEFT)(problem),
         # mkalg("CAFit2(U)", CAFit2, CAMoreCompare, CASort, CAEFT)(problem),
         # mkalg("CA2Fit2(U)", CAFit2, CAMoreCompare, CASort2, CAEFT)(problem),
-        mkalg("CAFit3(U)", ContentionTest, CAFit3, CAMoreCompare, CAEFT)(problem),
+        # mkalg("CAFit3(U)", ContentionTest, CAFit3, CAMoreCompare, CAEFT)(problem),
 
         mkalg("CAEFT(PU)", UpwardRanking, CAEFT_P)(problem),
+        # mkalg("CAEFT(PU)", EFT_RankU, CAEFT_P)(problem),
         # mkalg("CA", CASort, CAEFT_P)(problem),
         # mkalg("CA(sa)", CASort_SimpleAT, CAEFT_P)(problem),
         # mkalg("CA(mc)", CAMoreCompare, CASort, CAEFT_P)(problem),
@@ -88,17 +101,27 @@ def run_alg_on(wrk):
         # mkalg("CAFit(PU)", CAFit, CAMoreCompare, CAEFT_P)(problem),
         # mkalg("CAFit2(PU)", CAFit2, CAMoreCompare, CAEFT_P)(problem),
         mkalg("CAFit3(PU)", ContentionTest, CAFit3, CAMoreCompare, CAEFT_P)(problem),
-        # mkalg("CAFit3(PU/c)", ContentionTest, CAFit3, CAMoreCompare, CAEFT_P)(problem),
-        # mkalg("CAFit3(PU/c2)", ContentionTest2, CAFit3, CAMoreCompare, CAEFT_P)(problem),
-        # mkalg("CAFit4(PU)", CAFit4, CAMoreCompare, CAEFT_P)(problem),
+        # mkalg("CASelect2(PU)", CASelect2, CAEFT_P)(problem),
+        # mkalg("CASelect3(PU)", CASelect3, CAEFT_P)(problem),
+        # mkalg("CASelect4(PU)", CASelect4, CAEFT_P)(problem),
+        # mkalg("CASelect5(PU)", CASelect5, CAEFT_P)(problem),
+        # mkalg("CASelectU2(PU)", CASelectU2, CAEFT_P)(problem),
+        # mkalg("CAU(PU)", CARankU, CAEFT_P)(problem),
+        # mkalg("CAS", CA_Simple, CAEFT_P)(problem),
+        # mkalg("CAS2", CA_Simple2, CAEFT_P)(problem),
+        # mkalg("CA2", CA2, CAEFT_P)(problem),
+        # two_algs(mkalg("_", UpwardRanking, CAEFT_P),
+                 # mkalg("_", CA2, CAEFT_P),
+                 # # mkalg("_", ContentionTest, CAFit3, CAMoreCompare, CAEFT_P),
+                 # problem),
     ]
     # for alg in algs:
     # alg.export("results/{}.{}.schedule".format(wrk_name, alg.alg_name))
     for alg in algs:
         alg.span
-    # if algs[-1].span != min(x.span for x in algs):
-    print("{:<16}(CCR={:<.1f}) ".format(wrk_name, problem.ccr) +
-          " ".join(str_result(alg) for alg in algs))
+    if algs[-1].span != min(x.span for x in algs):
+        print("{:<16}(CCR={:<.1f}) ".format(wrk_name, problem.ccr) +
+              " ".join(str_result(alg) for alg in algs))
     return [AlgRes(alg.alg_name, alg.span, alg.cost) for alg in algs]
 
 

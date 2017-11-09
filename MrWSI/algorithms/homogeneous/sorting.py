@@ -152,6 +152,8 @@ class UpwardRanking(StaticSort):
             ],
             default=0) + (self.RT(task) or 1)
 
+    def sorted_in_comms(self, task):
+        return task.communications(COMM_INPUT)
 
 class M1Ranking(StaticSort):
     def is_free_task(self, task):

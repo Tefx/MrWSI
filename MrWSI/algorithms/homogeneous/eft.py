@@ -20,8 +20,6 @@ class EFT(UpwardRanking):
         est = self.earliest_start_time(task, machine)
         st, _ = machine.earliest_slot_for_task(self.vm_type, task, est)
         runtime = task.runtime(self.vm_type)
-        # ci = machine.cost_increase(st, runtime, self.vm_type)
-        # return (machine, st), (st + runtime, ci)
         return (machine, st), st + runtime
 
     def perform_placement(self, task, placement):
