@@ -56,6 +56,7 @@ class SeqPlan(object):
 class Heuristic(object):
     log = [
         # "alg",
+        # "fit",
         # "sort",
     ]
     allow_share = False
@@ -170,7 +171,8 @@ class Heuristic(object):
             for machine in self.available_machines():
                 assert machine.vm_type.capacities >= task.demands()
                 placement, fitness = self.plan_task_on(task, machine)
-                # print(task, machine, fitness, placement)
+                if "fit" in self.log:
+                    print(task, machine, fitness, placement, "\n")
                 if self.compare_fitness(fitness, fitness_bst):
                     placement_bst, fitness_bst = placement, fitness
             self.perform_placement(task, placement_bst)

@@ -747,6 +747,25 @@ class CA3_1(CA3):
         wft = [st - self.AT[taskid]]
         ftt = st + rt_x + pt_x
         ftm = ftt
+        # print("Self", ftt, st, rt_x, pt_x)
+
+        frontier_tasks = []
+        for t in self.problem.tasks:
+            if self._placed[t.id] and \
+               sum(1 for c in t.communications(COMM_OUTPUT)
+                   if not self._placed[c.to_task.id] and c.to_task != task):
+                frontier_tasks.append(t)
+
+        for t in frontier_tasks:
+            if self.PL_m(t) != machine:
+                di, dj = self.comm_succ_len(taskid, t.id)
+                wft[0] = max(wft[0], di + (st - self.AT[taskid]))
+                wft.append(dj)
+                ftm = max(ftm, ftt + di, self.FT(t) + self.PT[t.id] + dj)
+            else:
+                ftm = max(ftm, self.FT(t) + self.PT[t.id])
+            # print("frontier_tasks", t, ftm)
+
         for t in self.ready_tasks:
             tid = t.id
             at_y = self.AT[tid]
@@ -757,20 +776,116 @@ class CA3_1(CA3):
                 if len(bm_t) == 1 and id(machine) in bm_t and -rt_x < st - at_y < rt_y:
                     wft.append(self.est_ft(taskid, tid, st) - fto)
                     ftm = max(ftm, wft[-1] + fto)
-                else:
-                    di, dj = self.comm_succ_len(taskid, tid)
-                    wft[0] = max(wft[0], di + (st - self.AT[taskid]))
-                    wft.append(dj)
-                    # ftm = max(ftm, ftt + di, fto + dj)
-                    ftm = max(ftm, fto)
+                # print("ready_tasks", t, ftm)
 
-        for m in self.platform.machines:
-            if m == machine:
-                continue
-            for t in m.tasks:
+        return ftm, ftt, sorted(wft, reverse=True)
+
+
+class CA3_2(CA3_1):
+    def est_ft_together(self, ti, tj, at_i=None):
+        if not at_i:
+            at_i = self.AT[ti]
+        rt_i = self._RT[ti]
+        pt_i = self.PT[ti]
+        pto_i = self.PTO[ti]
+        at_j = self.AT[tj]
+        ato_j = self.ATO[tj]
+        rt_j = self._RT[tj]
+        pt_j = self.PT[tj]
+        pto_j = self.PTO[tj]
+        return min(
+            at_i + rt_i + rt_j + pt_i + pt_j,
+            at_i + rt_i + rt_j + max(pt_i, pto_j),
+            at_i + rt_i + max(pto_i, rt_j + pt_j),
+        )
+
+    def est_ft_devided(self, ti, tj, at_i=None):
+        if not at_i:
+            at_i = self.AT[ti]
+        rt_i = self._RT[ti]
+        pt_i = self.PT[ti]
+        ato_j = self.ATO[tj]
+        rt_j = self._RT[tj]
+        pt_j = self.PT[tj]
+        di, dj = self.comm_succ_len(ti, tj)
+        return max(at_i + rt_i + pt_i + di, ato_j + rt_j + pt_j + dj)
+
+    def est_ft_devided_free(self, ti, tj, at_i=None):
+        if not at_i:
+            at_i = self.AT[ti]
+        rt_i = self._RT[ti]
+        pt_i = self.PT[ti]
+        at_j = self.AT[tj]
+        rt_j = self._RT[tj]
+        pt_j = self.PT[tj]
+        di, dj = self.comm_succ_len(ti, tj)
+        return max(at_i + rt_i + pt_i + di, at_j + rt_j + pt_j + dj)
+
+    def est_ft(self, ti, tj, at_i=None):
+        return min(self.est_ft_together(ti, tj, at_i),
+                   self.est_ft_devided(ti, tj, at_i))
+
+    def fitness(self, task, machine, comm_pls, st):
+        taskid = task.id
+        rt_x = self._RT[taskid]
+        pt_x = self.PT[taskid]
+        wft = [st - self.AT[taskid]]
+        ftt = st + rt_x + pt_x
+        ftm = ftt
+
+        frontier_0 = set()
+        frontier_1 = set()
+        for t in self.problem.tasks:
+            if self._placed[t.id] and \
+                    any(not self._placed[c.to_task.id]
+                        for c in t.communications(COMM_OUTPUT)):
+                if task not in t.succs():
+                    if self.PL_m(t) == machine:
+                        frontier_1.update(st for st in t.succs()
+                                          if st in self.ready_tasks)
+                        if any(st not in self.ready_tasks for st in t.succs()):
+                            frontier_0.add(t)
+                    else:
+                        frontier_0.add(t)
+                else:
+                    frontier_1.update(st for st in t.succs()
+                                      if st in self.ready_tasks and st != task)
+                    if any(st not in self.ready_tasks for st in t.succs()):
+                        frontier_0.add(t)
+
+        # print(frontier_0, frontier_1)
+        for t in frontier_0:
+            if self.PL_m(t) != machine:
                 di, dj = self.comm_succ_len(taskid, t.id)
                 wft[0] = max(wft[0], di + (st - self.AT[taskid]))
                 wft.append(dj)
                 ftm = max(ftm, ftt + di, self.FT(t) + self.PT[t.id] + dj)
+            else:
+                ftm = max(ftm, self.FT(t) + self.PT[t.id])
+            # print("M", t, ftm, wft)
+
+        for t in frontier_1:
+            tid = t.id
+            at_y = self.AT[tid]
+            rt_y = self._RT[tid]
+            bm_t = self.BM[tid]
+            fto = at_y + rt_y + self.PT[tid]
+            # print(len(bm_t), id(machine) in bm_t, -rt_x, st-at_y, rt_y, bm_t)
+            if len(bm_t) == 1 and id(machine) in bm_t and -rt_x < st - at_y < rt_y:
+                wft.append(self.est_ft(taskid, tid, st) - fto)
+                ftm = max(ftm, wft[-1] + fto)
+                # print(">0", t, ftm, wft)
+            elif not any(m < 0 or m == id(machine) for m in bm_t):
+                di, dj = self.comm_succ_len(task.id, t.id)
+                wft[0] = max(wft[0], di + st - self.AT[taskid])
+                wft.append(dj)
+                ftm = max(ftm, ftt + di, fto + dj)
+                # ftm = max(ftm,
+                          # min(self.est_ft_together(task.id, t.id, st),
+                              # self.est_ft_devided_free(task.id, t.id, st)))
+                # print(">1", t, ftm, wft)
+            else:
+                ftm = max(ftm, fto)
+                # print(">2", t, ftm, wft)
 
         return ftm, ftt, sorted(wft, reverse=True)
