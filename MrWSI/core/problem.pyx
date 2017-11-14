@@ -250,6 +250,9 @@ cdef class Problem:
     def platform_limit_dimension(Problem self):
         return self.c.platform_limit_dim
 
+    def task_by_id(Problem self, int task_id):
+        return self.tasks[task_id]
+
     def task_demands(Problem self, int task_id):
         return mr_wrap_c(problem_task_demands(&self.c, task_id), MULTIRES_DIM)
 

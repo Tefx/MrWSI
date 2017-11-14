@@ -4,6 +4,7 @@ from MrWSI.core.resource import MultiRes
 
 from math import inf
 
+
 def bandwidth2capacities(bw, dimension, comm_type):
     c = MultiRes.zero(dimension)
     c[2 + comm_type] = bw
@@ -45,6 +46,14 @@ class Machine(Bin):
     def earliest_slot_for_task(self, vm_type, task, est):
         return self.earliest_slot(vm_type.capacities,
                                   task.demands(), task.runtime(vm_type), est)
+
+    def earliest_idle_time_for_communication(self, bandwidth, comm_type, est, vm_type=None):
+        vm_type = vm_type or self.vm_type
+        return self.earliest_slot(
+            vm_type.capacities,
+            bandwidth2capacities(
+                bandwidth, self.problem.multiresource_dimension, comm_type),
+            1, est)[0]
 
     def earliest_slot_for_communication(self, to_machine, vm_type, to_vm_type,
                                         communication, bandwidth, est):

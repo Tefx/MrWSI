@@ -32,6 +32,27 @@ class HomoProblem(Problem):
         return mean(comm_costs) / mean(task_costs)
 
 
+class SeqPlan(object):
+    allow_share = False
+    allow_preemptive = False
+
+    def __init__(self, problem):
+        self.problem = problem
+        self.vm_type = problem.vm_type
+
+    @property
+    def cost(self):
+        return -1
+
+    @property
+    def span(self):
+        return sum(t.runtime(self.vm_type) for t in self.problem.tasks)
+
+    @property
+    def machine_number(self):
+        return 1
+
+
 class Heuristic(object):
     log = [
         # "alg",

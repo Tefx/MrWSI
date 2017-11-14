@@ -40,7 +40,7 @@ def convert_dot(dot_path, out_dir):
             "runtime": ceil(int(dag.node[task_id]["size"]) / 10e8),
             "demands": generate_task_demand(),
             "prevs": {
-                p: int(int(dag[p][task_id]["size"]) / 309.6 * 5)
+                p: int(int(dag[p][task_id]["size"]) / 309.6 * 3)
                 for p in dag.predecessors(task_id)
             }
         }

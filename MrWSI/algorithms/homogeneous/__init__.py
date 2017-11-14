@@ -1,4 +1,4 @@
-from .base import HomoProblem
+from .base import HomoProblem, SeqPlan
 from .eft import EFT
 from .ca_eft import *
 from .ca import *

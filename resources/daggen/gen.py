@@ -11,7 +11,7 @@ daggen = sh.Command(os.path.join(path, "daggen"))
 dot = sh.dot
 
 num_gen = 1000
-# n_set = [20, 40, 60, 80, 100]
+# n_set = [25, 50, 75, 100]
 n_set = [100]
 jump_set = [1, 3, 5]
 fat_set = [0.2, 0.4, 0.6, 0.8]
