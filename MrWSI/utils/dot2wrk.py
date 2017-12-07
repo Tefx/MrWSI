@@ -3,7 +3,7 @@
 import networkx as nx
 import os.path
 from math import ceil
-from random import gauss
+from random import gauss, uniform, choice
 import json
 
 # CPU_GAUSS_MU = 0
@@ -35,12 +35,14 @@ def convert_dot(dot_path, out_dir):
         dag = nx.DiGraph(nx.nx_agraph.read_dot(dot_path))
 
     tasks = {}
+    # ccr = choice([0.1, 1, 10])
+    ccr = 10
     for task_id in dag:
         tasks[task_id] = {
             "runtime": ceil(int(dag.node[task_id]["size"]) / 10e8),
             "demands": generate_task_demand(),
             "prevs": {
-                p: int(int(dag[p][task_id]["size"]) / 309.6 * 3)
+                p: int(int(dag[p][task_id]["size"]) / 309.6 * ccr)
                 for p in dag.predecessors(task_id)
             }
         }

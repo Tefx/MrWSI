@@ -172,7 +172,7 @@ class Heuristic(object):
                 assert machine.vm_type.capacities >= task.demands()
                 placement, fitness = self.plan_task_on(task, machine)
                 if "fit" in self.log:
-                    print(task, machine, fitness, placement, "\n")
+                    print(task, machine, fitness, placement)
                 if self.compare_fitness(fitness, fitness_bst):
                     placement_bst, fitness_bst = placement, fitness
             self.perform_placement(task, placement_bst)

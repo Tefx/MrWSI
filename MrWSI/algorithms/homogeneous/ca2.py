@@ -554,12 +554,29 @@ class CARankU(CASelectBase):
                     self.ready_tasks.add(t)
 
 
+def memo_reset(func):
+    func._memo = {}
+
+
+def memo(func):
+    memo_reset(func)
+
+    def wrapped(*args):
+        if args not in func._memo:
+            func._memo[args] = func(*args)
+        return func._memo[args]
+    return wrapped
+
+
 class CA3(CANewRA, CAMoreCompare):
     def _prepare_arrays(self):
         self.AT = [None] * self.problem.num_tasks
         self.ATO = [None] * self.problem.num_tasks
         self.RA = [None] * self.problem.num_tasks
         self.PT = [None] * self.problem.num_tasks
+        self.PT_l = [None] * self.problem.num_tasks
+        self.PT_r = [None] * self.problem.num_tasks
+        self.PT_rc = [None] * self.problem.num_tasks
         self.PTO = [None] * self.problem.num_tasks
         self.RP = [None] * self.problem.num_tasks
         self.BM = [None] * self.problem.num_tasks
@@ -572,6 +589,7 @@ class CA3(CANewRA, CAMoreCompare):
         self._ctasks = [set() for _ in self.problem.tasks]
         self._cdeps = [set() for _ in self.problem.tasks]
 
+    @memo
     def calculate_PT(self, task):
         comms = sorted(task.communications(COMM_OUTPUT),
                        key=lambda c: -self.RP[c.to_task.id])
@@ -688,20 +706,6 @@ class CA3(CANewRA, CAMoreCompare):
         return ftm, st + rt_x + pt_x, sorted(wft, reverse=True)
 
 
-def memo_reset(func):
-    func, _memo = {}
-
-
-def memo(func):
-    memo_reset(func)
-
-    def wrapped(*args):
-        if args not in func._memo:
-            func._memo[args] = func(*args)
-        return func._memo
-    return wrapped
-
-
 class CA3_1(CA3):
     def comm_succ_len(self, ti, tj):
         cdeps_i = [d for d in self._cdeps[ti]
@@ -788,8 +792,6 @@ class CA3_2(CA3_1):
         rt_i = self._RT[ti]
         pt_i = self.PT[ti]
         pto_i = self.PTO[ti]
-        at_j = self.AT[tj]
-        ato_j = self.ATO[tj]
         rt_j = self._RT[tj]
         pt_j = self.PT[tj]
         pto_j = self.PTO[tj]
@@ -808,7 +810,7 @@ class CA3_2(CA3_1):
         rt_j = self._RT[tj]
         pt_j = self.PT[tj]
         di, dj = self.comm_succ_len(ti, tj)
-        return max(at_i + rt_i + pt_i + di, ato_j + rt_j + pt_j + dj)
+        return max(at_i + rt_i + pt_i + di, ato_j + rt_j + pt_j + dj), di, dj
 
     def est_ft_devided_free(self, ti, tj, at_i=None):
         if not at_i:
@@ -819,11 +821,11 @@ class CA3_2(CA3_1):
         rt_j = self._RT[tj]
         pt_j = self.PT[tj]
         di, dj = self.comm_succ_len(ti, tj)
-        return max(at_i + rt_i + pt_i + di, at_j + rt_j + pt_j + dj)
+        return max(at_i + rt_i + pt_i + di, at_j + rt_j + pt_j + dj), di, dj
 
     def est_ft(self, ti, tj, at_i=None):
         return min(self.est_ft_together(ti, tj, at_i),
-                   self.est_ft_devided(ti, tj, at_i))
+                   self.est_ft_devided(ti, tj, at_i)[0])
 
     def fitness(self, task, machine, comm_pls, st):
         taskid = task.id
@@ -857,6 +859,7 @@ class CA3_2(CA3_1):
         for t in frontier_0:
             if self.PL_m(t) != machine:
                 di, dj = self.comm_succ_len(taskid, t.id)
+                # print(t, di, dj)
                 wft[0] = max(wft[0], di + (st - self.AT[taskid]))
                 wft.append(dj)
                 ftm = max(ftm, ftt + di, self.FT(t) + self.PT[t.id] + dj)
@@ -870,22 +873,480 @@ class CA3_2(CA3_1):
             rt_y = self._RT[tid]
             bm_t = self.BM[tid]
             fto = at_y + rt_y + self.PT[tid]
-            # print(len(bm_t), id(machine) in bm_t, -rt_x, st-at_y, rt_y, bm_t)
+            # print(t, len(bm_t), id(machine) in bm_t, -rt_x, st-at_y, rt_y, bm_t)
             if len(bm_t) == 1 and id(machine) in bm_t and -rt_x < st - at_y < rt_y:
                 wft.append(self.est_ft(taskid, tid, st) - fto)
                 ftm = max(ftm, wft[-1] + fto)
                 # print(">0", t, ftm, wft)
-            elif not any(m < 0 or m == id(machine) for m in bm_t):
-                di, dj = self.comm_succ_len(task.id, t.id)
-                wft[0] = max(wft[0], di + st - self.AT[taskid])
-                wft.append(dj)
-                ftm = max(ftm, ftt + di, fto + dj)
-                # ftm = max(ftm,
-                          # min(self.est_ft_together(task.id, t.id, st),
-                              # self.est_ft_devided_free(task.id, t.id, st)))
-                # print(">1", t, ftm, wft)
-            else:
+            elif any(m < 0 or m == id(machine) for m in bm_t):
                 ftm = max(ftm, fto)
-                # print(">2", t, ftm, wft)
+                # ftm = max(ftm,
+                # min(self.est_ft_together(task.id, t.id, st),
+                # self.est_ft_devided_free(task.id, t.id, st)))
+            else:
+                ft_t, di, dj = self.est_ft_devided_free(task.id, t.id, st)
+                wft.append(dj)
+                wft[0] = max(wft[0], di + st - self.AT[t.id])
+                ftm = max(ftm, ft_t)
 
         return ftm, ftt, sorted(wft, reverse=True)
+
+
+class CA3_3(CA3_2):
+    @memo
+    def calculate_PT(self, task):
+        comms = sorted(task.communications(COMM_OUTPUT),
+                       key=lambda c: -self.RP[c.to_task.id])
+        pto = 0
+        tc = 0
+        for c in comms:
+            tc += self.CT(c)
+            pto = max(pto, tc + self.RP[c.to_task.id])
+
+        pt = 0
+        tc = 0
+        tt = 0
+        self._cdeps[task.id] = Counter()
+        self._ctasks[task.id] = set()
+        for c in comms:
+            if tt < tc + self.CT(c):
+                # if id(task) in self.BM[c.to_task.id] and tt < tc + self.CT(c):
+                tt += self.RP[c.to_task.id]
+                pt = max(pt, tt)
+                self._cdeps[task.id][c] += 1
+                self._cdeps[task.id] += self._cdeps[c.to_task.id]
+                self._ctasks[task.id].add(c.to_task)
+                self._ctasks[task.id].update(self._ctasks[c.to_task.id])
+            else:
+                tc += self.CT(c)
+                pt = max(pt, tc + self.RP[c.to_task.id])
+        self.PT[task.id] = pt
+        self.PTO[task.id] = pto
+
+    @memo
+    def comm_succ_len(self, ti, tj):
+        cts = self._ctasks[ti] & self._ctasks[tj]
+        deps_i = copy(self._cdeps[ti])
+        deps_j = copy(self._cdeps[tj])
+        di, dj = 0, 0
+        # print(self.problem.tasks[ti], self.problem.tasks[tj], deps_i, deps_j)
+        for t in sorted(cts, key=lambda _t: self.RP[_t.id], reverse=True):
+            ds_i = Counter(c for c in +deps_i if c.to_task ==
+                           t and c not in deps_j)
+            ds_j = Counter(c for c in +deps_j if c.to_task ==
+                           t and c not in deps_i)
+            dt_i = sum(self.CT(c) for c in set(ds_i))
+            dt_j = sum(self.CT(c) for c in set(ds_j))
+            # print(t, ds_i, ds_j, self._cdeps[t.id])
+            if not ds_i or not ds_j:
+                continue
+            if dt_i <= dt_j:
+                di += dt_i
+                deps_i -= self._cdeps[t.id]
+                # print("i", deps_i, deps_j)
+            else:
+                dj += dt_j
+                deps_j -= self._cdeps[t.id]
+                # print("j", deps_i, deps_j)
+        return di, dj
+
+
+class CA3_4(CA3_3):
+    @memo
+    def calculate_PT(self, task):
+        comms = sorted(task.communications(COMM_OUTPUT),
+                       key=lambda c: -self.RP[c.to_task.id])
+        pto = 0
+        tc = 0
+        for c in comms:
+            tc += self.CT(c)
+            pto = max(pto, tc + self.RP[c.to_task.id])
+
+        pt = 0
+        tc = 0
+        tt = 0
+        self._cdeps[task.id] = Counter()
+        self._ctasks[task.id] = set()
+        rsts = {}
+        lsts = {}
+        for c in comms:
+            d, tt, tc, pt, ft = self.ptl_test(c, rsts, lsts, tt, tc, pt)
+            if d == 0:
+                lsts[c.to_task.id] = ft
+                self._cdeps[task.id][c] += 1
+                self._cdeps[task.id] += self._cdeps[c.to_task.id]
+                self._ctasks[task.id].add(c.to_task)
+                self._ctasks[task.id].update(self._ctasks[c.to_task.id])
+            else:
+                rsts[c.to_task.id] = ft
+        self.PT[task.id] = pt
+        self.PTO[task.id] = pto
+
+    def ptl_test(self, c, rsts, lsts, tt, tc, pt):
+        task = c.to_task.id
+        ft_l, ft_r, rp, = 0, 0, self.RP[task]
+        for t, ft in rsts.items():
+            x, y = self.comm_succ_len(t, task)
+            pt = max(pt, ft + x)
+            rp += y
+        ft_l = tt + rp
+        pt_l = max(ft_l, pt)
+        for t in lsts.keys():
+            x, y = self.comm_succ_len(t, task)
+            tt += x
+            rp += y
+        ft_r = tc + self.CT(c) + rp
+        pt_r = max(ft_r, tt, pt)
+        if (pt_l, ft_l) <= (pt_r, ft_r):
+            return 0, ft_l, tc, pt_l, ft_l
+        else:
+            return 0, tt, tc + self.CT(c), pt_r, ft_r
+
+
+class CA3_5(CA3_3):
+    @memo
+    def calculate_PT(self, task):
+        comms = sorted(task.communications(COMM_OUTPUT),
+                       key=lambda c: -self.RP[c.to_task.id])
+        pto = 0
+        tc = 0
+        for c in comms:
+            tc += self.CT(c)
+            pto = max(pto, tc + self.RP[c.to_task.id])
+
+        pt = 0
+        tc = 0
+        tt = 0
+        # t0 = 0
+        self._cdeps[task.id] = Counter()
+        self._ctasks[task.id] = set()
+        for c in comms:
+            if tt < tc + self.CT(c):
+                # if id(task) in self.BM[c.to_task.id] and tt < tc + self.CT(c):
+                tt += self.RP[c.to_task.id]
+                pt = max(pt, tt)
+                self._cdeps[task.id][c] += 1
+                self._cdeps[task.id] += self._cdeps[c.to_task.id]
+                for _t in self._ctasks[c.to_task.id]:
+                    if _t in self._ctasks[task.id]:
+                        tt -= self._RT[_t.id]
+                    else:
+                        self._ctasks[task.id].add(_t)
+                if c.to_task in self._ctasks[task.id]:
+                    tt -= self._RT[c.to_task.id]
+                else:
+                    self._ctasks[task.id].add(c.to_task)
+            else:
+                tc += self.CT(c)
+                pt = max(pt, tc + self.RP[c.to_task.id])
+        self.PT_l[task.id] = tt
+        self.PT_r[task.id] = pt
+        self.PT_rc[task.id] = tc
+        self.PT[task.id] = max(pt, tt)
+        self.PTO[task.id] = pto
+
+    @memo
+    def comm_succ_len(self, ti, tj):
+        cts = self._ctasks[ti] & self._ctasks[tj]
+        deps_i = copy(self._cdeps[ti])
+        deps_j = copy(self._cdeps[tj])
+        di, dj = 0, 0
+        # print(self.problem.tasks[ti], self.problem.tasks[tj], deps_i, deps_j)
+        for t in sorted(cts, key=lambda _t: self.RP[_t.id], reverse=True):
+            ds_i = set(c for c in +deps_i if c.to_task ==
+                       t and c not in deps_j)
+            ds_j = set(c for c in +deps_j if c.to_task ==
+                       t and c not in deps_i)
+            # dt_i = sum(self.CT(c) for c in set(ds_i))
+            # dt_j = sum(self.CT(c) for c in set(ds_j))
+            dt_i = self.delta_csl(ti, ds_i, t)
+            dt_j = self.delta_csl(tj, ds_j, t)
+            # print(t, ds_i, ds_j, self._cdeps[t.id])
+            if not ds_i or not ds_j:
+                continue
+            li = self.AT[ti] + self.RP[ti]
+            lj = self.AT[tj] + self.RP[tj]
+            if max(li + di + dt_i, lj + dj) <= max(li + di, lj + dj + dt_j):
+                # if dt_i <= dt_j:
+                di += dt_i
+                deps_i -= self._cdeps[t.id]
+                # print("i", deps_i, deps_j)
+            else:
+                dj += dt_j
+                deps_j -= self._cdeps[t.id]
+                # print("j", deps_i, deps_j)
+        return di, dj
+
+    def delta_csl(self, task, ds, t):
+        tc = self.PT_rc[task]
+        # tc = 0
+        for c in sorted(ds, key=lambda c: self.PT[task] - self.PT[c.from_task.id]):
+            tc = max(tc, self.PT[task] - self.PT[c.from_task.id]) + self.CT(c)
+        return max(self.PT_r[task], tc + self.RP[t.id], self.PT_l[task] - self.PT_l[t.id] - self._RT[t.id]) - self.PT[task]
+
+    # def est_ft_together(self, ti, tj, at_i=None):
+        # if not at_i:
+        # at_i = self.AT[ti]
+        # rt_i = self._RT[ti]
+        # pt_i = self.PT[ti]
+        # pto_i = self.PTO[ti]
+        # rt_j = self._RT[tj]
+        # pt_j = self.PT[tj]
+        # pto_j = self.PTO[tj]
+        # lc = sum(self._RT[t.id] for t in (self._ctasks[ti] & self._ctasks[tj]))
+        # return min(
+        # at_i + rt_i + rt_j + pt_i + pt_j - lc,
+        # at_i + rt_i + rt_j + max(pt_i, pto_j),
+        # at_i + rt_i + max(pto_i, rt_j + pt_j),
+        # )
+
+    def est_ft_together(self, ti, tj, at_i=None):
+        if not at_i:
+            at_i = self.AT[ti]
+        rt_i = self._RT[ti]
+        pt_i = self.PT[ti]
+        ptl_i = self.PT_l[ti]
+        ptr_i = self.PT_r[ti]
+        pto_i = self.PTO[ti]
+        ato_j = self.ATO[tj]
+        rt_j = self._RT[tj]
+        pt_j = self.PT[tj]
+        ptl_j = self.PT_l[tj]
+        ptr_j = self.PT_r[tj]
+        pto_j = self.PTO[tj]
+        lc = sum(self._RT[t.id] for t in (self._ctasks[ti] & self._ctasks[tj]))
+        return min(
+            # at_i + rt_i + rt_j + pt_i + pt_j,
+            max(at_i + rt_i + pt_i,
+                max(at_i + rt_i, ato_j) + rt_j + pt_j,
+                max(at_i + rt_i, ato_j) + rt_j + ptl_i + ptl_j - lc),
+            at_i + rt_i + rt_j + max(pt_i, pto_j),
+            at_i + rt_i + max(pto_i, rt_j + pt_j),
+        )
+
+
+class CA4(CA3_2):
+    def _prepare_arrays(self):
+        self.AT = [None] * self.problem.num_tasks
+        self.ATO = [None] * self.problem.num_tasks
+        self.RA = [None] * self.problem.num_tasks
+        self.PT = [None] * self.problem.num_tasks
+        self.PTO = [None] * self.problem.num_tasks
+        self.RP = [None] * self.problem.num_tasks
+        self.BM = [None] * self.problem.num_tasks
+        self._A = [None] * self.problem.num_tasks
+        self._B = [None] * self.problem.num_tasks
+        self._M = [None] * self.problem.num_tasks
+        self._placed = [False] * self.problem.num_tasks
+        self._dcs = [0] * self.problem.num_tasks
+        self.toporder = self._topsort()
+        self._ctasks = [None] * self.problem.num_tasks
+        self._cdeps = [None] * self.problem.num_tasks
+        self.PT_l = [None] * self.problem.num_tasks
+        self.PT_r = [None] * self.problem.num_tasks
+
+    def comm_succ_len(self, ti, tj):
+        cdeps_i = [d for d in self._cdeps[ti]
+                   if d not in self._cdeps[tj] and d.to_task in self._ctasks[tj]]
+        cdeps_j = [d for d in self._cdeps[tj]
+                   if d not in self._cdeps[ti] and d.to_task in self._ctasks[ti]]
+        ctasks = {}
+        for d in cdeps_i:
+            if d.to_task.id not in ctasks:
+                ctasks[d.to_task.id] = [0, 0]
+            ctasks[d.to_task.id][0] += self.CT(d)
+        for d in cdeps_j:
+            if d.to_task.id not in ctasks:
+                ctasks[d.to_task.id] = [0, 0]
+            ctasks[d.to_task.id][1] += self.CT(d)
+        delta_i = sum(x for x, y in ctasks.values() if x <= y)
+        delta_j = sum(y for x, y in ctasks.values() if y <= x)
+        return delta_i, delta_j
+
+    def calculate_PT(self, task):
+        comms = sorted(task.communications(COMM_OUTPUT),
+                       key=lambda c: -self.RP[c.to_task.id])
+        pto = 0
+        tc = 0
+        for c in comms:
+            tc += self.CT(c)
+            pto = max(pto, tc + self.RP[c.to_task.id])
+
+        pt = 0
+        tc = 0
+        tt = 0
+        t0 = 0
+        self._cdeps[task.id] = set()
+        self._ctasks[task.id] = set()
+        for c in comms:
+            if tt < tc + self.CT(c):
+                if c.to_task.id in self._ctasks[task.id]:
+                    continue
+                # tt += self.RP[c.to_task.id]
+                tt += self._RT[c.to_task.id]
+                t0 += self._RT[c.to_task.id]
+                pt = max(pt, t0 + self.PT_r[c.to_task.id])
+                tt += self.PT_l[c.to_task.id]
+                self._cdeps[task.id].add(c)
+                self._cdeps[task.id].update(self._cdeps[c.to_task.id])
+                self._ctasks[task.id].add(c.to_task)
+                for tx in self._ctasks[c.to_task.id]:
+                    if tx in self._ctasks[task.id]:
+                        tt -= self._RT[c.to_task.id]
+                    else:
+                        self._ctasks[task.id].add(c.to_task)
+            else:
+                tc += self.CT(c)
+                pt = max(pt, tc + self.RP[c.to_task.id])
+        self.PT_l[task.id] = tt
+        self.PT_r[task.id] = pt
+        self.PT[task.id] = max(pt, tt)
+        self.PTO[task.id] = pto
+
+    def est_ft_together(self, ti, tj, at_i=None):
+        if not at_i:
+            at_i = self.AT[ti]
+        rt_i = self._RT[ti]
+        pt_i = self.PT[ti]
+        ptl_i = self.PT_l[ti]
+        ptr_i = self.PT_r[ti]
+        pto_i = self.PTO[ti]
+        ato_j = self.ATO[tj]
+        rt_j = self._RT[tj]
+        pt_j = self.PT[tj]
+        ptl_j = self.PT_l[tj]
+        ptr_j = self.PT_r[tj]
+        pto_j = self.PTO[tj]
+        lc = sum(self._RT[t.id] for t in (self._ctasks[ti] & self._ctasks[tj]))
+        return min(
+            # at_i + rt_i + rt_j + pt_i + pt_j,
+            max(at_i + rt_i + pt_i,
+                max(at_i + rt_i, ato_j) + rt_j + pt_j,
+                max(at_i + rt_i, ato_j) + rt_j + ptl_i + ptl_j - lc),
+            at_i + rt_i + rt_j + max(pt_i, pto_j),
+            at_i + rt_i + max(pto_i, rt_j + pt_j),
+        )
+
+    def fitness(self, task, machine, comm_pls, st):
+        taskid = task.id
+        rt_x = self._RT[taskid]
+        pt_x = self.PT[taskid]
+        wft = [st - self.AT[taskid]]
+        ftt = st + rt_x + pt_x
+        ftm = ftt
+
+        frontier_0 = set()
+        frontier_1 = set()
+        for t in self.problem.tasks:
+            if self._placed[t.id] and \
+                    any(not self._placed[c.to_task.id]
+                        for c in t.communications(COMM_OUTPUT)):
+                if task not in t.succs():
+                    if self.PL_m(t) == machine:
+                        frontier_1.update(st for st in t.succs()
+                                          if st in self.ready_tasks)
+                        if any(st not in self.ready_tasks for st in t.succs()):
+                            frontier_0.add(t)
+                    else:
+                        frontier_0.add(t)
+                else:
+                    frontier_1.update(st for st in t.succs()
+                                      if st in self.ready_tasks and st != task)
+                    if any(st not in self.ready_tasks for st in t.succs()):
+                        frontier_0.add(t)
+
+        for t in frontier_0:
+            if self.PL_m(t) != machine:
+                di, dj = self.comm_succ_len(taskid, t.id)
+                wft[0] = max(wft[0], di + (st - self.AT[taskid]))
+                wft.append(dj)
+                ftm = max(ftm, ftt + di, self.FT(t) + self.PT[t.id] + dj)
+            else:
+                ftm = max(ftm, self.FT(t) + self.PT[t.id])
+
+        for t in frontier_1:
+            tid = t.id
+            at_y = self.AT[tid]
+            rt_y = self._RT[tid]
+            bm_t = self.BM[tid]
+            fto = at_y + rt_y + self.PT[tid]
+            if len(bm_t) == 1 and id(machine) in bm_t and -rt_x < st - at_y < rt_y:
+                wft.append(self.est_ft(taskid, tid, st) - fto)
+                ftm = max(ftm, wft[-1] + fto)
+            elif any(m < 0 or m == id(machine) for m in bm_t):
+                # ftm = max(ftm, fto)
+                ftm = max(ftm,
+                          min(self.est_ft_together(task.id, t.id, st),
+                              self.est_ft_devided_free(task.id, t.id, st)[0]))
+            else:
+                ft_t, di, dj = self.est_ft_devided_free(task.id, t.id, st)
+                wft.append(dj)
+                wft[0] = max(wft[0], di + st - self.AT[t.id])
+                ftm = max(ftm, ft_t)
+
+        return ftm, ftt, sorted(wft, reverse=True)
+
+
+from collections import Counter
+from copy import copy
+
+
+class CA4_1(CA4):
+    def calculate_PT(self, task):
+        comms = sorted(task.communications(COMM_OUTPUT),
+                       key=lambda c: -self.RP[c.to_task.id])
+        pto = 0
+        tc = 0
+        for c in comms:
+            tc += self.CT(c)
+            pto = max(pto, tc + self.RP[c.to_task.id])
+
+        pt = 0
+        tc = 0
+        tt = 0
+        t0 = 0
+        self._cdeps[task.id] = Counter()
+        self._ctasks[task.id] = set()
+        for c in comms:
+            if tt < tc + self.CT(c):
+                tt += self._RT[c.to_task.id]
+                t0 += self._RT[c.to_task.id]
+                pt = max(pt, t0 + self.PT_r[c.to_task.id])
+                tt += self.PT_l[c.to_task.id]
+                self._cdeps[task.id][c] += 1
+                self._cdeps[task.id] += self._cdeps[c.to_task.id]
+                self._ctasks[task.id].add(c.to_task)
+                self._ctasks[task.id].update(self._ctasks[c.to_task.id])
+                for tx in self._ctasks[c.to_task.id]:
+                    if tx in self._ctasks[task.id]:
+                        tt -= self._RT[c.to_task.id]
+            else:
+                tc += self.CT(c)
+                pt = max(pt, tc + self.RP[c.to_task.id])
+        self.PT_l[task.id] = tt
+        self.PT_r[task.id] = pt
+        self.PT[task.id] = max(pt, tt)
+        self.PTO[task.id] = pto
+
+    @memo
+    def comm_succ_len(self, ti, tj):
+        cts = self._ctasks[ti] & self._ctasks[tj]
+        deps_i = copy(self._cdeps[ti])
+        deps_j = copy(self._cdeps[tj])
+        di, dj = 0, 0
+        for t in sorted(cts, key=lambda _t: self.RP[_t.id], reverse=True):
+            dt_i = sum(self.CT(c) for c in set(deps_i)
+                       if c.to_task == t and c not in deps_j)
+            dt_j = sum(self.CT(c) for c in set(deps_j)
+                       if c.to_task == t and c not in deps_i)
+            if dt_i == 0 or dt_j == 0:
+                continue
+            if dt_i <= dt_j:
+                di += dt_i
+                deps_i += self._cdeps[t.id]
+                deps_j -= self._cdeps[t.id]
+            else:
+                dj += dt_j
+                deps_i -= self._cdeps[t.id]
+                deps_j += self._cdeps[t.id]
+        return di, dj

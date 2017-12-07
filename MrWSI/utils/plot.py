@@ -15,13 +15,14 @@ def plot_cmp_results(log, field, typ="box", base=0):
     labels = log.keys()
     data = []
     for alg in labels:
-        data.append(log[alg][field])
+        data.append([0] + log[alg][field])
     if typ == "hist":
         if base == 0:
             ax.hist(data, bins=1000, label=labels,
                     histtype="step", normed=False, cumulative=True)
             ax.set_xlim(0, 1)
         else:
+            ax.axvline(x=1, lw=0.5)
             ax.hist(data, bins=1000, label=labels,
                     histtype="step", density=True, cumulative=-1, lw=0.5)
             ax.yaxis.set_major_formatter(PercentFormatter(xmax=1))
@@ -29,6 +30,7 @@ def plot_cmp_results(log, field, typ="box", base=0):
             ax.set_xlim(xmin=1)
             # ax.set_xlim(0, 1)
             ax.set_ylim(0, 1)
+            # ax.set_xscale("log")
             plt.grid(b=True, which="major", linestyle="-", linewidth="0.5")
             plt.grid(b=True, which="minor", linestyle="--", linewidth="0.3")
         ax.legend(loc="upper right")
@@ -37,8 +39,8 @@ def plot_cmp_results(log, field, typ="box", base=0):
         ax.axhline(y=base)
         ax.boxplot(data, labels=labels, showfliers=False, whis=[10, 90])
         # for i, y in enumerate(data):
-            # x = np.random.normal(i + 1, 0.01 * len(data), len(y))
-            # ax.plot(x, y, "k.", alpha=0.2)
+        # x = np.random.normal(i + 1, 0.01 * len(data), len(y))
+        # ax.plot(x, y, "k.", alpha=0.2)
     fig.tight_layout()
     plt.savefig(os.path.join(".", "{}.png".format(field)), dpi=200)
 

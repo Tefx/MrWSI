@@ -82,9 +82,9 @@ def run_alg_on(wrk):
     eft = EFT(problem)
     algs = [
         # eft,
-        # FairEnv(eft),
-        FCFSEnv(eft),
         # mkalg("Seq", SeqPlan)(problem),
+        FairEnv(eft),
+        FCFSEnv(eft),
         mkalg("CAEFT(U)", EFT_RankU, CAEFT)(problem),
         # mkalg("CAFit2(U)", CAFit2, CAMoreCompare, CASort, CAEFT)(problem),
         # mkalg("CA2Fit2(U)", CAFit2, CAMoreCompare, CASort2, CAEFT)(problem),
@@ -98,19 +98,23 @@ def run_alg_on(wrk):
         mkalg("CA2Fit5(PU)", CANewRA, CAFit5, CAMoreCompare, CAEFT_P)(problem),
         # mkalg("CAS(PU)", CA_Simple, CAEFT_P)(problem),
         # mkalg("CA3(PU)", CA3, CAEFT_P)(problem),
-        mkalg("CA3.1(PU)", CA3_1, CAEFT_P)(problem),
-        mkalg("CA3.2(PU)", CA3_2, CAEFT_P)(problem),
-        # two_algs(mkalg("_", SeqPlan, CAEFT_P),
-                 # mkalg("_", CANewRA, CAFit5, CAMoreCompare, CAEFT_P),
-                 # problem),
+        # mkalg("CA3.1(PU)", CA3_1, CAEFT_P)(problem),
+        # mkalg("CA3.2(PU)", CA3_2, CAEFT_P)(problem),
+        mkalg("CA3.3(PU)", CA3_3, CAEFT_P)(problem),
+        # mkalg("CA3.5(PU)", CA3_5, CAEFT_P)(problem),
+        # mkalg("CA4(PU)", CA4, CAEFT_P)(problem),
+        # mkalg("CA4.1(PU)", CA4_1, CAEFT_P)(problem),
+        # two_algs(mkalg("_", CANewRA, CAFit5, CAMoreCompare, CAEFT_P),
+        # mkalg("_", CA3_2, CAEFT_P),
+        # problem),
     ]
     # for alg in algs:
     # alg.export("results/{}.{}.schedule".format(wrk_name, alg.alg_name))
     for alg in algs:
         alg.span
-    if algs[-1].span != min(x.span for x in algs):
-        print("{:<16}(CCR={:<.1f}) ".format(wrk_name, problem.ccr) +
-              " ".join(str_result(alg) for alg in algs))
+    # if algs[-1].span != min(x.span for x in algs):
+    print("{:<16}(CCR={:<.1f}) ".format(wrk_name, problem.ccr) +
+          " ".join(str_result(alg) for alg in algs))
     return [AlgRes(alg.alg_name, alg.span, alg.cost) for alg in algs]
 
 
