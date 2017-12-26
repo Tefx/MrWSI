@@ -29,14 +29,13 @@ def generate_task_demand():
     return min(cores, CPU_LIMIT), min(memory, MEM_LIMIT), 0
 
 
-def convert_dot(dot_path, out_dir):
+def convert_dot(dot_path, out_dir, ccr_set):
     with open(dot_path) as f:
         dag_id = os.path.basename(dot_path)[:-4]
         dag = nx.DiGraph(nx.nx_agraph.read_dot(dot_path))
 
     tasks = {}
-    # ccr = choice([0.1, 1, 10])
-    ccr = 10
+    ccr = choice(ccr_set)
     for task_id in dag:
         tasks[task_id] = {
             "runtime": ceil(int(dag.node[task_id]["size"]) / 10e8),

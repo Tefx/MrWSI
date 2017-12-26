@@ -5,7 +5,9 @@ from MrWSI.core.platform import Context
 from MrWSI.simulation.base import FCFSEnv, SimEnv
 from MrWSI.simulation.fair import FairEnv
 from MrWSI.algorithms.homogeneous import *
+from MrWSI.utils.plot import plot_cmp_results
 
+import os
 from math import ceil
 from statistics import mean, median
 from collections import namedtuple
@@ -81,29 +83,23 @@ def run_alg_on(wrk):
     problem = HomoProblem.load(wrk_path, ec2_file, "c4.xlarge", 1, 2000)
     eft = EFT(problem)
     algs = [
-        # eft,
-        # mkalg("Seq", SeqPlan)(problem),
-        FairEnv(eft),
+        mkalg("Seq", SeqPlan)(problem),
+        # FairEnv(eft),
         FCFSEnv(eft),
-        mkalg("CAEFT(U)", EFT_RankU, CAEFT)(problem),
-        # mkalg("CAFit2(U)", CAFit2, CAMoreCompare, CASort, CAEFT)(problem),
-        # mkalg("CA2Fit2(U)", CAFit2, CAMoreCompare, CASort2, CAEFT)(problem),
-        # mkalg("CAFit3(U)", ContentionTest, CAFit3, CAMoreCompare, CAEFT)(problem),
-
+        # mkalg("CAEFT(U)", EFT_RankU, CAEFT)(problem),
         mkalg("CAEFT(PU)", EFT_RankU, CAEFT_P)(problem),
-        # mkalg("CA", CASort, CAEFT_P)(problem),
-        # mkalg("CAFit3(PU)", CAFit3, CAMoreCompare, CAEFT_P)(problem),
-        # mkalg("CA2Fit3(PU)", CANewRA, CAFit3, CAMoreCompare, CAEFT_P)(problem),
-        # mkalg("CA2Fit4(PU)", CANewRA, CAFit4, CAMoreCompare, CAEFT_P)(problem),
         mkalg("CA2Fit5(PU)", CANewRA, CAFit5, CAMoreCompare, CAEFT_P)(problem),
-        # mkalg("CAS(PU)", CA_Simple, CAEFT_P)(problem),
-        # mkalg("CA3(PU)", CA3, CAEFT_P)(problem),
-        # mkalg("CA3.1(PU)", CA3_1, CAEFT_P)(problem),
-        # mkalg("CA3.2(PU)", CA3_2, CAEFT_P)(problem),
-        mkalg("CA3.3(PU)", CA3_3, CAEFT_P)(problem),
-        # mkalg("CA3.5(PU)", CA3_5, CAEFT_P)(problem),
-        # mkalg("CA4(PU)", CA4, CAEFT_P)(problem),
-        # mkalg("CA4.1(PU)", CA4_1, CAEFT_P)(problem),
+        # mkalg("CA3.3(PU)", CA3_3, CAEFT_P)(problem),
+        # mkalg("CAN3(PU)", CAN3, CAEFT_P)(problem),
+        # mkalg("CAN3.1(PU)", CAN3_1, CAEFT_P)(problem),
+        # mkalg("CAN3.2(PU)", CAN3_2, CAEFT_P)(problem),
+        # mkalg("CAN3.2.1(PU)", CAN3_2_1, CAEFT_P)(problem),
+        # mkalg("CAN5(PU)", CAN5, CAEFT_P)(problem),
+        mkalg("CAN6(PU)", CAN6, CAEFT_P)(problem),
+        # mkalg("CAN6.1(PU)", CAN6_1, CAEFT_P)(problem),
+        mkalg("CAN6.2(PU)", CAN6_2, CAEFT_P)(problem),
+        # mkalg("CAN6.3(PU)", CAN6_3, CAEFT_P)(problem),
+        # mkalg("CAN6.1.1(PU)", CAN6_1_1, CAEFT_P)(problem),
         # two_algs(mkalg("_", CANewRA, CAFit5, CAMoreCompare, CAEFT_P),
         # mkalg("_", CA3_2, CAEFT_P),
         # problem),
@@ -112,9 +108,9 @@ def run_alg_on(wrk):
     # alg.export("results/{}.{}.schedule".format(wrk_name, alg.alg_name))
     for alg in algs:
         alg.span
-    # if algs[-1].span != min(x.span for x in algs):
-    print("{:<16}(CCR={:<.1f}) ".format(wrk_name, problem.ccr) +
-          " ".join(str_result(alg) for alg in algs))
+    if algs[-1].span != min(x.span for x in algs):
+        print("{:<16}(CCR={:<.1f}) ".format(wrk_name, problem.ccr) +
+        " ".join(str_result(alg) for alg in algs))
     return [AlgRes(alg.alg_name, alg.span, alg.cost) for alg in algs]
 
 
@@ -135,8 +131,6 @@ def stat_n_plot(all_results, plot_type="box", std_type="MM"):
 
 
 if __name__ == "__main__":
-    import os
-    from MrWSI.utils.plot import plot_cmp_results
     from multiprocessing.pool import Pool
 
     pegasus_wrk_path = "./resources/workflows/pegasus"

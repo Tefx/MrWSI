@@ -269,11 +269,6 @@ class CAMoreCompare(CASort):
         self._dcs = [0] * self.problem.num_tasks
         for tx in range(self.problem.num_tasks):
             for ty in range(tx + 1, self.problem.num_tasks):
-                # for ttx in self.problem.tasks:
-                # for tty in self.problem.tasks:
-                # tx = ttx.id
-                # ty = tty.id
-                # if not tx < ty:continue
                 if not self._placed[tx] and not self._placed[ty] and\
                         not (self.rids[tx] and self.rids[ty]) and\
                         self.has_contention(tx, ty):
@@ -283,8 +278,10 @@ class CAMoreCompare(CASort):
                         self._dcs[ty] -= 1
                     elif ftx > fty:
                         self._dcs[tx] -= 1
+        # print([(t, self._dcs[t.id], self.RP[t.id]) for t in self.ready_tasks])
         task = max(self.ready_tasks, key=lambda t: (
             self._dcs[t.id], self.RP[t.id]))
+        # print("Selected", task)
         return task
 
 
