@@ -8,6 +8,7 @@ from MrWSI.algorithms.homogeneous import *
 from MrWSI.utils.plot import plot_cmp_results
 
 import os
+import sys
 from math import ceil
 from statistics import mean, median
 from collections import namedtuple
@@ -56,8 +57,7 @@ def log_record_r(log, results):
 
     for field in ["span", "cost"]:
         base = getattr(results[0], field)
-        if all(getattr(res, field) == base for res in results):
-            break
+        # if all(getattr(res, field) == base for res in results): break
         for res in results[1:]:
             log[res.alg_name][field].append(base / getattr(res, field))
             # log[res.alg_name][field].append(getattr(res, field) / base)
@@ -83,11 +83,12 @@ def run_alg_on(wrk):
     problem = HomoProblem.load(wrk_path, ec2_file, "c4.xlarge", 1, 2000)
     eft = EFT(problem)
     algs = [
-        mkalg("Seq", SeqPlan)(problem),
+        # mkalg("Seq", SeqPlan)(problem),
         # FairEnv(eft),
         FCFSEnv(eft),
-        # mkalg("CAEFT(U)", EFT_RankU, CAEFT)(problem),
+        mkalg("CAEFT(U)", EFT_RankU, CAEFT)(problem),
         mkalg("CAEFT(PU)", EFT_RankU, CAEFT_P)(problem),
+        # mkalg("CA2Fit5(U)", CANewRA, CAFit5, CAMoreCompare, CAEFT)(problem),
         mkalg("CA2Fit5(PU)", CANewRA, CAFit5, CAMoreCompare, CAEFT_P)(problem),
         # mkalg("CA3.3(PU)", CA3_3, CAEFT_P)(problem),
         # mkalg("CAN3(PU)", CAN3, CAEFT_P)(problem),
@@ -95,11 +96,54 @@ def run_alg_on(wrk):
         # mkalg("CAN3.2(PU)", CAN3_2, CAEFT_P)(problem),
         # mkalg("CAN3.2.1(PU)", CAN3_2_1, CAEFT_P)(problem),
         # mkalg("CAN5(PU)", CAN5, CAEFT_P)(problem),
-        mkalg("CAN6(PU)", CAN6, CAEFT_P)(problem),
+        # mkalg("CAN6(PU)", CAN6, CAEFT_P)(problem),
         # mkalg("CAN6.1(PU)", CAN6_1, CAEFT_P)(problem),
         mkalg("CAN6.2(PU)", CAN6_2, CAEFT_P)(problem),
-        # mkalg("CAN6.3(PU)", CAN6_3, CAEFT_P)(problem),
-        # mkalg("CAN6.1.1(PU)", CAN6_1_1, CAEFT_P)(problem),
+        # mkalg("CAN6.2(NPU)", NeighborFirstSort, CAN6_2, CAEFT_P)(problem),
+        # mkalg("CAN6.2(N2PU)", NeighborFirstSort2, CAN6_2, CAEFT_P)(problem),
+        # mkalg("CAN6.2.1(PU)", CAN6_2_1, CAEFT_P)(problem),
+        # mkalg("CAN6.2.2(PU)", CAN6_2_2, CAEFT_P)(problem),
+        # mkalg("CAN6.2.2(NPU)", NeighborFirstSort, CAN6_2_2, CAEFT_P)(problem),
+        # mkalg("CAN6.2.2(N2PU)", NeighborFirstSort2, CAN6_2_2, CAEFT_P)(problem),
+        # mkalg("CAN8(PU)", PTv2, CAN8, CAEFT_P)(problem),
+        # mkalg("CAN8.1(PU)", CAN8_1, CAEFT_P)(problem),
+        # mkalg("CAN8.3(PU)", CAN8_3, CAEFT_P)(problem),
+        # mkalg("CAN8.4(PU)", CAN8_4, CAEFT_P)(problem),
+        # mkalg("CAN8.5(PU)", CAN8_5, CAEFT_P)(problem),
+        # mkalg("CAN8.5(N2PU)", NeighborFirstSort2, CAN8_5, CAEFT_P)(problem),
+        # mkalg("CAN8.6(PU)", CAN8_6, CAEFT_P)(problem),
+        # mkalg("CAN8.6(PU)", CAN8_6, CAEFT_P)(problem),
+        # mkalg("CAN8.6(N2PU)", NeighborFirstSort2, CAN8_6, CAEFT_P)(problem),
+        # mkalg("CAN8.6(MCPU)", MoreContention, CAN8_6, CAEFT_P)(problem),
+        # mkalg("CAN8.6.t0(MCPU)", CSLTest, MoreContention, CAN8_6, CAEFT_P)(problem),
+        # mkalg("CAN8.6.t1(MCPU)", CSLTest2, MoreContention, CAN8_6, CAEFT_P)(problem),
+        # mkalg("CAN8.6.t2(MCPU)", CSLTest3, MoreContention, CAN8_6, CAEFT_P)(problem),
+        # mkalg("CAN8.6.t3(MCPU)", CSLTest6, MoreContention, CAN8_6, CAEFT_P)(problem),
+        # mkalg("CAN8.6.t4(MCPU)", CSLTest7, MoreContention, CAN8_6, CAEFT_P)(problem),
+        # mkalg("CAN8.6.t4(EMCPU)", ESTFTv1, CSLTest7, MoreContention, CAN8_6, CAEFT_P)(problem),
+        # mkalg("CAN8.6.t4(RSPU)", CSLTest7, Sort2, MoreContention, CAN8_6, CAEFT_P)(problem),
+        # mkalg("CAN8.6.t4.1(RSPU)", ESTFTv1, CSLTest7, Sort2, MoreContention, CAN8_6, CAEFT_P)(problem),
+        # mkalg("CAN8.6.1.t4.1(RSPU)", ESTFTv1, CSLTest7, Sort2, MoreContention, CAN8_6_1, CAEFT_P)(problem),
+        # mkalg("CAN8.6.t4.2(RSPU)", ESTFTv1, CSLTest7, Sort3, MoreContention, CAN8_6, CAEFT_P)(problem),
+        # mkalg("CAN8.6.t4.2(RSPU)", ESTFTv1, CSLTest7, Sort2, MoreContention, CAN8_6, CAEFT_P)(problem),
+        # mkalg("CAN8.6.t4.3(RSPU)", ESTFTv2, CSLTest7, Sort3, MoreContention, CAN8_6, CAEFT_P)(problem),
+        # mkalg("CAN8.6.1.t4.4(RSPU)", ESTFTv2, CSLTest7, Sort3, MoreContention, CAN8_6_1, CAEFT_P)(problem),
+        # mkalg("CAN8.6.1.1.t4.4(RSPU)", ESTFTv2, CSLTest7, Sort3, MoreContention, CAN8_6_1_1, CAEFT_P)(problem),
+        # mkalg("CAN8.6.2.t4.4(RSPU)", ESTFTv2, CSLTest7, Sort3, MoreContention, CAN8_6_2, CAEFT_P)(problem)
+        # mkalg("CAN8.6.3.t4.3(RSPU)", ESTFTv2, CSLTest7, Sort3, MoreContention, CAN8_6_3, CAEFT_P)(problem),
+        # mkalg("CAN8.6.3.t4.3.1(RSPU)", SAT, ESTFTv2, CSLTest7, Sort3, MoreContention, CAN8_6_3, CAEFT_P)(problem),
+        # mkalg("CAN8.6.3.t4.3.2(RSU)", SAT, ESTFTv3, CSLTest7, Sort3, MoreContention, CAN8_6_3, CAEFT)(problem),
+        mkalg("CAN8.6.3.t4.3.2(RSPU)", SAT, ESTFTv3, CSLTest7, Sort3, MoreContention, CAN8_6_3, CAEFT_P)(problem),
+        mkalg("CAN8.6.3.t4.3.3(RSPU)", SAT, ESTFTv4, CSLTest7, Sort3, MoreContention, CAN8_6_3, CAEFT_P)(problem),
+        mkalg("CAN8.6.3.t4.3.7(RSPU)", SAT, ESTFTv4, CSLTest7, Sort7, MoreContention, CAN8_6_3, CAEFT_P)(problem),
+        # mkalg("CAN8.6.3.t4.3.3(RSPU)", SAT, ESTFTv3, CSLTest7, NeighborFirstSort2, MoreContention, CAN8_6_3, CAEFT_P)(problem),
+        # mkalg("CAN8.6.3.t4.3.4(RSPU)", SAT, ESTFTv2, CSLTest7, Sort6, MoreContention, CAN8_6_3, CAEFT_P)(problem),
+        # mkalg("CAN8.6.3.t4.4(RSPU)", SAT, ESTFTv2, CSLTest7, Sort5, MoreContention, CAN8_6_3, CAEFT_P)(problem),
+        # mkalg("CAN8.6.3.t4.3(RSU)", ESTFTv2, CSLTest7, Sort3, MoreContention, CAN8_6_3, CAEFT)(problem),
+        # mkalg("CAN8.6.3.t4.4(RSPU)", ESTFTv3, CSLTest7, Sort3, MoreContention, CAN8_6_3, CAEFT_P)(problem),
+        # mkalg("CAN8.6.4.t4.3(RSPU)", ESTFTv2, CSLTest7, Sort3, MoreContention, CAN8_6_4, CAEFT_P)(problem),
+        # mkalg("CAN8.6.3.t5.3(RSPU)", ESTFTv2, CSLTest7_4, Sort3, MoreContention, CAN8_6_3, CAEFT_P)(problem),
+        # mkalg("CAN8.6.4.t5.3(RSPU)", ESTFTv2, CSLTest7_4, Sort3, MoreContention, CAN8_6_4, CAEFT_P)(problem),
         # two_algs(mkalg("_", CANewRA, CAFit5, CAMoreCompare, CAEFT_P),
         # mkalg("_", CA3_2, CAEFT_P),
         # problem),
@@ -110,11 +154,11 @@ def run_alg_on(wrk):
         alg.span
     if algs[-1].span != min(x.span for x in algs):
         print("{:<16}(CCR={:<.1f}) ".format(wrk_name, problem.ccr) +
-        " ".join(str_result(alg) for alg in algs))
+              " ".join(str_result(alg) for alg in algs))
     return [AlgRes(alg.alg_name, alg.span, alg.cost) for alg in algs]
 
 
-def stat_n_plot(all_results, plot_type="box", std_type="MM"):
+def stat_n_plot(all_results, plot_type="box", std_type="MM", outfile=sys.stdout):
     result_log = {}
     for results in all_results:
         if std_type == "MM":
@@ -123,7 +167,7 @@ def stat_n_plot(all_results, plot_type="box", std_type="MM"):
             log_record_r(result_log, results)
     for alg, res in result_log.items():
         rs = res["span"]
-        print(alg, mean(rs), median(rs))
+        print(alg, mean(rs), median(rs), file=outfile)
     if std_type == "MM":
         plot_cmp_results(result_log, "span", plot_type, 0)
     elif std_type == "AS":
@@ -132,11 +176,13 @@ def stat_n_plot(all_results, plot_type="box", std_type="MM"):
 
 if __name__ == "__main__":
     from multiprocessing.pool import Pool
+    from sys import argv
 
-    pegasus_wrk_path = "./resources/workflows/pegasus"
-    random_wrk_path = "./resources/workflows/random_tiny"
-
-    wrks = list(random_wrks(random_wrk_path, ""))
-    # all_results = list(map(run_alg_on, wrks))
+    if len(argv) > 1:
+        wrk_path = argv[1]
+    else:
+        wrk_path = "./resources/workflows/random"
+    wrks = list(random_wrks(wrk_path, ""))
     all_results = list(Pool().map(run_alg_on, wrks))
+    # all_results = list(map(run_alg_on, wrks))
     stat_n_plot(all_results, "hist", "AS")

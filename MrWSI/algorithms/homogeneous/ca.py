@@ -84,6 +84,7 @@ class CASort(Heuristic):
     def has_contention(self, tx, ty):
         p0 = self.BM[tx]
         p1 = self.BM[ty]
+        # print(self.problem.tasks[tx], self.problem.tasks[ty], p0, p1)
         # print("$>", p0, p1, self._RT[tx], self._RT[ty], self.AT[tx], self.AT[ty])
         return (len(p0) == 1 and len(p1) == 1) and (p0 & p1) and \
             -self._RT[ty] < self.AT[ty] - self.AT[tx] < self._RT[tx]
@@ -177,6 +178,15 @@ class CASort(Heuristic):
         self.AT[task.id] = at
         self.ATO[task.id] = ato
         self.BM[task.id] = set(bmt)
+        # print("AT", task, self.AT[task.id], self.ATO[task.id], self.BM[task.id])
+        if not hasattr(self, "ATCS"):
+            self.ATCS = [0] * self.problem.num_tasks
+        self.ATCS[task.id] = 0
+        for c in task.communications(COMM_INPUT):
+            t = c.from_task
+            if not (self._placed[t.id] and id(self.PL_m(t)) in bmt) or id(t) in bmt:
+                self.ATCS[task.id] += self.CT(c)
+        # print("!!!!ATCS", task, self.ATCS[task.id])
 
     def calculate_PT(self, task):
         comms = sorted(task.communications(COMM_OUTPUT),
@@ -274,6 +284,8 @@ class CAMoreCompare(CASort):
                         self.has_contention(tx, ty):
                     ftx = self.est_ft(tx, ty)
                     fty = self.est_ft(ty, tx)
+                    # print(self.problem.tasks[tx],
+                          # self.problem.tasks[ty], ftx, fty, self.AT[tx], self.AT[ty])
                     if ftx < fty:
                         self._dcs[ty] -= 1
                     elif ftx > fty:

@@ -52,4 +52,4 @@ def convert_dot(dot_path, out_dir, ccr_set):
 
 if __name__ == "__main__":
     from sys import argv
-    convert_dot(argv[1], argv[2])
+    convert_dot(argv[1], argv[2], [float(ccr) for ccr in argv[3:]])
