@@ -835,7 +835,7 @@ class CAN8_4(CAN8_1):
             ft_ai = ft_i + max(d + d2 + ld_i, dl_i)
         ft_ai = max(ft_ai, ft_i + dr_i)
         ft_aj = ft_j + max(dl_j - d2, ld_j, dr_j)
-        # print(self.problem.tasks[ti], self.problem.tasks[tj], ft_i, ft_j, self.merge_gain(ti, tj))
+        # print(self.problem.tasks[ti], self.problem.tasks[tj], ft_i, ft_j, self.merge_PTs(ti, tj))
         return max(ft_ai, ft_aj), ft_ai, ft_aj
 
 
@@ -917,7 +917,7 @@ class CAN8_5(CAN8_1):
             ft_aj = max(ft_i + pt_l_i + pt_l_j + self._RT[tj] - pt_l_ij,
                         ft_j + r_j)
             # print("XYAB:", self.problem.tasks[ti], self.problem.tasks[tj],
-            # ft_i, ft_j, self.merge_gain(ti, tj), ft_ai, ft_aj)
+            # ft_i, ft_j, self.merge_PTs(ti, tj), ft_ai, ft_aj)
         return max(ft_ai, ft_aj), ft_ai, ft_aj
 
 
@@ -957,8 +957,8 @@ class CAN8_6(CAN8_5):
             else:
                 frt = cst + ct_i + ct_j
             fr = frt + self.RP[tx.id]
-            # fr = self.ef_XA_YB(ti, tx.id, 0, frt)[2]
-            # fr = max(fr, self.ef_XA_YB(tj, tx.id, self._RT[tj], frt)[2])
+            # fr = self.split_FT(ti, tx.id, 0, frt)[2]
+            # fr = max(fr, self.split_FT(tj, tx.id, self._RT[tj], frt)[2])
             # print(tx, fl, fr)
             if (fl, tst) <= (fr, fr - self.RP[tx.id]):
                 # print("fl", tx, fl, tst)
@@ -1327,7 +1327,7 @@ class CAN8_6_2(CAN8_6):
         ft_aj = max(ft_aj,
                     r_j + min(self._RT[tj], scti) + max(ft_i, ft_j - scti))
         # print("XYAB:", self.problem.tasks[ti], self.problem.tasks[tj],
-        # ft_i, ft_j, self.merge_gain(ti, tj), ft_ai, ft_aj)
+        # ft_i, ft_j, self.merge_PTs(ti, tj), ft_ai, ft_aj)
         return max(ft_ai, ft_aj), ft_ai, ft_aj
 
 
@@ -1369,8 +1369,8 @@ class CAN8_6_3(CAN8_5):
             else:
                 frt = cst + ct_i + ct_j
             fr = frt + self.RP[tx.id]
-            # fr = self.ef_XA_YB(ti, tx.id, 0, frt)[2]
-            # fr = max(fr, self.ef_XA_YB(tj, tx.id, self._RT[tj], frt)[2])
+            # fr = self.split_FT(ti, tx.id, 0, frt)[2]
+            # fr = max(fr, self.split_FT(tj, tx.id, self._RT[tj], frt)[2])
             # print(tx, fl, fr)
             if (fl, tst) <= (fr, fr - self.RP[tx.id]):
                 # print("fl", tx, fl, tst)
@@ -1420,7 +1420,7 @@ class CAN8_6_3(CAN8_5):
         ft_aj = max(ft_aj,
                     r_j + min(self._RT[tj], scti) + max(ft_i, ft_j - scti))
         # print("XYAB:", self.problem.tasks[ti], self.problem.tasks[tj], st_i, st_j,
-        # ft_i, ft_j, self.merge_gain(ti, tj), ft_ai, ft_aj)
+        # ft_i, ft_j, self.merge_PTs(ti, tj), ft_ai, ft_aj)
         return max(ft_ai, ft_aj), ft_ai, ft_aj
 
 
@@ -1518,8 +1518,8 @@ class CAN8_6_5(CAN8_6_4):
                 else:
                     frt = cst + ct_i + ct_j
                 fr = frt + self.RP[tx.id]
-                # fr = self.ef_XA_YB(ti, tx.id, 0, frt)[2]
-                # fr = max(fr, self.ef_XA_YB(tj, tx.id, self._RT[tj], frt)[2])
+                # fr = self.split_FT(ti, tx.id, 0, frt)[2]
+                # fr = max(fr, self.split_FT(tj, tx.id, self._RT[tj], frt)[2])
                 # print(tx, fl, fr)
                 if (fl, tst) <= (fr, fr - self.RP[tx.id]):
                     # print("fl", tx, fl, tst)
@@ -1554,7 +1554,7 @@ class CAN8_6_5(CAN8_6_4):
 
 
 class CAN8_7(CAN8_5):
-    # def sort_succs_2(self, ts):
+    # def _sort_succs_in_MP(self, ts):
         # return sorted(ts.items(),
                       # key=lambda t: - self.RP[t[0].id])
 
@@ -1602,8 +1602,8 @@ class CAN8_7(CAN8_5):
             else:
                 frt = cst + ct_i + ct_j
             fr = frt + self.RP[tx.id]
-            # fr = self.ef_XA_YB(ti, tx.id, 0, frt)[2]
-            # fr = max(fr, self.ef_XA_YB(tj, tx.id, self._RT[tj], frt)[2])
+            # fr = self.split_FT(ti, tx.id, 0, frt)[2]
+            # fr = max(fr, self.split_FT(tj, tx.id, self._RT[tj], frt)[2])
             # print("!", tx, fl, fr, ct_i, ct_j, frt)
             if (fl, tst) <= (fr, fr - self.RP[tx.id]):
                 # print("fl", tx, fl, tst)
@@ -1723,7 +1723,7 @@ class CAN8_9(CAN8_6):
             ft_aj = max(ft_i + pt_l_i + pt_l_j + self._RT[tj] - pt_l_ij,
                         ft_j + r_j)
         # print(self.problem.tasks[ti], self.problem.tasks[tj],
-            # ft_i, ft_j, self.merge_gain(ti, tj), ft_ai, ft_aj)
+            # ft_i, ft_j, self.merge_PTs(ti, tj), ft_ai, ft_aj)
         return max(ft_ai, ft_aj), ft_ai, ft_aj
 
 
@@ -1753,7 +1753,7 @@ class CAN8_10(CAN8_7):
             else:
                 ft_a, ft_i, ft_j = ft_a1, ft_i1, ft_j1
         elif not any(self._placed[t.id] for t in task.succs()) and not self.is_successor(task, tx):
-            # elif not self.is_successor(task, tx):
+            # elif not self._is_successor(task, tx):
             # else:
             # if any(not self._placed[t.id] for t in task.succs() if t != tx):
             if self.PL_m(task) == machine:

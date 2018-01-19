@@ -3,9 +3,9 @@ mpl.use("Agg")
 import matplotlib.pyplot as plt
 
 ccrs = [
-    0.125, 0.25, 0.5, 0.75, 1,
-    2, 3, 4, 5, 6, 7, 8, 9, 10
-    # 0.125, 0.25, 0.5, 1, 2, 4, 8
+    # 0.125, 0.25, 0.5, 0.75, 1,
+    # 2, 3, 4, 5, 6, 7, 8, 9, 10
+    0.25, 0.5, 1, 2, 4, 8
     # 0.25, 0.5, 1, 2
 ]
 # ccrs = range(21)
@@ -29,11 +29,16 @@ base = "EFT[fcfs]"
 
 ignore_list = [
     # "EFT[fcfs]",
+    # "CAEFT(U)",
     # "CAEFT(PU)",
+    # "CA2Fit5(U)",
     # "CA2Fit5(PU)",
-    "CAN3(PU)",
-    "CAN6.2(PU)",
-    "CAN6.2.2(N2PU)",
+    "CAWS1.2(PU)",
+    "CAWS1.3(PU)",
+    # "CAWS1.8(PU)",
+    # "CAWS1.9(PU)",
+    # "CAWS1.10(PU)",
+    # "CAWS1.11(PU)",
 ]
 for alg in ignore_list:
     if alg in res:

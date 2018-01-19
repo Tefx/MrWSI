@@ -5,4 +5,5 @@ from .ca import *
 from .ca2 import *
 from .ca3 import *
 from .ca4 import *
+from .can import *
 from .sorting import *
