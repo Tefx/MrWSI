@@ -1046,16 +1046,6 @@ class CAWSv1_12(CAWSv1_11):
     def calculate_PT(self, task):
         comms = sorted(task.out_communications,
                        key=lambda c: -self.RP[c.to_task.id])
-        pto = 0
-        tc = 0
-        for c in comms:
-            tc += self.CT(c)
-            pto = max(pto, tc + self.RP[c.to_task.id])
-
-        local_ft = 0
-        local_st = 0
-        comm_ft = 0
-        remote_ft = 0
 
         self._cdeps[task.id] = Counter()
         self._ctasks[task.id] = set()
@@ -1146,23 +1136,12 @@ class CAWSv1_12(CAWSv1_11):
         return pt_l_i, pt_l_ij, pt_l_j, r_i - ft_i, r_j - ft_j, scti
 
 
-class CAWSv1_13(CAWSv1_11):
+class CAWSv1_13(CAWSv1_12):
     @memo
     def calculate_PT(self, task):
         comms = sorted(task.out_communications,
                        key=lambda c: -self.RP[c.to_task.id])
-        pto = 0
-        tc = 0
-        for c in comms:
-            tc += self.CT(c)
-            pto = max(pto, tc + self.RP[c.to_task.id])
-
-        local_ft = 0
-        local_st = 0
-        comm_ft = 0
-        remote_ft = 0
-
-        self._cdeps[task.id] = Counter()
+        self._cdeps[task.id] = set()
         self._ctasks[task.id] = set()
         pt_l = pt_r = 0
         st_c = st_t = 0
@@ -1170,16 +1149,15 @@ class CAWSv1_13(CAWSv1_11):
             t = c.to_task
             l_d = sum(self._RT[_t.id] for _t in (
                 self._ctasks[t.id] | {t}) - self._ctasks[task.id])
-            t_l = max(pt_l + l_d, st_t +
-                      self._RT[t.id] + self.PT_r[t.id], pt_r)
-            t_r = max(st_c + self.CT(c) + self.RP[t.id], pt_l, pt_r)
-            if (t_l, st_t) <= (t_r, st_c + self.CT(c)):
+            t_l = max(pt_l + l_d, st_t + self._RT[t.id] + self.PT_r[t.id])
+            t_r = st_c + self.CT(c) + self.RP[t.id]
+            if (t_l, st_t) <= (t_r, t_r - self.RP[t.id]):
                 st_t += self._RT[t.id]
                 pt_l += l_d
                 if self.PT_r[t.id] > 0:
                     pt_r = max(pt_r, st_t + self.PT_r[t.id])
-                self._cdeps[task.id][c] += 1
-                self._cdeps[task.id] += self._cdeps[c.to_task.id]
+                self._cdeps[task.id].add(c)
+                self._cdeps[task.id].update(self._cdeps[c.to_task.id])
                 self._ctasks[task.id].add(c.to_task)
                 self._ctasks[task.id].update(self._ctasks[c.to_task.id])
             else:
@@ -1190,61 +1168,64 @@ class CAWSv1_13(CAWSv1_11):
         self.PT[task.id] = max(pt_l, pt_r)
 
     @memo
-    def merge_PT(self, ti, tj, fts=None):
-        ts = {}
-        for c in self.problem.tasks[ti].out_communications:
-            if c.to_task not in ts:
-                ts[c.to_task] = [0, 0]
-            ts[c.to_task][0] += self.CT(c)
+    def split_PT(self, ti, tj):
+        deps_i = copy(self._cdeps[ti])
+        deps_j = copy(self._cdeps[tj])
+        cts = self._ctasks[ti] & self._ctasks[tj]
+        ft_i = self.AT[ti] + self._RT[ti]
+        ft_j = self.AT[tj] + self._RT[tj]
+        l_i, l_j = ft_i, ft_j
+        r_i = ft_i + self.PT_r[ti]
+        r_j = ft_j + self.PT_r[tj]
+        st_i, st_j = self.RA[ti], self.RA[tj]
 
-        for c in self.problem.tasks[tj].out_communications:
-            if c.to_task not in ts:
-                ts[c.to_task] = [0, 0]
-            ts[c.to_task][1] += self.CT(c)
+        # print(">>", self._ti2t(ti), self._ti2t(tj), "!", self._cdeps[ti], self._cdeps[tj], cts)
 
-        r_i, r_j, l = 0, self._RT[tj], self._RT[tj]
-        st_t = st_c = st_d = self._RT[tj]
-        ctasks_i, ctasks_j = set(), set()
-        scti = 0
-        jc_started = False
-        for tx, [ct_i, ct_j] in self._sort_succs_in_MP(ts):
-            l_d = sum(self._RT[t.id]
-                      for t in (self._ctasks[tx.id] | {tx}) - ctasks_i - ctasks_j)
-            t_l = max(l + l_d, st_t +
-                      self._RT[tx.id] + self.PT_r[tx.id], r_i, r_j)
-            if ct_j > 0:
-                st = st_c + ct_j + max(ct_i - st_d, 0)
-            elif ct_i > st_d:
-                st = st_c + ct_i - st_d
+        for t in sorted(cts, key=lambda _t: self.RP[_t.id], reverse=True):
+            if self._RT[t.id] == 0:
+                continue
+            ds_i = [c for c in t.in_communications if c in deps_i and c not in deps_j]
+            ds_j = [c for c in t.in_communications if c in deps_j and c not in deps_i]
+            if not ds_i or not ds_j:
+                continue
+            si, sj = st_i, st_j
+            cst_i, cst_j = ft_i, ft_j
+            for c in sorted(ds_i, key=lambda c: self.RA[c.from_task.id]):
+                if self.CT(c) > 0:
+                    si = max(si, self.RA[c.from_task.id]) + self.CT(c)
+                    cst_i = max(cst_i, si)
+                else:
+                    cst_i = max(
+                        cst_i, self.AT[c.from_task.id] + self._RT[c.from_task.id])
+            for c in sorted(ds_j, key=lambda c: self.RA[c.from_task.id]):
+                if self.CT(c) > 0:
+                    sj = max(sj, self.RA[c.from_task.id]) + self.CT(c)
+                    cst_j = max(cst_j, sj)
+                else:
+                    cst_j = max(
+                        cst_j, self.AT[c.from_task.id] + self._RT[c.from_task.id])
+            # print(">>", cst_i, cst_j, si, sj, ds_i, ds_j, r_i, r_j)
+            if cst_i <= cst_j:
+                st_i = si
+                r_i = max(r_i, cst_i + self.RP[t.id])
+                l_j = max(l_j, cst_i + self.RP[t.id])
+                deps_i -= self._cdeps[t.id]
             else:
-                st = self._RT[tj] + ct_i - st_d
-            t_r = max(st + self.RP[tx.id], l, r_i, r_j)
-            if (t_l, st_t) <= (t_r, st):
-                st_t += self._RT[tx.id]
-                l += l_d
-                if ct_i:
-                    if self.PT_r[tx.id] > 0:
-                        r_i = max(r_i, st_t + self.PT_r[tx.id])
-                    ctasks_i.add(tx)
-                    ctasks_i.update(self._ctasks[tx.id])
-                if ct_j:
-                    if self.PT_r[tx.id] > 0:
-                        r_j = max(r_j, st_t + self.PT_r[tx.id])
-                    ctasks_j.add(tx)
-                    ctasks_j.update(self._ctasks[tx.id])
-            else:
-                if ct_i:
-                    r_i = max(r_i, t_r)
-                    if not jc_started and not ct_j:
-                        scti += ct_i
-                if ct_j:
-                    r_j = max(r_j, t_r)
-                st_c += ct_j + max(ct_i - st_d, 0)
-                st_d = max(st_d - ct_i, 0)
-        pt_l_ij = l
-        pt_l_i = sum(self._RT[t.id] for t in ctasks_i)
-        pt_l_j = sum(self._RT[t.id] for t in ctasks_j)
-        return pt_l_i, pt_l_ij, pt_l_j, r_i, r_j - self._RT[tj], scti
+                st_j = sj
+                r_j = max(r_j, cst_j + self.RP[t.id])
+                l_i = max(l_i, cst_j + self.RP[t.id])
+                deps_j -= self._cdeps[t.id]
+
+        # print(">>>", set(c.to_task for c in deps_i), set(c.to_task for c in deps_j), r_i, r_j, r_i, l_j)
+
+        l_i = max(l_i,
+                  ft_i + sum(self._RT[t.id] for t in set(c.to_task for c in deps_i)))
+        l_j = max(l_j,
+                  ft_j + sum(self._RT[t.id] for t in set(c.to_task for c in deps_j)))
+        pti = max(r_i, l_i) - ft_i
+        ptj = max(r_j, l_j) - ft_j
+        # print(self._ti2t(ti), self._ti2t(tj), pti, ptj, l_i, l_j, r_i, r_j, ft_i, ft_j)
+        return pti, ptj
 
 
 class CAWS_r(CAWS):
