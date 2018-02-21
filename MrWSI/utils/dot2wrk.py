@@ -5,6 +5,7 @@ import os.path
 from math import ceil
 from random import gauss, uniform, choice
 import json
+from statistics import mean
 
 # CPU_GAUSS_MU = 0
 # CPU_GAUSS_SIGMA = 1
@@ -36,15 +37,25 @@ def convert_dot(dot_path, out_dir, ccr_set):
 
     tasks = {}
     ccr = choice(ccr_set)
+    rts = []
+    cts = []
+    bw = 76546048 / 1024
     for task_id in dag:
         tasks[task_id] = {
-            "runtime": ceil(int(dag.node[task_id]["size"]) / 10e8),
+            "runtime": ceil(int(dag.node[task_id]["size"]) / 10e10),
             "demands": generate_task_demand(),
             "prevs": {
-                p: int(int(dag[p][task_id]["size"]) / 309.6 * ccr)
+                p: int(dag[p][task_id]["size"])
                 for p in dag.predecessors(task_id)
             }
         }
+        rts.append(tasks[task_id]["runtime"])
+        cts.extend([ct / bw for ct in tasks[task_id]["prevs"].values()])
+    crt_ccr = mean(cts) / mean(rts)
+    ccr_modifier = ccr / crt_ccr
+    for task in tasks:
+        for p in tasks[task]["prevs"]:
+            tasks[task]["prevs"][p] = int(tasks[task]["prevs"][p] * ccr_modifier)
 
     with open(os.path.join(out_dir, dag_id + ".wrk"), "w") as f:
         json.dump(tasks, f, indent=2)

@@ -1,9 +1,28 @@
 from MrWSI.core.problem import Problem, Task, Communication, COMM_INPUT, COMM_OUTPUT
 from MrWSI.core.platform import Context, Platform, Machine
 from MrWSI.core.schedule import Schedule
+from MrWSI.utils.plot import draw_dag
 
 import numpy as np
 from statistics import mean
+from functools import wraps
+import os.path
+
+
+def memo_reset(func):
+    func._memo = {}
+
+
+def memo(func):
+    memo_reset(func)
+
+    @wraps(func)
+    def wrapped(*args):
+        if args not in func._memo:
+            func._memo[args] = func(*args)
+        return func._memo[args]
+
+    return wrapped
 
 
 class HomoProblem(Problem):
@@ -26,8 +45,12 @@ class HomoProblem(Problem):
         task_costs = []
         comm_costs = []
         for task in self.tasks:
+            if task.runtime(self.vm_type) == 0:
+                continue
             task_costs.append(task.runtime(self.vm_type))
             for comm in task.communications(COMM_OUTPUT):
+                if comm.to_task.runtime(self.vm_type) == 0:
+                    continue
                 comm_costs.append(comm.runtime(self.vm_type.bandwidth))
         return mean(comm_costs) / mean(task_costs)
 
@@ -69,6 +92,9 @@ class Heuristic(object):
         self.vm_type = problem.vm_type
         self.bandwidth = self.vm_type.bandwidth
 
+        self.N = self.problem.num_tasks
+        self.M = self.problem.platform_limits[0]
+
         self.start_times = {}
         self.finish_times = {}
         self.placements = {}
@@ -76,14 +102,13 @@ class Heuristic(object):
         self._pls = None
         self._order = []
 
-        self._RT = [0] * self.problem.num_tasks
-        for t in self.problem.tasks:
-            self._RT[t.id] = t.runtime(self.vm_type)
-        self._CT = np.zeros(
-            shape=(self.problem.num_tasks, self.problem.num_tasks))
+        self._RT = np.array([t.runtime(self.vm_type)
+                             for t in self.problem.tasks], dtype=int)
+        self._CT = np.zeros((self.N, self.N), dtype=int)
         for t in self.problem.tasks:
             for c in t.communications(COMM_OUTPUT):
                 self._CT[t.id, c.to_task.id] = c.runtime(self.bandwidth)
+        self.entry_tasks = [t for t in self.problem.tasks if t.in_degree == 0]
 
     def _topsort(self):
         toporder = [t for t in self.problem.tasks if not t.in_degree]
@@ -117,6 +142,26 @@ class Heuristic(object):
 
     def CT(self, c):
         return self._CT[c.from_task.id, c.to_task.id]
+
+    def ti2t(self, i):
+        return self.problem.tasks[i]
+
+    def topsort(self):
+        toporder = [t for t in self.problem.tasks if not t.in_degree]
+        rids = [t.in_degree for t in self.problem.tasks]
+        i = 0
+        while i < self.problem.num_tasks:
+            for t in toporder[i].succs():
+                rids[t.id] -= 1
+                if not rids[t.id]:
+                    toporder.append(t)
+            i += 1
+        return toporder
+
+    @memo
+    def is_successor(self, task_i, task_j):
+        return task_j in task_i.succs() or \
+            any(self.is_successor(t, task_j) for t in task_i.succs())
 
     @property
     def L(self):
@@ -154,8 +199,12 @@ class Heuristic(object):
     def perform_placement(self, task, placement):
         pass
 
-    def plan_task_on(self, task, machine):
+    def placement_on(self, task, machine):
         pass
+
+    def plan_task_on(self, task, machine):
+        pls = self.placement_on(task, machine)
+        return pls, self.fitness(task, *pls)
 
     def available_machines(self):
         for machine in self.platform.machines:
@@ -165,12 +214,16 @@ class Heuristic(object):
         # print([m for m in self.platform.machines])
 
     def solve(self):
+        if "alg" in self.log:
+            draw_dag(self.problem, os.path.join("./", "dag.png"))
+
         for task in self.sort_tasks():
             self._order.append(task)
             placement_bst, fitness_bst = None, self.default_fitness()
             for machine in self.available_machines():
                 assert machine.vm_type.capacities >= task.demands()
-                placement, fitness = self.plan_task_on(task, machine)
+                placement = self.placement_on(task, machine)
+                fitness = self.fitness(task, *placement)
                 if "fit" in self.log:
                     print(task, machine, fitness, placement)
                 if self.compare_fitness(fitness, fitness_bst):
@@ -211,10 +264,6 @@ class Heuristic(object):
                         len(self.platform))
 
     def log_alg(self, path):
-        from MrWSI.utils.plot import draw_dag
-        import os.path
-
-        draw_dag(self.problem, os.path.join(path, "dag.png"))
         print("By {}, Order: {}".format(self.alg_name, self._order))
         for machine in sorted(
                 self.platform, key=lambda m: (m.open_time(), m.close_time())):

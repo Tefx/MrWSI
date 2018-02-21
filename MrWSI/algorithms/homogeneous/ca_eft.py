@@ -31,7 +31,7 @@ class CAEFT(Heuristic):
     def prepare_machines(self, machines):
         pass
 
-    def plan_task_on(self, task, machine):
+    def placement_on(self, task, machine):
         task_est = 0
         comm_pls = {}
         for comm in self.sorted_in_comms(task):
@@ -52,8 +52,7 @@ class CAEFT(Heuristic):
             if self.need_communication(comm, machine):
                 self.remove_communication(comm,
                                           self.PL_m(comm.from_task), machine)
-        pls = (machine, comm_pls, task_st)
-        return pls, self.fitness(task, *pls)
+        return (machine, comm_pls, task_st)
 
     def fitness(self, task, machine, comm_pls, task_st):
         return task_st + self.RT(task)
@@ -90,4 +89,3 @@ class CAEFT_P(CAEFT):
                                                     2 + COMM_OUTPUT,
                                                     2 + COMM_INPUT,
                                                     self.bandwidth)
-

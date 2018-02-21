@@ -1,7 +1,8 @@
 #!/usr/bin/env bash
 
-declare -a ccrs=(0.125 0.25 0.5 0.75 1 2 3 4 5 6 7 8 9 10)
-#declare -a ccrs=(0.25 0.5 1 2 4 8)
+#declare -a ccrs=(0.125 0.25 0.5 0.75 1 2 3 4 5 6 7 8 9 10)
+#declare -a ccrs=(4 5 6 7 8 9 10)
+declare -a ccrs=(0 0.5 1 2 3 4 5 6 7 8)
 
 rm -r resources/workflows/random*
 

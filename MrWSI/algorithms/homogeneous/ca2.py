@@ -8,8 +8,8 @@ from heapq import heapify, heappush, heappop
 
 
 class EFT_RankU(Heuristic):
-    def sorted_in_comms(self, task):
-        return task.communications(COMM_INPUT)
+    # def sorted_in_comms(self, task):
+        # return task.communications(COMM_INPUT)
 
     def sort_tasks(self):
         self._ranks = [0] * self.problem.num_tasks
@@ -24,6 +24,10 @@ class EFT_RankU(Heuristic):
 
     def fitness(self, task, machine, comm_pls, st):
         return st + self._RT[task.id]
+
+class EFT_RankU2(EFT_RankU):
+    def sorted_in_comms(self, task):
+        return task.communications(COMM_INPUT)
 
 
 class CA_Simple(Heuristic):

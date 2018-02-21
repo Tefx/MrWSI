@@ -11,12 +11,12 @@ daggen = sh.Command(os.path.join(path, "daggen"))
 # dot = sh.dot
 
 num_gen = 1000
-# n_set = [25, 50, 75, 100]
-n_set = [50]
+#n_set = [25, 50, 75, 100]
+n_set = [100]
 jump_set = [1, 3, 5]
 fat_set = [0.2, 0.4, 0.6, 0.8]
 # fat_set = [0.5]
-ccr_set = [30]
+ccr_set = [0]
 regularity_set = [0.2, 0.4, 0.6, 0.8]
 density_set = [0.2, 0.4, 0.6, 0.8]
 # density_set = [0.8]
@@ -42,7 +42,7 @@ def gen_dag(i):
                 fat=fat,
                 regularity=regularity,
                 density=density,
-                ccr=1
+                ccr=0
             ))
         f.write(source)
     # dot(name, "-Tpng", "-O")

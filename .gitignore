@@ -108,3 +108,4 @@ ENV/
 *.py.lprof
 *.directory
 /plots/
+*.swp

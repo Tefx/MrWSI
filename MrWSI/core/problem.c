@@ -829,7 +829,7 @@ struct __pyx_obj_5MrWSI_4core_7problem___pyx_scope_struct____init__ {
 
 
 /* "MrWSI/core/problem.pyx":45
- *         self.out_communications = problem.task_out_communications(task_id)
+ *         self.out_comms = problem.task_out_communications(task_id)
  *         self.data_sizes = [
  *                 sum(c.data_size for c in self.communications(COMM_INPUT)),             # <<<<<<<<<<<<<<
  *                 sum(c.data_size for c in self.communications(COMM_OUTPUT))
@@ -1889,6 +1889,7 @@ static const char __pyx_k_to_task[] = "to_task";
 static const char __pyx_k_type_id[] = "type_id";
 static const char __pyx_k_vm_cost[] = "vm_cost";
 static const char __pyx_k_getstate[] = "__getstate__";
+static const char __pyx_k_in_comms[] = "in_comms";
 static const char __pyx_k_plt_file[] = "plt_file";
 static const char __pyx_k_property[] = "property";
 static const char __pyx_k_qualname[] = "__qualname__";
@@ -1904,6 +1905,7 @@ static const char __pyx_k_from_task[] = "from_task";
 static const char __pyx_k_in_degree[] = "in_degree";
 static const char __pyx_k_itertools[] = "itertools";
 static const char __pyx_k_metaclass[] = "__metaclass__";
+static const char __pyx_k_out_comms[] = "out_comms";
 static const char __pyx_k_reduce_ex[] = "__reduce_ex__";
 static const char __pyx_k_task_id_2[] = "_task_id";
 static const char __pyx_k_type_id_2[] = "_type_id";
@@ -1951,12 +1953,10 @@ static const char __pyx_k_setstate_cython[] = "__setstate_cython__";
 static const char __pyx_k_type_capacities[] = "type_capacities";
 static const char __pyx_k_Task_mean_runtime[] = "Task.mean_runtime";
 static const char __pyx_k_VMType_capacities[] = "VMType.capacities";
-static const char __pyx_k_in_communications[] = "in_communications";
 static const char __pyx_k_task_mean_runtime[] = "task_mean_runtime";
 static const char __pyx_k_Communication___eq[] = "Communication.__eq__";
 static const char __pyx_k_MrWSI_core_problem[] = "MrWSI.core.problem";
 static const char __pyx_k_cline_in_traceback[] = "cline_in_traceback";
-static const char __pyx_k_out_communications[] = "out_communications";
 static const char __pyx_k_platform_limit_dim[] = "platform_limit_dim";
 static const char __pyx_k_Task_communications[] = "Task.communications";
 static const char __pyx_k_type_mean_bandwidth[] = "type_mean_bandwidth";
@@ -2047,7 +2047,7 @@ static PyObject *__pyx_n_s_hash;
 static PyObject *__pyx_n_s_i;
 static PyObject *__pyx_n_s_id;
 static PyObject *__pyx_n_s_import;
-static PyObject *__pyx_n_s_in_communications;
+static PyObject *__pyx_n_s_in_comms;
 static PyObject *__pyx_n_s_in_degree;
 static PyObject *__pyx_n_s_index;
 static PyObject *__pyx_n_s_inf;
@@ -2070,7 +2070,7 @@ static PyObject *__pyx_kp_s_no_default___reduce___due_to_non;
 static PyObject *__pyx_n_s_object;
 static PyObject *__pyx_n_s_open;
 static PyObject *__pyx_n_s_other;
-static PyObject *__pyx_n_s_out_communications;
+static PyObject *__pyx_n_s_out_comms;
 static PyObject *__pyx_n_s_out_degree;
 static PyObject *__pyx_n_s_platform_limit_dim;
 static PyObject *__pyx_n_s_platform_limits;
@@ -3372,7 +3372,7 @@ static PyObject *__pyx_pw_5MrWSI_4core_7problem_4Task_1__init__(PyObject *__pyx_
 static PyObject *__pyx_gb_5MrWSI_4core_7problem_4Task_8__init___2generator(__pyx_CoroutineObject *__pyx_generator, CYTHON_UNUSED PyThreadState *__pyx_tstate, PyObject *__pyx_sent_value); /* proto */
 
 /* "MrWSI/core/problem.pyx":45
- *         self.out_communications = problem.task_out_communications(task_id)
+ *         self.out_comms = problem.task_out_communications(task_id)
  *         self.data_sizes = [
  *                 sum(c.data_size for c in self.communications(COMM_INPUT)),             # <<<<<<<<<<<<<<
  *                 sum(c.data_size for c in self.communications(COMM_OUTPUT))
@@ -3810,7 +3810,7 @@ static PyObject *__pyx_pf_5MrWSI_4core_7problem_4Task___init__(CYTHON_UNUSED PyO
  *     def __init__(self, problem, task_id):
  *         self.problem = problem             # <<<<<<<<<<<<<<
  *         self._task_id = task_id
- *         self.in_communications = problem.task_in_communications(task_id)
+ *         self.in_comms = problem.task_in_communications(task_id)
  */
   if (__Pyx_PyObject_SetAttrStr(__pyx_cur_scope->__pyx_v_self, __pyx_n_s_problem, __pyx_v_problem) < 0) __PYX_ERR(0, 40, __pyx_L1_error)
 
@@ -3818,16 +3818,16 @@ static PyObject *__pyx_pf_5MrWSI_4core_7problem_4Task___init__(CYTHON_UNUSED PyO
  *     def __init__(self, problem, task_id):
  *         self.problem = problem
  *         self._task_id = task_id             # <<<<<<<<<<<<<<
- *         self.in_communications = problem.task_in_communications(task_id)
- *         self.out_communications = problem.task_out_communications(task_id)
+ *         self.in_comms = problem.task_in_communications(task_id)
+ *         self.out_comms = problem.task_out_communications(task_id)
  */
   if (__Pyx_PyObject_SetAttrStr(__pyx_cur_scope->__pyx_v_self, __pyx_n_s_task_id_2, __pyx_v_task_id) < 0) __PYX_ERR(0, 41, __pyx_L1_error)
 
   /* "MrWSI/core/problem.pyx":42
  *         self.problem = problem
  *         self._task_id = task_id
- *         self.in_communications = problem.task_in_communications(task_id)             # <<<<<<<<<<<<<<
- *         self.out_communications = problem.task_out_communications(task_id)
+ *         self.in_comms = problem.task_in_communications(task_id)             # <<<<<<<<<<<<<<
+ *         self.out_comms = problem.task_out_communications(task_id)
  *         self.data_sizes = [
  */
   __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_v_problem, __pyx_n_s_task_in_communications); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 42, __pyx_L1_error)
@@ -3875,13 +3875,13 @@ static PyObject *__pyx_pf_5MrWSI_4core_7problem_4Task___init__(CYTHON_UNUSED PyO
     }
   }
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  if (__Pyx_PyObject_SetAttrStr(__pyx_cur_scope->__pyx_v_self, __pyx_n_s_in_communications, __pyx_t_1) < 0) __PYX_ERR(0, 42, __pyx_L1_error)
+  if (__Pyx_PyObject_SetAttrStr(__pyx_cur_scope->__pyx_v_self, __pyx_n_s_in_comms, __pyx_t_1) < 0) __PYX_ERR(0, 42, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
   /* "MrWSI/core/problem.pyx":43
  *         self._task_id = task_id
- *         self.in_communications = problem.task_in_communications(task_id)
- *         self.out_communications = problem.task_out_communications(task_id)             # <<<<<<<<<<<<<<
+ *         self.in_comms = problem.task_in_communications(task_id)
+ *         self.out_comms = problem.task_out_communications(task_id)             # <<<<<<<<<<<<<<
  *         self.data_sizes = [
  *                 sum(c.data_size for c in self.communications(COMM_INPUT)),
  */
@@ -3930,11 +3930,11 @@ static PyObject *__pyx_pf_5MrWSI_4core_7problem_4Task___init__(CYTHON_UNUSED PyO
     }
   }
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  if (__Pyx_PyObject_SetAttrStr(__pyx_cur_scope->__pyx_v_self, __pyx_n_s_out_communications, __pyx_t_1) < 0) __PYX_ERR(0, 43, __pyx_L1_error)
+  if (__Pyx_PyObject_SetAttrStr(__pyx_cur_scope->__pyx_v_self, __pyx_n_s_out_comms, __pyx_t_1) < 0) __PYX_ERR(0, 43, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
   /* "MrWSI/core/problem.pyx":45
- *         self.out_communications = problem.task_out_communications(task_id)
+ *         self.out_comms = problem.task_out_communications(task_id)
  *         self.data_sizes = [
  *                 sum(c.data_size for c in self.communications(COMM_INPUT)),             # <<<<<<<<<<<<<<
  *                 sum(c.data_size for c in self.communications(COMM_OUTPUT))
@@ -3970,8 +3970,8 @@ static PyObject *__pyx_pf_5MrWSI_4core_7problem_4Task___init__(CYTHON_UNUSED PyO
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
 
   /* "MrWSI/core/problem.pyx":44
- *         self.in_communications = problem.task_in_communications(task_id)
- *         self.out_communications = problem.task_out_communications(task_id)
+ *         self.in_comms = problem.task_in_communications(task_id)
+ *         self.out_comms = problem.task_out_communications(task_id)
  *         self.data_sizes = [             # <<<<<<<<<<<<<<
  *                 sum(c.data_size for c in self.communications(COMM_INPUT)),
  *                 sum(c.data_size for c in self.communications(COMM_OUTPUT))
@@ -4131,7 +4131,7 @@ static PyObject *__pyx_pf_5MrWSI_4core_7problem_4Task_2data_size(CYTHON_UNUSED P
  * 
  *     def communications(self, comm_type):             # <<<<<<<<<<<<<<
  *         if comm_type == COMM_INPUT:
- *             return self.in_communications
+ *             return self.in_comms
  */
 
 /* Python wrapper */
@@ -4208,7 +4208,7 @@ static PyObject *__pyx_pf_5MrWSI_4core_7problem_4Task_4communications(CYTHON_UNU
  * 
  *     def communications(self, comm_type):
  *         if comm_type == COMM_INPUT:             # <<<<<<<<<<<<<<
- *             return self.in_communications
+ *             return self.in_comms
  *         else:
  */
   __pyx_t_1 = __Pyx_GetModuleGlobalName(__pyx_n_s_COMM_INPUT); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 53, __pyx_L1_error)
@@ -4222,12 +4222,12 @@ static PyObject *__pyx_pf_5MrWSI_4core_7problem_4Task_4communications(CYTHON_UNU
     /* "MrWSI/core/problem.pyx":54
  *     def communications(self, comm_type):
  *         if comm_type == COMM_INPUT:
- *             return self.in_communications             # <<<<<<<<<<<<<<
+ *             return self.in_comms             # <<<<<<<<<<<<<<
  *         else:
- *             return self.out_communications
+ *             return self.out_comms
  */
     __Pyx_XDECREF(__pyx_r);
-    __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_v_self, __pyx_n_s_in_communications); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 54, __pyx_L1_error)
+    __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_v_self, __pyx_n_s_in_comms); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 54, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_2);
     __pyx_r = __pyx_t_2;
     __pyx_t_2 = 0;
@@ -4237,21 +4237,21 @@ static PyObject *__pyx_pf_5MrWSI_4core_7problem_4Task_4communications(CYTHON_UNU
  * 
  *     def communications(self, comm_type):
  *         if comm_type == COMM_INPUT:             # <<<<<<<<<<<<<<
- *             return self.in_communications
+ *             return self.in_comms
  *         else:
  */
   }
 
   /* "MrWSI/core/problem.pyx":56
- *             return self.in_communications
+ *             return self.in_comms
  *         else:
- *             return self.out_communications             # <<<<<<<<<<<<<<
+ *             return self.out_comms             # <<<<<<<<<<<<<<
  * 
  *     def demands(self):
  */
   /*else*/ {
     __Pyx_XDECREF(__pyx_r);
-    __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_v_self, __pyx_n_s_out_communications); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 56, __pyx_L1_error)
+    __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_v_self, __pyx_n_s_out_comms); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 56, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_2);
     __pyx_r = __pyx_t_2;
     __pyx_t_2 = 0;
@@ -4263,7 +4263,7 @@ static PyObject *__pyx_pf_5MrWSI_4core_7problem_4Task_4communications(CYTHON_UNU
  * 
  *     def communications(self, comm_type):             # <<<<<<<<<<<<<<
  *         if comm_type == COMM_INPUT:
- *             return self.in_communications
+ *             return self.in_comms
  */
 
   /* function exit code */
@@ -4279,7 +4279,7 @@ static PyObject *__pyx_pf_5MrWSI_4core_7problem_4Task_4communications(CYTHON_UNU
 }
 
 /* "MrWSI/core/problem.pyx":58
- *             return self.out_communications
+ *             return self.out_comms
  * 
  *     def demands(self):             # <<<<<<<<<<<<<<
  *         return self.problem.task_demands(self._task_id)
@@ -4376,7 +4376,7 @@ static PyObject *__pyx_pf_5MrWSI_4core_7problem_4Task_6demands(CYTHON_UNUSED PyO
   goto __pyx_L0;
 
   /* "MrWSI/core/problem.pyx":58
- *             return self.out_communications
+ *             return self.out_comms
  * 
  *     def demands(self):             # <<<<<<<<<<<<<<
  *         return self.problem.task_demands(self._task_id)
@@ -4818,7 +4818,7 @@ static PyObject *__pyx_pf_5MrWSI_4core_7problem_4Task_12succs(CYTHON_UNUSED PyOb
  * 
  *     @property
  *     def in_degree(self):             # <<<<<<<<<<<<<<
- *         return len(self.in_communications)
+ *         return len(self.in_comms)
  * 
  */
 
@@ -4846,12 +4846,12 @@ static PyObject *__pyx_pf_5MrWSI_4core_7problem_4Task_14in_degree(CYTHON_UNUSED 
   /* "MrWSI/core/problem.pyx":72
  *     @property
  *     def in_degree(self):
- *         return len(self.in_communications)             # <<<<<<<<<<<<<<
+ *         return len(self.in_comms)             # <<<<<<<<<<<<<<
  * 
  *     @property
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_v_self, __pyx_n_s_in_communications); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 72, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_v_self, __pyx_n_s_in_comms); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 72, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_t_2 = PyObject_Length(__pyx_t_1); if (unlikely(__pyx_t_2 == ((Py_ssize_t)-1))) __PYX_ERR(0, 72, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
@@ -4865,7 +4865,7 @@ static PyObject *__pyx_pf_5MrWSI_4core_7problem_4Task_14in_degree(CYTHON_UNUSED 
  * 
  *     @property
  *     def in_degree(self):             # <<<<<<<<<<<<<<
- *         return len(self.in_communications)
+ *         return len(self.in_comms)
  * 
  */
 
@@ -4884,7 +4884,7 @@ static PyObject *__pyx_pf_5MrWSI_4core_7problem_4Task_14in_degree(CYTHON_UNUSED 
  * 
  *     @property
  *     def out_degree(self):             # <<<<<<<<<<<<<<
- *         return len(self.out_communications)
+ *         return len(self.out_comms)
  * 
  */
 
@@ -4912,12 +4912,12 @@ static PyObject *__pyx_pf_5MrWSI_4core_7problem_4Task_16out_degree(CYTHON_UNUSED
   /* "MrWSI/core/problem.pyx":76
  *     @property
  *     def out_degree(self):
- *         return len(self.out_communications)             # <<<<<<<<<<<<<<
+ *         return len(self.out_comms)             # <<<<<<<<<<<<<<
  * 
  *     @property
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_v_self, __pyx_n_s_out_communications); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 76, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_v_self, __pyx_n_s_out_comms); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 76, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_t_2 = PyObject_Length(__pyx_t_1); if (unlikely(__pyx_t_2 == ((Py_ssize_t)-1))) __PYX_ERR(0, 76, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
@@ -4931,7 +4931,7 @@ static PyObject *__pyx_pf_5MrWSI_4core_7problem_4Task_16out_degree(CYTHON_UNUSED
  * 
  *     @property
  *     def out_degree(self):             # <<<<<<<<<<<<<<
- *         return len(self.out_communications)
+ *         return len(self.out_comms)
  * 
  */
 
@@ -13925,7 +13925,7 @@ static __Pyx_StringTabEntry __pyx_string_tab[] = {
   {&__pyx_n_s_i, __pyx_k_i, sizeof(__pyx_k_i), 0, 0, 1, 1},
   {&__pyx_n_s_id, __pyx_k_id, sizeof(__pyx_k_id), 0, 0, 1, 1},
   {&__pyx_n_s_import, __pyx_k_import, sizeof(__pyx_k_import), 0, 0, 1, 1},
-  {&__pyx_n_s_in_communications, __pyx_k_in_communications, sizeof(__pyx_k_in_communications), 0, 0, 1, 1},
+  {&__pyx_n_s_in_comms, __pyx_k_in_comms, sizeof(__pyx_k_in_comms), 0, 0, 1, 1},
   {&__pyx_n_s_in_degree, __pyx_k_in_degree, sizeof(__pyx_k_in_degree), 0, 0, 1, 1},
   {&__pyx_n_s_index, __pyx_k_index, sizeof(__pyx_k_index), 0, 0, 1, 1},
   {&__pyx_n_s_inf, __pyx_k_inf, sizeof(__pyx_k_inf), 0, 0, 1, 1},
@@ -13948,7 +13948,7 @@ static __Pyx_StringTabEntry __pyx_string_tab[] = {
   {&__pyx_n_s_object, __pyx_k_object, sizeof(__pyx_k_object), 0, 0, 1, 1},
   {&__pyx_n_s_open, __pyx_k_open, sizeof(__pyx_k_open), 0, 0, 1, 1},
   {&__pyx_n_s_other, __pyx_k_other, sizeof(__pyx_k_other), 0, 0, 1, 1},
-  {&__pyx_n_s_out_communications, __pyx_k_out_communications, sizeof(__pyx_k_out_communications), 0, 0, 1, 1},
+  {&__pyx_n_s_out_comms, __pyx_k_out_comms, sizeof(__pyx_k_out_comms), 0, 0, 1, 1},
   {&__pyx_n_s_out_degree, __pyx_k_out_degree, sizeof(__pyx_k_out_degree), 0, 0, 1, 1},
   {&__pyx_n_s_platform_limit_dim, __pyx_k_platform_limit_dim, sizeof(__pyx_k_platform_limit_dim), 0, 0, 1, 1},
   {&__pyx_n_s_platform_limits, __pyx_k_platform_limits, sizeof(__pyx_k_platform_limits), 0, 0, 1, 1},
@@ -14193,7 +14193,7 @@ static int __Pyx_InitCachedConstants(void) {
  * 
  *     def communications(self, comm_type):             # <<<<<<<<<<<<<<
  *         if comm_type == COMM_INPUT:
- *             return self.in_communications
+ *             return self.in_comms
  */
   __pyx_tuple__25 = PyTuple_Pack(2, __pyx_n_s_self, __pyx_n_s_comm_type); if (unlikely(!__pyx_tuple__25)) __PYX_ERR(0, 52, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple__25);
@@ -14201,7 +14201,7 @@ static int __Pyx_InitCachedConstants(void) {
   __pyx_codeobj__26 = (PyObject*)__Pyx_PyCode_New(2, 0, 2, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__25, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_MrWSI_core_problem_pyx, __pyx_n_s_communications, 52, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__26)) __PYX_ERR(0, 52, __pyx_L1_error)
 
   /* "MrWSI/core/problem.pyx":58
- *             return self.out_communications
+ *             return self.out_comms
  * 
  *     def demands(self):             # <<<<<<<<<<<<<<
  *         return self.problem.task_demands(self._task_id)
@@ -14252,7 +14252,7 @@ static int __Pyx_InitCachedConstants(void) {
  * 
  *     @property
  *     def in_degree(self):             # <<<<<<<<<<<<<<
- *         return len(self.in_communications)
+ *         return len(self.in_comms)
  * 
  */
   __pyx_tuple__35 = PyTuple_Pack(1, __pyx_n_s_self); if (unlikely(!__pyx_tuple__35)) __PYX_ERR(0, 71, __pyx_L1_error)
@@ -14264,7 +14264,7 @@ static int __Pyx_InitCachedConstants(void) {
  * 
  *     @property
  *     def out_degree(self):             # <<<<<<<<<<<<<<
- *         return len(self.out_communications)
+ *         return len(self.out_comms)
  * 
  */
   __pyx_tuple__37 = PyTuple_Pack(1, __pyx_n_s_self); if (unlikely(!__pyx_tuple__37)) __PYX_ERR(0, 75, __pyx_L1_error)
@@ -14895,7 +14895,7 @@ static int __pyx_pymod_exec_problem(PyObject *__pyx_pyinit_module)
  * 
  *     def communications(self, comm_type):             # <<<<<<<<<<<<<<
  *         if comm_type == COMM_INPUT:
- *             return self.in_communications
+ *             return self.in_comms
  */
   __pyx_t_4 = __Pyx_CyFunction_NewEx(&__pyx_mdef_5MrWSI_4core_7problem_4Task_5communications, 0, __pyx_n_s_Task_communications, NULL, __pyx_n_s_MrWSI_core_problem, __pyx_d, ((PyObject *)__pyx_codeobj__26)); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 52, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
@@ -14903,7 +14903,7 @@ static int __pyx_pymod_exec_problem(PyObject *__pyx_pyinit_module)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
   /* "MrWSI/core/problem.pyx":58
- *             return self.out_communications
+ *             return self.out_comms
  * 
  *     def demands(self):             # <<<<<<<<<<<<<<
  *         return self.problem.task_demands(self._task_id)
@@ -14954,7 +14954,7 @@ static int __pyx_pymod_exec_problem(PyObject *__pyx_pyinit_module)
  * 
  *     @property
  *     def in_degree(self):             # <<<<<<<<<<<<<<
- *         return len(self.in_communications)
+ *         return len(self.in_comms)
  * 
  */
   __pyx_t_4 = __Pyx_CyFunction_NewEx(&__pyx_mdef_5MrWSI_4core_7problem_4Task_15in_degree, 0, __pyx_n_s_Task_in_degree, NULL, __pyx_n_s_MrWSI_core_problem, __pyx_d, ((PyObject *)__pyx_codeobj__36)); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 71, __pyx_L1_error)
@@ -14965,7 +14965,7 @@ static int __pyx_pymod_exec_problem(PyObject *__pyx_pyinit_module)
  * 
  *     @property             # <<<<<<<<<<<<<<
  *     def in_degree(self):
- *         return len(self.in_communications)
+ *         return len(self.in_comms)
  */
   __pyx_t_5 = PyTuple_New(1); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 70, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_5);
@@ -14982,18 +14982,18 @@ static int __pyx_pymod_exec_problem(PyObject *__pyx_pyinit_module)
  * 
  *     @property
  *     def out_degree(self):             # <<<<<<<<<<<<<<
- *         return len(self.out_communications)
+ *         return len(self.out_comms)
  * 
  */
   __pyx_t_4 = __Pyx_CyFunction_NewEx(&__pyx_mdef_5MrWSI_4core_7problem_4Task_17out_degree, 0, __pyx_n_s_Task_out_degree, NULL, __pyx_n_s_MrWSI_core_problem, __pyx_d, ((PyObject *)__pyx_codeobj__38)); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 75, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
 
   /* "MrWSI/core/problem.pyx":74
- *         return len(self.in_communications)
+ *         return len(self.in_comms)
  * 
  *     @property             # <<<<<<<<<<<<<<
  *     def out_degree(self):
- *         return len(self.out_communications)
+ *         return len(self.out_comms)
  */
   __pyx_t_5 = PyTuple_New(1); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 74, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_5);
@@ -15017,7 +15017,7 @@ static int __pyx_pymod_exec_problem(PyObject *__pyx_pyinit_module)
   __Pyx_GOTREF(__pyx_t_4);
 
   /* "MrWSI/core/problem.pyx":78
- *         return len(self.out_communications)
+ *         return len(self.out_comms)
  * 
  *     @property             # <<<<<<<<<<<<<<
  *     def id(self):

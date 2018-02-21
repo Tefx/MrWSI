@@ -39,8 +39,8 @@ class Task(object):
     def __init__(self, problem, task_id):
         self.problem = problem
         self._task_id = task_id
-        self.in_communications = problem.task_in_communications(task_id)
-        self.out_communications = problem.task_out_communications(task_id)
+        self.in_comms = problem.task_in_communications(task_id)
+        self.out_comms = problem.task_out_communications(task_id)
         self.data_sizes = [
                 sum(c.data_size for c in self.communications(COMM_INPUT)),
                 sum(c.data_size for c in self.communications(COMM_OUTPUT))
@@ -51,9 +51,9 @@ class Task(object):
 
     def communications(self, comm_type):
         if comm_type == COMM_INPUT:
-            return self.in_communications
+            return self.in_comms
         else:
-            return self.out_communications
+            return self.out_comms
 
     def demands(self):
         return self.problem.task_demands(self._task_id)
@@ -69,11 +69,11 @@ class Task(object):
 
     @property
     def in_degree(self):
-        return len(self.in_communications)
+        return len(self.in_comms)
 
     @property
     def out_degree(self):
-        return len(self.out_communications)
+        return len(self.out_comms)
 
     @property
     def id(self):

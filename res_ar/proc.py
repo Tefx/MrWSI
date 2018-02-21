@@ -3,9 +3,9 @@ mpl.use("Agg")
 import matplotlib.pyplot as plt
 
 ccrs = [
-    0.125, 0.25, 0.5, 0.75, 1,
-    2, 3, 4, 5, 6, 7, 8, 9, 10
-    # 0.25, 0.5, 1, 2, 4, 8
+    # 0.125, 0.25, 0.5, 0.75, 1, 2,
+    # 3, 4, 5, 6, 7, 8, 9, 10
+    0, 0.5, 1, 2, 3, 4, 5, 6, 7, 8
     # 0.25, 0.5, 1, 2
 ]
 # ccrs = range(21)
@@ -33,8 +33,8 @@ ignore_list = [
     # "CAEFT(PU)",
     # "CA2Fit5(U)",
     # "CA2Fit5(PU)",
-    "CAWS1.2(PU)",
-    "CAWS1.3(PU)",
+    # "CAWS1.2(PU)",
+    # "CAWS1.3(PU)",
     # "CAWS1.8(PU)",
     # "CAWS1.9(PU)",
     # "CAWS1.10(PU)",
@@ -48,6 +48,7 @@ fig, ax = plt.subplots(figsize=(4.8, 3.6))
 for alg, values in res.items():
     ax.plot(ccrs, values, lw=0.5, label=alg)
 ax.axhline(y=1, lw=0.5, ls='--')
+# ax.set_ylim(bottom=0)
 # ax.set_xscale("log", basex=2)
 ax.legend()
 fig.tight_layout()
