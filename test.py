@@ -5,7 +5,7 @@ from MrWSI.core.platform import Context
 from MrWSI.simulation.base import FCFSEnv, SimEnv
 from MrWSI.simulation.fair import FairEnv
 from MrWSI.algorithms.homogeneous import *
-from MrWSI.utils.plot import plot_cmp_results
+from MrWSI.utils.plot import plot_cmp_results, draw_dag
 
 import os
 import sys
@@ -27,7 +27,8 @@ def pegasus_wrks(wrk_dir, start=""):
 
 
 def random_wrks(wrk_dir, start=""):
-    for wrk in sorted(os.listdir(wrk_dir), key=lambda x: int(x.split("_")[0])):
+    for wrk in sorted([f for f in os.listdir(wrk_dir) if f.endswith(".wrk")],
+                      key=lambda x: int(x.split("_")[0])):
         if wrk.endswith(".wrk") and wrk.startswith(start):
             yield os.path.join(wrk_dir, wrk), wrk[:-4]
 
@@ -170,9 +171,14 @@ def run_alg_on(wrk):
         # mkalg("CAWS12(PU)", C7, CAEFT_P)(problem),
         # mkalg("CAWS13(PU)", C8, CAEFT_P)(problem),
         # mkalg("CAWS14(PU)", C9, CAEFT_P)(problem),
-        mkalg("NCAS(PU)", NewCAS, CAEFT_P)(problem),
-        mkalg("NCAS_RA(PU)", NewCAS_RA, CAEFT_P)(problem),
-        mkalg("NCAS_RA2(PU)", NewCAS_RA2, CAEFT_P)(problem),
+        # mkalg("NCAS0(PU)", RP2m_TD, RAFromRP, CAEFT_P)(problem),
+        # mkalg("NCAS1(PU)", RP2m_RA, RAFromRP, CAEFT_P)(problem),
+        mkalg("NCAS2(PU)", RP2m_RA2, RAFromRP, CAEFT_P)(problem),
+        # mkalg("NCAS3(PU)", RP2m_RA, RAFromEntry, CAEFT_P)(problem),
+        # mkalg("NCAS4(PU)", RP2m_RA2, RAFromEntry, CAEFT_P)(problem),
+        # mkalg("NCAS(PU)", NewCAS, CAEFT_P)(problem),
+        # mkalg("NCAS_RA(PU)", NewCAS_RA, CAEFT_P)(problem),
+        # mkalg("NCAS_RA2(PU)", NewCAS_RA2, CAEFT_P)(problem),
         # mkalg("NCAS_RA3(PU)", NewCAS_RA3, CAEFT_P)(problem),
         # mkalg("NCAS_m2(PU)", NewCAS_m2, CAEFT_P)(problem),
         # mkalg("NCAS_m2RA(PU)", NewCAS_m2RA, CAEFT_P)(problem),
@@ -205,9 +211,17 @@ def run_alg_on(wrk):
     # alg.export("results/{}.{}.schedule".format(wrk_name, alg.alg_name))
     for alg in algs:
         alg.span
-    if algs[-1].span != min(x.span for x in algs):
-        print("{:<16}(CCR={:<.1f}) ".format(wrk_name, problem.ccr) +
-              " ".join(str_result(alg) for alg in algs))
+    # if algs[-1].span != min(x.span for x in algs):
+    # if algs[0].span > algs[1].span > algs[2].span:
+    print("{:<16}(CCR={:<.1f}) ".format(wrk_name, problem.ccr) +
+          " ".join(str_result(alg) for alg in algs))
+    # draw_dag(problem, "dags/{}.png".format(wrk[1]))
+    # print([(t, int(algs[-2]._ranks[t.id]/100)) for t in problem.tasks])
+    # print([(t, int(algs[-1].RP[t.id]/100)) for t in problem.tasks])
+    # print([(t, int(algs[-1].RA[t.id]/100)) for t in problem.tasks])
+    # print([(t, algs[-1].TC[t.id]) for t in problem.tasks])
+    # for t in sorted(problem.tasks, key=lambda _t:int(str(_t))):
+    # print(t, algs[-1].TC[t.id])
     return [AlgRes(alg.alg_name, alg.span, alg.cost) for alg in algs]
 
 
@@ -234,10 +248,11 @@ if __name__ == "__main__":
     if len(argv) > 1:
         wrk_path = argv[1]
     else:
-        wrk_path = "./resources/workflows/random"
-        # wrk_path = "./resources/workflows/pegasus"
-    wrks = list(random_wrks(wrk_path, ""))
+        wrk_path = "."
+        # wrk_path = "./resources/workflows/random"
+        # wrk_path = "./resources/workflows/pegasus_x"
+        wrks = list(random_wrks(wrk_path, ""))
     # wrks = list(pegasus_wrks(wrk_path, ""))
-    # all_results = list(Pool().map(run_alg_on, wrks))
-    all_results = list(map(run_alg_on, wrks))
+    all_results = list(Pool().map(run_alg_on, wrks))
+    # all_results = list(map(run_alg_on, wrks))
     stat_n_plot(all_results, "box", "AS")

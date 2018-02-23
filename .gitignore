@@ -109,3 +109,6 @@ ENV/
 *.directory
 /plots/
 *.swp
+/dags/
+/pics/
+*.wrk

@@ -37,7 +37,7 @@ def plot_cmp_results(log, field, typ="box", base=0):
         # ax.legend(loc="upper left")
     elif typ == "box":
         ax.axhline(y=base)
-        ax.boxplot(data, labels=labels, showfliers=False, whis=[10, 90])
+        ax.boxplot(data, labels=labels, showmeans=True, showfliers=False, whis=[10, 90])
         # for i, y in enumerate(data):
         # x = np.random.normal(i + 1, 0.01 * len(data), len(y))
         # ax.plot(x, y, "k.", alpha=0.2)
@@ -80,10 +80,10 @@ def draw_dag(problem, path):
     graph = pgv.AGraph(directed=True)
     for task in problem.tasks:
         runtime = task.mean_runtime()
-        graph.add_node(task, label="{} <{}>".format(task, runtime))
+        graph.add_node(task, label="{} <{}>".format(task, int(runtime/100)))
         for comm in task.communications(COMM_INPUT):
             graph.add_edge(
                 comm.from_task,
                 comm.to_task,
-                label="<{}>".format(comm.mean_runtime()))
+                label="<{}>".format(int(comm.mean_runtime()/100)))
     graph.draw(path, prog="dot")

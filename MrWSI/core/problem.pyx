@@ -139,6 +139,17 @@ cdef class Problem:
 
         problem_init(&self.c, len(tasks), len(types), platform_limit_dim)
 
+        for type_id, type_str_id in enumerate(self.type_str_ids):
+            type_info = self._ctype_info(type_id)
+            raw_type = types[type_str_id]
+            raw_type["capacities"][0] *= 1000
+            raw_type["capacities"][2] = long(raw_type["capacities"][2] / 1024.0)
+            raw_type["capacities"].append(raw_type["capacities"][-1])
+            capacities = array.array("l", raw_type["capacities"])
+            type_demands = array.array("l", [1 for _ in range(platform_limit_dim)])
+            type_info_init(type_info, capacities.data.as_longs, type_demands.data.as_longs, platform_limit_dim, raw_type["price"])
+        self.types = [VMType(self, type_id) for type_id in range(self.c.num_types)]
+
         for task_id, task_str_id in enumerate(self.task_str_ids):
             task_info = self._ctask_info(task_id)
             raw_task = tasks[task_str_id]
@@ -152,25 +163,15 @@ cdef class Problem:
             runtimes = array.array("i", [ceil(raw_task["runtime"]/types[p]["speed"]) for p in self.type_str_ids])
             data_sizes = array.array("l", [0 for _ in range(len(tasks))])
             for prev_id, data in raw_task["prevs"].items():
-                data_sizes[self.task_str_ids.index(prev_id)] = long(data)
+                # data_sizes[self.task_str_ids.index(prev_id)] = long(data)
+                data_sizes[self.task_str_ids.index(prev_id)] = long(ceil(data / self.types[0].bandwidth / 100)) * self.types[0].bandwidth * 100
             task_info_init(task_info, demands.data.as_longs, 
                            prevs.data.as_ints, len(prevs),
                            succs.data.as_ints, len(succs),
                            runtimes.data.as_ints, len(types),
                            data_sizes.data.as_longs, len(tasks))
 
-        for type_id, type_str_id in enumerate(self.type_str_ids):
-            type_info = self._ctype_info(type_id)
-            raw_type = types[type_str_id]
-            raw_type["capacities"][0] *= 1000
-            raw_type["capacities"][2] = long(raw_type["capacities"][2] / 1024.0)
-            raw_type["capacities"].append(raw_type["capacities"][-1])
-            capacities = array.array("l", raw_type["capacities"])
-            type_demands = array.array("l", [1 for _ in range(platform_limit_dim)])
-            type_info_init(type_info, capacities.data.as_longs, type_demands.data.as_longs, platform_limit_dim, raw_type["price"])
-
         self.tasks = [Task(self, task_id) for task_id in range(self.c.num_tasks)]
-        self.types = [VMType(self, type_id) for type_id in range(self.c.num_types)]
 
         bws = [min(typ0.bandwidth, typ1.bandwidth) for typ0, typ1 in product(self.types, self.types)]
         self.mean_bandwidth = long(sum(bws) / len(bws))
@@ -222,12 +223,12 @@ cdef class Problem:
                 out_degrees[prev_id] += 1
         exit_tasks = [t for t,v in out_degrees.items() if v == 0]
 
-        for task in raw_tasks.values():
-            if not task["prevs"]:
-                task["prevs"] = {"S":0}
-        raw_tasks["S"] = {"runtime":0, "demands":[0,0,0], "prevs":{}}
-        raw_tasks["E"] = {"runtime":0, "demands":[0,0,0],
-                "prevs":{t:0 for t in exit_tasks}}
+        # for task in raw_tasks.values():
+            # if not task["prevs"]:
+                # task["prevs"] = {"S":0}
+        # raw_tasks["S"] = {"runtime":0, "demands":[0,0,0], "prevs":{}}
+        # raw_tasks["E"] = {"runtime":0, "demands":[0,0,0],
+                # "prevs":{t:0 for t in exit_tasks}}
 
         problem = cls(raw_tasks, raw_types, 1)
         problem.charge_unit = charge_unit * 100

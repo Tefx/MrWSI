@@ -78,7 +78,7 @@ class SeqPlan(object):
 
 class Heuristic(object):
     log = [
-        # "alg",
+        "alg",
         # "fit",
         # "sort",
     ]
@@ -109,6 +109,7 @@ class Heuristic(object):
             for c in t.communications(COMM_OUTPUT):
                 self._CT[t.id, c.to_task.id] = c.runtime(self.bandwidth)
         self.entry_tasks = [t for t in self.problem.tasks if t.in_degree == 0]
+        self.exit_tasks = [t for t in self.problem.tasks if t.out_degree == 0]
 
     def _topsort(self):
         toporder = [t for t in self.problem.tasks if not t.in_degree]
@@ -287,22 +288,22 @@ class Heuristic(object):
                                  str(id(self.PL_m(comm.to_task)))[-4:]))
         print()
 
-    def export(self, path, attrs={}):
+    def export(self, path, attrs = {}):
         import json
 
         if not self.have_solved:
             self.solve()
-        machines_list = list(self.platform)
-        machines = []
+        machines_list=list(self.platform)
+        machines=[]
         for machine in machines_list:
-            tasks = []
-            for task in sorted(machine.tasks, key=self.ST):
-                demands = task.demands()
-                comms = []
+            tasks=[]
+            for task in sorted(machine.tasks, key = self.ST):
+                demands=task.demands()
+                comms=[]
                 for comm in task.communications(COMM_OUTPUT):
                     if comm not in self.start_times:
                         continue
-                    to_machine = machines_list.index(self.PL_m(comm.to_task))
+                    to_machine=machines_list.index(self.PL_m(comm.to_task))
                     comms.append({
                         "to_task": str(comm.to_task),
                         "start_time": self.ST(comm) / 100,
@@ -319,8 +320,8 @@ class Heuristic(object):
                     "output": comms,
                 })
             machines.append(tasks)
-        capacities = self.vm_type.capacities
-        schedule = {
+        capacities=self.vm_type.capacities
+        schedule={
             "vm_capacities": [int(capacities[0] / 1000), capacities[1]],
             "num_tasks": self.problem.num_tasks,
             "allow_share": self.allow_share,
@@ -330,3 +331,6 @@ class Heuristic(object):
         schedule.update(attrs)
         with open(path, "w") as f:
             json.dump(schedule, f, indent=2)
+
+    def siso_dag(self):
+        return self.entry_tasks[0].out_degree == 1
